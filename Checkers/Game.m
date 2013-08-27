@@ -1,0 +1,271 @@
+//
+//  Game.m
+//  Checkers
+//
+//  Created by Wayne Carter on 8/20/13.
+//  Copyright (c) 2013 Wayne Carter. All rights reserved.
+//
+
+#import "Game.h"
+
+// Team
+@implementation GameTeam
+
+-(id)initWithData:(NSMutableDictionary *)theData number:(int)number
+{
+    if (self = [self init]) {
+        data = theData;
+        _number = number;
+    }
+    
+    return self;
+}
+
+-(int)participantCount {
+    return ((NSNumber *)[data objectForKey:@"participantCount"]).intValue;
+}
+
+-(NSArray *)pieces {
+    if (pieces == nil) {
+        NSMutableArray * mutablePieces = [NSMutableArray array];
+        pieces = mutablePieces;
+        
+        NSArray * piecesData = [data objectForKey:@"pieces"];
+        for (int i=0; i<piecesData.count; i++) {
+            [mutablePieces addObject:[[GamePiece alloc] initWithData:[piecesData objectAtIndex:i] number:i team:self.number]];
+        }
+    }
+    
+    return pieces;
+}
+
+-(int)score
+{
+    int score = 0;
+    
+    for (GamePiece * piece in self.pieces) {
+        if (!piece.captured) {
+            score++;
+        }
+    }
+    
+    return score;
+}
+
+@end
+
+// Piece
+@implementation GamePiece
+
+-(id)initWithData:(NSMutableDictionary *)theData number:(int)number team:(int)team
+{
+    if (self = [self init]) {
+        data = theData;
+        _number = number;
+        _team = team;
+    }
+    
+    return self;
+}
+
+-(NSNumber *)location {
+    return [data objectForKey:@"location"];
+}
+
+-(void)setLocation:(NSNumber *)location {
+    [data setObject:location forKey:@"location"];
+}
+
+-(NSMutableArray *)validMoves {
+    if (validMoves == nil) {
+        validMoves = [NSMutableArray array];
+        
+        for (NSMutableDictionary * validMove in [data objectForKey:@"validMoves"]) {
+            [validMoves addObject:[[GameValidMove alloc] initWithData:validMove team:self.team piece:self.number]];
+        }
+    }
+    
+    return validMoves;
+}
+
+-(BOOL)captured {
+    return ((NSNumber *)[data objectForKey:@"captured"]).boolValue;
+}
+
+-(void)setCaptured:(BOOL)captured {
+    [data setObject:[NSNumber numberWithBool:captured] forKey:@"captured"];
+}
+
+-(BOOL)king {
+    return ((NSNumber *)[data objectForKey:@"king"]).boolValue;
+}
+
+-(void)setKing:(BOOL)king{
+    [data setObject:[NSNumber numberWithBool:king] forKey:@"king"];
+}
+
+@end
+
+// Capture
+@implementation GameCapture
+
+-(id)initWithData:(NSMutableDictionary *)theData
+{
+    if (self = [self init]) {
+        data = theData;
+    }
+    
+    return self;
+}
+
+-(int)team {
+    return ((NSNumber *)[data objectForKey:@"team"]).intValue;
+}
+
+-(int)piece {
+    return ((NSNumber *)[data objectForKey:@"piece"]).intValue;
+}
+
+@end
+
+// Move
+@implementation GameMove
+
+-(id)initWithData:(NSMutableDictionary *)theData
+{
+    return [self initWithTeam:((NSNumber *)[theData objectForKey:@"team"]).intValue piece:((NSNumber *)[theData objectForKey:@"piece"]).intValue locations:[theData objectForKey:@"locations"]];
+}
+
+-(id)initWithTeam:(int)theTeam piece:(int)thePiece locations:(NSArray *)theLocations {
+    if (self = [self init]) {
+        _team = theTeam;
+        _piece = thePiece;
+        _locations = theLocations;
+    }
+    
+    return self;
+}
+
+@end
+
+// Move
+@implementation GameValidMove
+
+-(id)initWithData:(NSMutableDictionary *)theData team:(int)team piece:(int)piece {
+    if (self = [super initWithTeam:team piece:piece locations:[theData objectForKey:@"locations"]]) {
+        data = theData;
+    }
+    
+    return self;
+}
+
+-(NSArray *)captures {
+    if (captures == nil) {
+        captures = [NSMutableArray array];
+        
+        for (NSMutableDictionary * captureData in [data objectForKey:@"captures"]) {
+            [captures addObject:[[GameCapture alloc] initWithData:captureData]];
+        }
+    }
+    
+    return captures;
+}
+
+-(BOOL)king {
+    return ((NSNumber *)[data objectForKey:@"king"]).boolValue;
+}
+
+@end
+
+// Game
+static NSString * kCBCGameDateFormate = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+@implementation Game
+
+-(id)initWithData:(NSData *)theData {
+    NSMutableDictionary * dictionary = [NSJSONSerialization JSONObjectWithData:theData options:(NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves) error:nil];
+    
+    return [self initWithDictionary:dictionary];
+}
+
+-(id)initWithDictionary:(NSMutableDictionary *)dictionary
+{
+    if (self = [self init]) {
+        data = dictionary;
+    }
+    
+    return self;
+}
+
+-(NSNumber *)number {
+    return [data objectForKey:@"number"];
+}
+
+-(NSDate *)startTime {
+    if (startTime == nil) {
+        NSString * startTimeString = [data objectForKey:@"startTime"];
+        
+        if (startTimeString) {
+            NSDateFormatter * dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:kCBCGameDateFormate];
+            
+            startTime = [dateFormatter dateFromString:startTimeString];
+        }
+    }
+    
+    return startTime;
+}
+
+-(NSDate *)moveDeadline {
+    if (moveDeadline == nil) {
+        NSString * moveDeadlineString = [data objectForKey:@"moveDeadline"];
+        
+        if (moveDeadlineString) {
+            NSDateFormatter * dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:kCBCGameDateFormate];
+            
+            moveDeadline = [dateFormatter dateFromString:moveDeadlineString];
+        }
+    }
+    
+    return moveDeadline;
+}
+
+-(NSNumber *)turn {
+    return [data objectForKey:@"turn"];
+}
+
+-(NSNumber *)activeTeam {
+    return [data objectForKey:@"activeTeam"];
+}
+
+-(NSNumber *)winningTeam {
+    return [data objectForKey:@"winningTeam"];
+}
+
+-(NSArray *)teams {
+    if (teams == nil) {
+        NSMutableArray * mutableTeams = [NSMutableArray array];
+        teams = mutableTeams;
+        
+        NSArray * teamsData = [data objectForKey:@"teams"];
+        for (int i=0; i<teamsData.count; i++) {
+            [mutableTeams addObject:[[GameTeam alloc] initWithData:[teamsData objectAtIndex:i] number:i]];
+        }
+    }
+    
+    return teams;
+}
+
+-(NSMutableArray *)moves {
+    if (moves == nil) {
+        moves = [NSMutableArray array];
+        
+        for (NSMutableDictionary * moveData in [data objectForKey:@"moves"]) {
+            [moves addObject:[[GameMove alloc] initWithData:moveData]];
+        }
+    }
+    
+    return moves;
+}
+
+@end
