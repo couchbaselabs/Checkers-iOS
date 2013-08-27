@@ -44,7 +44,7 @@ typedef NS_ENUM(NSInteger, GameViewControllerButton) {
     
     // Time
     NSDate * countdownTime;
-    BOOL allowUserInteractionOnCountdownTimeout;
+    BOOL layoutOnCountdownTimeout;
     NSTimer * countdownTimer;
     NSTimer * countdownTimeoutTimer;
     
