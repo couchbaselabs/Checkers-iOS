@@ -7,6 +7,7 @@
 //
 
 #import "GameController.h"
+#import <Social/Social.h>
 
 @implementation GameController
 
