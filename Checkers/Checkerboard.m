@@ -146,13 +146,13 @@
         if (move.locations.count > 0) {
             UIView * square = [self squareAtLocation:piece.location];
             
-            CheckerboardValidMoveView * validMove = [[CheckerboardValidMoveView alloc] initWithImage:[AppStyle validMoveForTeam:game.activeTeam.intValue squareSize:squareSize] move:nil location:piece.location];
+            CheckerboardValidMoveView * validMove = [[CheckerboardValidMoveView alloc] initWithImage:[AppStyle validMoveForTeam:piece.team squareSize:squareSize] move:nil location:piece.location];
             validMove.center = square.center;
             [self addValidMove:validMove];
             
             for (NSNumber * location in move.locations) {
                 UIView * square = [self squareAtLocation:location];
-                UIImage * validMoveImage = [AppStyle validMoveForTeam:game.activeTeam.intValue squareSize:squareSize];
+                UIImage * validMoveImage = [AppStyle validMoveForTeam:piece.team squareSize:squareSize];
                 validMove = [[CheckerboardValidMoveView alloc] initWithImage:validMoveImage move:move location:location];
                 validMove.userInteractionEnabled = YES;
                 validMove.center = square.center;
