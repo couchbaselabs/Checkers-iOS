@@ -10,7 +10,7 @@
 
 @implementation UIView (Extended)
 
--(void)clearSubviews
+-(void)removeAllSubviews
 {
     for (UIView * subview in [self subviews]) {
         [subview removeFromSuperview];

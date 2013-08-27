@@ -10,7 +10,7 @@
 
 @interface UIView (Extended)
 
--(void)clearSubviews;
+-(void)removeAllSubviews;
 -(void)sizeToFitSubviews;
 
 @end

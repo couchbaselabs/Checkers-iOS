@@ -326,8 +326,8 @@
 
 - (void)layoutTeamInfo {
     // Clear info.
-    [team1Info clearSubviews];
-    [team2Info clearSubviews];
+    [team1Info removeAllSubviews];
+    [team2Info removeAllSubviews];
     
     team1Info.frame = CGRectZero;
     team2Info.frame = CGRectZero;
