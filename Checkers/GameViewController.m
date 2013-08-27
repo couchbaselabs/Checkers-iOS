@@ -133,6 +133,7 @@
     user = theUser;
     
     [self layoutTeamInfo];
+    [self layoutGameInfo];
 }
 
 -(Game *)game {
@@ -156,6 +157,7 @@
     vote = theVote;
     
     [self layoutTeamInfo];
+    [self layoutGameInfo];
 }
 
 -(IBAction)facebookClick:(id)sender
@@ -191,9 +193,7 @@
         [countdownTimeoutTimer invalidate];
         countdownTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(handleCountdownTimeoutTimerTick) userInfo:nil repeats:YES];
         
-        if (layoutOnCountdownTimeout) {
-            [self layoutGameInfo];
-        }
+        [self layoutGameInfo];
     }
 }
 
@@ -212,8 +212,19 @@
     [countdownTimer invalidate];
     [countdownTimeoutTimer invalidate];
     
-    countdownTime = theTime;
-    countdownTimer = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(handleCountdownTimerTick) userInfo:nil repeats:YES];
+    if (theTime) {
+        countdownTime = theTime;
+        NSTimeInterval secondsRemaining = [countdownTime timeIntervalSinceNow];
+        
+        if (secondsRemaining > 0) {
+            countdownTimer = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(handleCountdownTimerTick) userInfo:nil repeats:YES];
+        } else {
+            self.timeValue = @"00:000";
+            countdownTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(handleCountdownTimeoutTimerTick) userInfo:nil repeats:YES];
+        }
+    } else {
+        self.timeValue = @"--";
+    }
 }
 
 - (void)setTimeValue:(NSString *)value
@@ -275,6 +286,8 @@
 
 - (void)layoutGameInfo {
     NSTimeInterval secondsUntilStartTime = [game.startTime timeIntervalSinceNow];
+    NSTimeInterval secondsUntilMoveDeadline = [game.moveDeadline timeIntervalSinceNow];
+    
     if (secondsUntilStartTime <= 0 && game.activeTeam) {
         header.backgroundColor = [AppStyle colorForTeam:game.activeTeam.intValue];
         
@@ -307,14 +320,21 @@
     if (secondsUntilStartTime <= 0 && game.moveDeadline) {
         self.timeLabel = @"time";
         
-        checkerboard.userInteractionEnabled = YES;
-        layoutOnCountdownTimeout = NO;
+        if (secondsUntilMoveDeadline <= 0) {
+            checkerboard.userInteractionEnabled = NO;
+        } else if (![game.activeTeam isEqualToNumber:user.team]) {
+            checkerboard.userInteractionEnabled = NO;
+        } else if ([game.number isEqualToNumber:vote.game] && [game.number isEqualToNumber:vote.game]) {
+            checkerboard.userInteractionEnabled = NO;
+        } else {
+            checkerboard.userInteractionEnabled = YES;
+        }
+        
         self.countdownTime = game.moveDeadline;
     } else {
         self.timeLabel = @"starts in";
         
         checkerboard.userInteractionEnabled = NO;
-        layoutOnCountdownTimeout = YES;
         self.countdownTime = game.startTime;
     }
     
