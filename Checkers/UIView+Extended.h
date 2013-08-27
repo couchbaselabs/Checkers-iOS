@@ -11,6 +11,6 @@
 @interface UIView (Extended)
 
 -(void)clearSubviews;
--(void)sizeThatFitsSubviews;
+-(void)sizeToFitSubviews;
 
 @end

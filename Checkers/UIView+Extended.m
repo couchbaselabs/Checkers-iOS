@@ -17,7 +17,7 @@
     }
 }
 
--(void)sizeThatFitsSubviews
+-(void)sizeToFitSubviews
 {
     float width = 0;
     float height = 0;
