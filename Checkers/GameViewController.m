@@ -11,8 +11,6 @@
 #import "Checkerboard.h"
 #import "Game.h"
 #import "UIView+Extended.h"
-#import <QuartzCore/QuartzCore.h>
-#import <Social/Social.h>
 
 @implementation GameViewController
 
