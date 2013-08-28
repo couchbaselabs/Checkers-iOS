@@ -35,6 +35,13 @@ NSMutableDictionary * pictures;
         return;
     }
     
+    // TODO: Delete. Until I get this tested I'm checking in a static grab of my pic.
+    NSURL * pictureUrl = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=%d&height=%d", @"wayneacarter", size, size]];
+    picture = [UIImage imageWithData:[NSData dataWithContentsOfURL:pictureUrl]];
+    [pictures setObject:picture forKey:key];
+    handler(picture);
+    return;
+    
     ACAccountType * accountType = [Facebook.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
     NSDictionary * options = @{ACFacebookAppIdKey: @"581783778545478"};
     
@@ -60,8 +67,9 @@ NSMutableDictionary * pictures;
                          
                          dispatch_async(dispatch_get_main_queue(), ^{
                              handler(picture);
-                             return;
                          });
+                         
+                         return;
                      }
                  }
              }];
