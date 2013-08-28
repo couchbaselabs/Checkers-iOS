@@ -39,24 +39,24 @@ BOOL accessRejected;
 
 +(void)pictureWithSize:(int)size handler:(FacebookPictureHandler)handler
 {
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [Facebook doPictureWithSize:size handler:handler];
     });
 }
 
-NSLock * picturesLock;
+dispatch_semaphore_t pictures_semaphore;
 NSMutableDictionary * pictures;
 +(void)doPictureWithSize:(int)size handler:(FacebookPictureHandler)handler
 {
     @synchronized(Facebook.class) {
         if (pictures == nil) {
-            picturesLock = [[NSLock alloc] init];
+            pictures_semaphore = dispatch_semaphore_create(1);
             pictures = [[NSMutableDictionary alloc] init];
         }
     }
     
-    // Lock so we can't hammer FB w/ requests.
-    [picturesLock lock];
+    // Wait so we can't hammer FB w/ requests.
+    dispatch_semaphore_wait(pictures_semaphore, DISPATCH_TIME_FOREVER);
     
     // If we already have the pic cached then return it.
     UIImage * picture = [Facebook pictureWithSize:size];
@@ -71,7 +71,7 @@ NSMutableDictionary * pictures;
     // If we have already been rejected access then just return nil.
     if (Facebook.accessRejected) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            handler(picture);
+            handler(nil);
         });
         
         return;
@@ -115,7 +115,7 @@ NSMutableDictionary * pictures;
                      });
                  }
                  
-                 [picturesLock unlock];
+                 dispatch_semaphore_signal(pictures_semaphore);;
              }];
          } else {
              accessRejected = YES;
@@ -124,7 +124,7 @@ NSMutableDictionary * pictures;
                  handler(picture);
              });
              
-             [picturesLock unlock];
+             dispatch_semaphore_signal(pictures_semaphore);;
          }
      }];
 }
