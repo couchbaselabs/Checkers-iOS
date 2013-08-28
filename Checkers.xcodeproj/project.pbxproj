@@ -119,7 +119,6 @@
 		A3949DAF17C2EECB00559283 = {
 			isa = PBXGroup;
 			children = (
-				A3CB830A17CD631D00FCCE72 /* Accounts.framework */,
 				A3949DC117C2EECB00559283 /* Checkers */,
 				A3949DBA17C2EECB00559283 /* Frameworks */,
 				A3949DB917C2EECB00559283 /* Products */,
@@ -137,6 +136,7 @@
 		A3949DBA17C2EECB00559283 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A3CB830A17CD631D00FCCE72 /* Accounts.framework */,
 				A3DBD11117C9E942004E74B9 /* Social.framework */,
 				A3949E6317C482BA00559283 /* QuartzCore.framework */,
 				A3949DBB17C2EECB00559283 /* UIKit.framework */,
