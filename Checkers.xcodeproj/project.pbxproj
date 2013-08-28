@@ -13,9 +13,6 @@
 		A3949DC617C2EECB00559283 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3949DC417C2EECB00559283 /* InfoPlist.strings */; };
 		A3949DC817C2EECB00559283 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A3949DC717C2EECB00559283 /* main.m */; };
 		A3949DCC17C2EECB00559283 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A3949DCB17C2EECB00559283 /* AppDelegate.m */; };
-		A3949DCE17C2EECB00559283 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A3949DCD17C2EECB00559283 /* Default.png */; };
-		A3949DD017C2EECB00559283 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3949DCF17C2EECB00559283 /* Default@2x.png */; };
-		A3949DD217C2EECB00559283 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3949DD117C2EECB00559283 /* Default-568h@2x.png */; };
 		A3949DD517C2EECB00559283 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3949DD417C2EECB00559283 /* GameViewController.m */; };
 		A3949DFD17C2FA5100559283 /* AppStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = A3949DFC17C2FA5100559283 /* AppStyle.m */; };
 		A3949E0C17C338E200559283 /* Checkerboard.m in Sources */ = {isa = PBXBuildFile; fileRef = A3949E0B17C338E200559283 /* Checkerboard.m */; };
@@ -23,6 +20,14 @@
 		A3949E6117C460E600559283 /* Game-1.json in Resources */ = {isa = PBXBuildFile; fileRef = A3949E0D17C3C4A200559283 /* Game-1.json */; };
 		A3949E6217C46F9000559283 /* Game-2.json in Resources */ = {isa = PBXBuildFile; fileRef = A3949E1017C3E60B00559283 /* Game-2.json */; };
 		A3949E6417C482BA00559283 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3949E6317C482BA00559283 /* QuartzCore.framework */; };
+		A3CB830B17CD631D00FCCE72 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3CB830A17CD631D00FCCE72 /* Accounts.framework */; };
+		A3CB830E17CD79B800FCCE72 /* Facebook.m in Sources */ = {isa = PBXBuildFile; fileRef = A3CB830D17CD79B800FCCE72 /* Facebook.m */; };
+		A3CB832E17CDD15900FCCE72 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB832917CDD15900FCCE72 /* Default-568h@2x.png */; };
+		A3CB832F17CDD15900FCCE72 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB832A17CDD15900FCCE72 /* Default.png */; };
+		A3CB833017CDD15900FCCE72 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB832B17CDD15900FCCE72 /* Default@2x.png */; };
+		A3CB833117CDD15900FCCE72 /* Default@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB832C17CDD15900FCCE72 /* Default@2x~ipad.png */; };
+		A3CB833217CDD15900FCCE72 /* Default~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB832D17CDD15900FCCE72 /* Default~ipad.png */; };
+		A3CB833417CDD16500FCCE72 /* Couch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB833317CDD16500FCCE72 /* Couch@2x.png */; };
 		A3DBD10717C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3DBD0FF17C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png */; };
 		A3DBD10817C90DFA004E74B9 /* Facebook-Dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3DBD10017C90DFA004E74B9 /* Facebook-Dark@2x.png */; };
 		A3DBD10917C90DFA004E74B9 /* Facebook-Light-Highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3DBD10117C90DFA004E74B9 /* Facebook-Light-Highlighted@2x.png */; };
@@ -52,9 +57,6 @@
 		A3949DC917C2EECB00559283 /* Checkers-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Checkers-Prefix.pch"; sourceTree = "<group>"; };
 		A3949DCA17C2EECB00559283 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		A3949DCB17C2EECB00559283 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		A3949DCD17C2EECB00559283 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		A3949DCF17C2EECB00559283 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		A3949DD117C2EECB00559283 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		A3949DD317C2EECB00559283 /* GameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
 		A3949DD417C2EECB00559283 /* GameViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
 		A3949DFB17C2FA5100559283 /* AppStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppStyle.h; sourceTree = "<group>"; };
@@ -66,6 +68,15 @@
 		A3949E5C17C440CF00559283 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
 		A3949E5D17C440CF00559283 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		A3949E6317C482BA00559283 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A3CB830A17CD631D00FCCE72 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		A3CB830C17CD79B800FCCE72 /* Facebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Facebook.h; sourceTree = "<group>"; };
+		A3CB830D17CD79B800FCCE72 /* Facebook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Facebook.m; sourceTree = "<group>"; };
+		A3CB832917CDD15900FCCE72 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		A3CB832A17CDD15900FCCE72 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		A3CB832B17CDD15900FCCE72 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		A3CB832C17CDD15900FCCE72 /* Default@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x~ipad.png"; sourceTree = "<group>"; };
+		A3CB832D17CDD15900FCCE72 /* Default~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default~ipad.png"; sourceTree = "<group>"; };
+		A3CB833317CDD16500FCCE72 /* Couch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Couch@2x.png"; sourceTree = "<group>"; };
 		A3DBD0FF17C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Facebook-Dark-Highlighted@2x.png"; sourceTree = "<group>"; };
 		A3DBD10017C90DFA004E74B9 /* Facebook-Dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Facebook-Dark@2x.png"; sourceTree = "<group>"; };
 		A3DBD10117C90DFA004E74B9 /* Facebook-Light-Highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Facebook-Light-Highlighted@2x.png"; sourceTree = "<group>"; };
@@ -93,6 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3CB830B17CD631D00FCCE72 /* Accounts.framework in Frameworks */,
 				A3DBD11217C9E942004E74B9 /* Social.framework in Frameworks */,
 				A3949E6417C482BA00559283 /* QuartzCore.framework in Frameworks */,
 				A3949DBC17C2EECB00559283 /* UIKit.framework in Frameworks */,
@@ -107,6 +119,7 @@
 		A3949DAF17C2EECB00559283 = {
 			isa = PBXGroup;
 			children = (
+				A3CB830A17CD631D00FCCE72 /* Accounts.framework */,
 				A3949DC117C2EECB00559283 /* Checkers */,
 				A3949DBA17C2EECB00559283 /* Frameworks */,
 				A3949DB917C2EECB00559283 /* Products */,
@@ -157,6 +170,8 @@
 				A3DBD11417CB072F004E74B9 /* Vote.m */,
 				A3DBD12D17CBB8A8004E74B9 /* UIView+Extended.h */,
 				A3DBD12E17CBB8A8004E74B9 /* UIView+Extended.m */,
+				A3CB830C17CD79B800FCCE72 /* Facebook.h */,
+				A3CB830D17CD79B800FCCE72 /* Facebook.m */,
 			);
 			path = Checkers;
 			sourceTree = "<group>";
@@ -168,9 +183,11 @@
 				A3949DC417C2EECB00559283 /* InfoPlist.strings */,
 				A3949DC717C2EECB00559283 /* main.m */,
 				A3949DC917C2EECB00559283 /* Checkers-Prefix.pch */,
-				A3949DCD17C2EECB00559283 /* Default.png */,
-				A3949DCF17C2EECB00559283 /* Default@2x.png */,
-				A3949DD117C2EECB00559283 /* Default-568h@2x.png */,
+				A3CB832917CDD15900FCCE72 /* Default-568h@2x.png */,
+				A3CB832A17CDD15900FCCE72 /* Default.png */,
+				A3CB832B17CDD15900FCCE72 /* Default@2x.png */,
+				A3CB832C17CDD15900FCCE72 /* Default@2x~ipad.png */,
+				A3CB832D17CDD15900FCCE72 /* Default~ipad.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -178,6 +195,7 @@
 		A3949E0617C3048900559283 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A3CB833317CDD16500FCCE72 /* Couch@2x.png */,
 				A3DBD10F17C93459004E74B9 /* King@2x.png */,
 				A3DBD0FF17C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png */,
 				A3DBD10017C90DFA004E74B9 /* Facebook-Dark@2x.png */,
@@ -259,9 +277,6 @@
 				A3949E6217C46F9000559283 /* Game-2.json in Resources */,
 				A3DBD12C17CBB5D7004E74B9 /* Vote-1.json in Resources */,
 				A3949DC617C2EECB00559283 /* InfoPlist.strings in Resources */,
-				A3949DCE17C2EECB00559283 /* Default.png in Resources */,
-				A3949DD017C2EECB00559283 /* Default@2x.png in Resources */,
-				A3949DD217C2EECB00559283 /* Default-568h@2x.png in Resources */,
 				A3DBD10717C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png in Resources */,
 				A3DBD10817C90DFA004E74B9 /* Facebook-Dark@2x.png in Resources */,
 				A3DBD10917C90DFA004E74B9 /* Facebook-Light-Highlighted@2x.png in Resources */,
@@ -271,6 +286,12 @@
 				A3DBD10D17C90DFA004E74B9 /* Twitter-Light-Highlighted@2x.png in Resources */,
 				A3DBD10E17C90DFA004E74B9 /* Twitter-Light@2x.png in Resources */,
 				A3DBD11017C93459004E74B9 /* King@2x.png in Resources */,
+				A3CB832E17CDD15900FCCE72 /* Default-568h@2x.png in Resources */,
+				A3CB832F17CDD15900FCCE72 /* Default.png in Resources */,
+				A3CB833017CDD15900FCCE72 /* Default@2x.png in Resources */,
+				A3CB833117CDD15900FCCE72 /* Default@2x~ipad.png in Resources */,
+				A3CB833217CDD15900FCCE72 /* Default~ipad.png in Resources */,
+				A3CB833417CDD16500FCCE72 /* Couch@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,6 +312,7 @@
 				A3DBD11A17CB1ED5004E74B9 /* User.m in Sources */,
 				A3DBD12F17CBB8A8004E74B9 /* UIView+Extended.m in Sources */,
 				A3DBD13217CBF7B7004E74B9 /* GameController.m in Sources */,
+				A3CB830E17CD79B800FCCE72 /* Facebook.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
