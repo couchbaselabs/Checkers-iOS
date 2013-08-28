@@ -21,31 +21,65 @@ ACAccountStore * accountStore;
     return accountStore;
 }
 
-NSMutableDictionary * pictures;
++(NSDictionary *)accessOptions {
+    return @{ACFacebookAppIdKey: @"581783778545478", ACFacebookPermissionsKey: @[@"email"]};;
+}
+
+BOOL accessRejected;
++(BOOL)accessRejected {
+    return accessRejected;
+}
+
++(UIImage *)pictureWithSize:(int)size
+{
+    NSNumber * key = [NSNumber numberWithInt:size];
+    
+    return [pictures objectForKey:key];
+}
+
 +(void)pictureWithSize:(int)size handler:(FacebookPictureHandler)handler
 {
-    if (pictures == nil) {
-        pictures = [[NSMutableDictionary alloc] init];
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [Facebook doPictureWithSize:size handler:handler];
+    });
+}
+
+NSLock * picturesLock;
+NSMutableDictionary * pictures;
++(void)doPictureWithSize:(int)size handler:(FacebookPictureHandler)handler
+{
+    @synchronized(Facebook.class) {
+        if (pictures == nil) {
+            picturesLock = [[NSLock alloc] init];
+            pictures = [[NSMutableDictionary alloc] init];
+        }
     }
     
-    NSNumber * key = [NSNumber numberWithInt:size];
-    UIImage * picture = [pictures objectForKey:key];
+    // Lock so we can't hammer FB w/ requests.
+    [picturesLock lock];
+    
+    // If we already have the pic cached then return it.
+    UIImage * picture = [Facebook pictureWithSize:size];
     if (picture) {
-        handler(picture);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            handler(picture);
+        });
+        
         return;
     }
     
-    // TODO: Delete. Until I get this tested I'm checking in a static grab of my pic.
-    NSURL * pictureUrl = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=%d&height=%d", @"wayneacarter", size, size]];
-    picture = [UIImage imageWithData:[NSData dataWithContentsOfURL:pictureUrl]];
-    [pictures setObject:picture forKey:key];
-    handler(picture);
-    return;
+    // If we have already been rejected access then just return nil.
+    if (Facebook.accessRejected) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            handler(picture);
+        });
+        
+        return;
+    }
     
     ACAccountType * accountType = [Facebook.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-    NSDictionary * options = @{ACFacebookAppIdKey: @"581783778545478"};
     
-    [accountStore requestAccessToAccountsWithType:accountType options:options completion:
+    [accountStore requestAccessToAccountsWithType:accountType options:Facebook.accessOptions completion:
      ^(BOOL granted, NSError *e) {
          if (granted) {
              NSArray * accounts = [Facebook.accountStore accountsWithAccountType:accountType];
@@ -56,26 +90,42 @@ NSMutableDictionary * pictures;
              
              request.account = account;
              [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+                 UIImage * picture;
+                 
                  if (responseData) {
                      NSDictionary * data = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
                      NSString * userId = data[@"id"];
                      NSURL * pictureUrl = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=%d&height=%d", userId, size, size]];
-                     UIImage * picture = [UIImage imageWithData:[NSData dataWithContentsOfURL:pictureUrl]];
                      
-                     if (picture) {
-                         [pictures setObject:picture forKey:key];
-                         
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             handler(picture);
-                         });
-                         
-                         return;
-                     }
+                     picture = [UIImage imageWithData:[NSData dataWithContentsOfURL:pictureUrl]];
                  }
+                 
+                 if (picture) {
+                     NSNumber * key = [NSNumber numberWithInt:size];
+                     [pictures setObject:picture forKey:key];
+                     
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         handler(picture);
+                     });
+                 } else {
+                     accessRejected = YES;
+                     
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         handler(picture);
+                     });
+                 }
+                 
+                 [picturesLock unlock];
              }];
+         } else {
+             accessRejected = YES;
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 handler(picture);
+             });
+             
+             [picturesLock unlock];
          }
-         
-         handler(nil);
      }];
 }
 

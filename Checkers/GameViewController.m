@@ -371,23 +371,12 @@
         
         // Image or "You"
         UIView * userIdentifier;
-        if (user.facebookId) {
-            int imageSize = MIN(teamInfoSize - (2 * teamInfoPadding), 44);
-            UIImageView * userImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, imageSize + 4, imageSize + 4)];
+        int pictureSize = MIN(teamInfoSize - (2 * teamInfoPadding), 44);
+        UIImage * userPicture = [Facebook pictureWithSize:(pictureSize * 2)];
+        if (userPicture) {
+            UIImageView * userImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, pictureSize + 4, pictureSize + 4)];
             userImage.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-            // TODO: We should load asynchronously and probably cache.
-            //NSURL * imageUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?width=%d&height=%d", user.facebookId, imageSize * 2, imageSize * 2]];
-            
-            //userImage.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageUrl]];
-            //userImage.image = [AppStyle strokeImage:userImage.image forTeam:user.team.intValue];
-            
-            [Facebook pictureWithSize:(imageSize * 2) handler:^(UIImage *image) {
-                if (image) {
-                    userImage.image = [AppStyle strokeImage:image forTeam:user.team.intValue];
-                } else {
-                    // TODO: What should we do when we can't get an image (e.g. flag and relayout so that 'You' will be displayed).
-                }
-            }];
+            userImage.image = [AppStyle strokeImage:userPicture forTeam:user.team.intValue];
             
             userIdentifier = userImage;
             [teamInfo addSubview:userImage];
@@ -401,6 +390,14 @@
             
             userIdentifier = userLabel;
             [teamInfo addSubview:userLabel];
+            
+            if (!Facebook.accessRejected) {
+                [Facebook pictureWithSize:(pictureSize * 2) handler:^(UIImage *image) {
+                    if (image) {
+                        [self layoutTeamInfo];
+                    }
+                }];
+            }
         }
         
         // Team

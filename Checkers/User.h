@@ -17,6 +17,5 @@
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary;
 
 @property (readonly) NSNumber * team;
-@property (readonly) NSString * facebookId;
 
 @end

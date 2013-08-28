@@ -29,8 +29,4 @@
     return [data objectForKey:@"team"];
 }
 
--(NSString *)facebookId {
-    return [data objectForKey:@"facebookId"];
-}
-
 @end
