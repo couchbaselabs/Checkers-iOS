@@ -7,13 +7,22 @@
 //
 
 #import "AppDelegate.h"
+#import <CouchbaseLite/CouchbaseLite.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
-    
+
+    // Initialize Couchbase Lite:
+    NSError* error;
+    self.database = [[CBLManager sharedInstance] createDatabaseNamed: @"checkers" error: &error];
+    if (!self.database) {
+        NSLog(@"FATAL: Couldn't open database: %@", error);
+        abort();
+    }
+
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     gameViewController = [[GameViewController alloc] init];

@@ -8,12 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "GameController.h"
+@class CBLDatabase;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate> {
 @private
     GameViewController * gameViewController;
     GameController * gameController;
 }
+
+@property (strong, nonatomic) CBLDatabase* database;
 
 @property (strong, nonatomic) UIWindow *window;
 
