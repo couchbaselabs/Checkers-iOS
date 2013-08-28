@@ -11,6 +11,8 @@
 #import "Checkerboard.h"
 #import "Game.h"
 #import "UIView+Extended.h"
+#import "Facebook.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation GameViewController
 
@@ -374,10 +376,18 @@
             UIImageView * userImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, imageSize + 4, imageSize + 4)];
             userImage.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
             // TODO: We should load asynchronously and probably cache.
-            NSURL * imageUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?width=%d&height=%d", user.facebookId, imageSize * 2, imageSize * 2]];
+            //NSURL * imageUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?width=%d&height=%d", user.facebookId, imageSize * 2, imageSize * 2]];
             
-            userImage.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageUrl]];
-            userImage.image = [AppStyle strokeImage:userImage.image forTeam:user.team.intValue];
+            //userImage.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageUrl]];
+            //userImage.image = [AppStyle strokeImage:userImage.image forTeam:user.team.intValue];
+            
+            [Facebook pictureWithSize:(imageSize * 2) handler:^(UIImage *image) {
+                if (image) {
+                    userImage.image = [AppStyle strokeImage:image forTeam:user.team.intValue];
+                } else {
+                    // TODO: What should we do when we can't get an image (e.g. flag and relayout so that 'You' will be displayed).
+                }
+            }];
             
             userIdentifier = userImage;
             [teamInfo addSubview:userImage];
@@ -476,11 +486,45 @@
     [self.delegate gameViewController:self didSelectTeam:[self.game.teams objectAtIndex:recognizer.view.tag]];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
+-(UIImage *)gameAsImage {
+    UIView * view = self.view;
     
-    // Dispose of any resources that can be recreated.
+    // Title Bar
+    UIView * titleBar = [[UIView alloc] initWithFrame:header.frame];
+    titleBar.backgroundColor = header.backgroundColor;
+    
+    // Icon
+    UIImageView * icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Couch.png"]];
+    [titleBar addSubview:icon];
+    
+    // Title
+    UILabel * title = [[UILabel alloc] init];
+    title.backgroundColor = timeValue.backgroundColor;
+    title.textColor = timeValue.textColor;
+    title.text = @"Checkers";
+    [title sizeToFit];
+    title.frame = CGRectMake(icon.frame.origin.x + icon.frame.size.width,
+                             (titleBar.bounds.size.height / 2) - (title.frame.size.height / 2),
+                             title.frame.size.width,
+                             title.frame.size.height);
+    [titleBar addSubview:title];
+    
+    // Overlay titlebar.
+    [view addSubview:titleBar];
+    
+    // Paint image in current context.
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
+    // Remove titlebar.
+    [titleBar removeFromSuperview];
+    
+    // Get painted picture.
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return image;
 }
 
 @end

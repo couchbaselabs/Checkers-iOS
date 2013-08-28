@@ -44,17 +44,29 @@
 
 -(void)gameViewController:(GameViewController *)theGameViewController buttonTapped:(GameViewControllerButton)button {
     if (button == CBCGameViewControllerButtonFacebook) {
-        // TODO: Process Facebook button click.
-        
-        NSString * path = [[NSBundle mainBundle] pathForResource:@"Game-1" ofType:@"json"];
-        
-        theGameViewController.game = [[Game alloc] initWithData:[NSData dataWithContentsOfFile:path]];
+        // TODO: Should we pivot the render of the button on isAvailable?
+        if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+        {
+            SLComposeViewController * sheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+            [sheet setInitialText:@"Couchbase Checkers\n\n"];
+            
+            [sheet addImage:gameViewController.gameAsImage];
+            [sheet addURL:[NSURL URLWithString:@"http://www.couchbase.com/checkers"]];
+            
+            [gameViewController presentViewController:sheet animated:YES completion:nil];
+        }
     } else if (button == CBCGameViewControllerButtonTwitter) {
-        // TODO: Process Twitter button click.
-        
-        NSString * path = [[NSBundle mainBundle] pathForResource:@"Game-2" ofType:@"json"];
-        
-        theGameViewController.game = [[Game alloc] initWithData:[NSData dataWithContentsOfFile:path]];
+        // TODO: Should we pivot the render of the button on isAvailable?
+        if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+        {
+            SLComposeViewController * sheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+            //[sheet setInitialText:@"Couchbase Checkers\n\n"];
+            
+            [sheet addImage:gameViewController.gameAsImage];
+            [sheet addURL:[NSURL URLWithString:@"http://www.couchbase.com/checkers"]];
+            
+            [gameViewController presentViewController:sheet animated:YES completion:nil];
+        }
     }
 }
 
