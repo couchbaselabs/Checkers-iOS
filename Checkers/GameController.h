@@ -15,4 +15,6 @@
 -(id)initWithGameViewController:(GameViewController *)gameViewController
                        database:(CBLDatabase*)database;
 
+-(void)gameReady;
+
 @end

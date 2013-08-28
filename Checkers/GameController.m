@@ -46,47 +46,51 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
         database = theDatabase;
         gameViewController = theGameViewController;
         gameViewController.delegate = self;
-
-        // Get or create my unique player ID:
-        userID = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserID"];
-        if (!userID) {
-            userID = [[NSUUID UUID] UUIDString];
-            [[NSUserDefaults standardUserDefaults] setObject:userID forKey:@"UserID"];
-            NSLog(@"Generated user ID '%@'", userID);
-        }
-        userDoc = database[[NSString stringWithFormat:@"user:%@", userID]];
-        if (userDoc.currentRevision == nil) {
-            // Create an initial blank user document
-            NSError* error;
-            if (![userDoc putProperties:@{} error:&error]) {
-                NSLog(@"WARNING: Couldn't save user doc '%@': %@", userDoc, error);
-            }
-        }
-        gameViewController.user = [[User alloc] initWithDictionary:userDoc.properties];
-
-        // Load the current game state:
-        gameDoc = database[kGameDocID];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(updateGame:)
-                                                     name:kCBLDocumentChangeNotification
-                                                   object:gameDoc];
-        [self updateGame:nil]; // load current game doc
-
-        // Load my current vote:
-        voteDoc = database[[NSString stringWithFormat:@"vote:%@", userID]];
-        NSDictionary* vote = voteDoc.properties;
-        if (!vote)
-            vote = @{};
-        gameViewController.vote = [[Vote alloc] initWithDictionary:vote];
     }
-
     return self;
+}
+
+- (void) gameReady {
+    NSLog(@"GameController: Initial game data ready, updating UI...");
+    // Get or create my unique player ID:
+    userID = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserID"];
+    if (!userID) {
+        userID = [[NSUUID UUID] UUIDString];
+        [[NSUserDefaults standardUserDefaults] setObject:userID forKey:@"UserID"];
+        NSLog(@"Generated user ID '%@'", userID);
+    }
+    userDoc = database[[NSString stringWithFormat:@"user:%@", userID]];
+    if (userDoc.currentRevision == nil) {
+        // Create an initial blank user document
+        NSError* error;
+        if (![userDoc putProperties:@{} error:&error]) {
+            NSLog(@"WARNING: Couldn't save user doc '%@': %@", userDoc, error);
+        }
+    }
+    gameViewController.user = [[User alloc] initWithDictionary:userDoc.properties];
+
+    // Load the current game state:
+    gameDoc = database[kGameDocID];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateGame:)
+                                                 name:kCBLDocumentChangeNotification
+                                               object:gameDoc];
+    [self updateGame:nil]; // load current game doc
+
+    // Load my current vote:
+    voteDoc = database[[NSString stringWithFormat:@"vote:%@", userID]];
+    NSDictionary* vote = voteDoc.properties;
+    if (!vote)
+        vote = @{};
+    gameViewController.vote = [[Vote alloc] initWithDictionary:vote];
 }
 
 - (void)updateGame:(NSNotification*)n {
     // Update gameViewController.game when we receive data changes from server.
-    NSLog(@"** Game document changed: %@", gameDoc.currentRevision);
-    Game* game = [[Game alloc] initWithDictionary:gameDoc.properties];
+    NSLog(@"** Got game document: %@", gameDoc.currentRevision);
+    NSDictionary* properties = gameDoc.properties;
+    NSAssert(properties, @"Missing game document!");
+    Game* game = [[Game alloc] initWithDictionary:properties];
     gameViewController.game = game;
 }
 
