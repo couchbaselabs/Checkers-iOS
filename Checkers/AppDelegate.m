@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import <CouchbaseLite/CouchbaseLite.h>
 
+#define kSyncURL @"http://sync.couchbasecloud.com:4984/checkers"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -17,10 +19,15 @@
 
     // Initialize Couchbase Lite:
     NSError* error;
-    self.database = [[CBLManager sharedInstance] createDatabaseNamed: @"checkers" error: &error];
+    self.database = [[CBLManager sharedInstance] createDatabaseNamed:@"checkers" error:&error];
     if (!self.database) {
         NSLog(@"FATAL: Couldn't open database: %@", error);
         abort();
+    }
+    NSArray* repls = [_database replicateWithURL:[NSURL URLWithString:kSyncURL] exclusively:YES];
+    for (CBLReplication* repl in repls) {
+        repl.continuous = repl.persistent = YES;
+        // TODO: Observe & display replication progress
     }
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -35,7 +42,8 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    gameController = [[GameController alloc] initWithGameViewController:gameViewController];
+    gameController = [[GameController alloc] initWithGameViewController:gameViewController
+                                                               database:_database];
 }
 
 void uncaughtExceptionHandler(NSException *exception) {

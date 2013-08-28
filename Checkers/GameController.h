@@ -8,12 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "GameViewController.h"
+@class CBLDatabase;
 
-@interface GameController : NSObject<GameViewControllerDelegate> {
-@private
-    GameViewController * gameViewController;
-}
+@interface GameController : NSObject<GameViewControllerDelegate>
 
--(id)initWithGameViewController:(GameViewController *)gameViewController;
+-(id)initWithGameViewController:(GameViewController *)gameViewController
+                       database:(CBLDatabase*)database;
 
 @end

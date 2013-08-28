@@ -97,7 +97,7 @@
 }
 
 - (id)initWithData:(NSData *)data;
-- (id)initWithDictionary:(NSMutableDictionary *)dictionary;
+- (id)initWithDictionary:(NSDictionary *)dictionary;
 
 @property (readonly) NSNumber * number;
 @property (readonly) NSDate * startTime;

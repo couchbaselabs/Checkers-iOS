@@ -187,10 +187,10 @@ static NSString * kCBCGameDateFormate = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
     return [self initWithDictionary:dictionary];
 }
 
--(id)initWithDictionary:(NSMutableDictionary *)dictionary
+-(id)initWithDictionary:(NSDictionary *)dictionary
 {
     if (self = [self init]) {
-        data = dictionary;
+        data = [dictionary mutableCopy];
     }
     
     return self;
