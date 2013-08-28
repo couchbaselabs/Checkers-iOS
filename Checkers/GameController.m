@@ -46,7 +46,6 @@
 
 -(void)gameViewController:(GameViewController *)theGameViewController buttonTapped:(GameViewControllerButton)button {
     if (button == CBCGameViewControllerButtonFacebook) {
-        // TODO: Should we pivot the render of the button on isAvailable?
         if (Facebook.composeServiceAvailable)
         {
             SLComposeViewController * sheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
@@ -58,7 +57,6 @@
             [gameViewController presentViewController:sheet animated:YES completion:nil];
         }
     } else if (button == CBCGameViewControllerButtonTwitter) {
-        // TODO: Should we pivot the render of the button on isAvailable?
         if (Twitter.composeServiceAvailable)
         {
             SLComposeViewController * sheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
