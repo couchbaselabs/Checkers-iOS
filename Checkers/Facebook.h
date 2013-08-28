@@ -14,6 +14,7 @@ typedef void(^FacebookPictureHandler)(UIImage * image);
 @interface Facebook : NSObject
 
 +(BOOL) accessRejected;
++(BOOL)composeServiceAvailable;
 +(UIImage *)pictureWithSize:(int)size;
 +(void)pictureWithSize:(int)size handler:(FacebookPictureHandler)handler;
 

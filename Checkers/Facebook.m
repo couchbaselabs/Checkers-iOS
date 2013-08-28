@@ -30,6 +30,10 @@ BOOL accessRejected;
     return accessRejected;
 }
 
++(BOOL)composeServiceAvailable {
+    return [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook];
+}
+
 +(UIImage *)pictureWithSize:(int)size
 {
     NSNumber * key = [NSNumber numberWithInt:size];

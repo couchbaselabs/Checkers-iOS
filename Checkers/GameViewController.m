@@ -12,6 +12,7 @@
 #import "Game.h"
 #import "UIView+Extended.h"
 #import "Facebook.h"
+#import "Twitter.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation GameViewController
@@ -342,6 +343,18 @@
     
     // TODO: Delete.  For debugging always allow input.
     checkerboard.userInteractionEnabled = YES;
+    
+    // Facebook/Twitter compose services.
+    twitterButton.hidden = !Twitter.composeServiceAvailable;
+    facebookButton.hidden = !Facebook.composeServiceAvailable;
+    if (twitterButton.hidden) {
+        facebookButton.frame = twitterButton.frame;
+    } else {
+        facebookButton.frame = CGRectMake(twitterButton.frame.origin.x - facebookButton.frame.size.width,
+                                          facebookButton.frame.origin.y,
+                                          facebookButton.frame.size.width,
+                                          facebookButton.frame.size.height);
+    }
 }
 
 - (void)layoutTeamInfo {

@@ -8,6 +8,8 @@
 
 #import "GameController.h"
 #import <Social/Social.h>
+#import "Facebook.h"
+#import "Twitter.h"
 
 @implementation GameController
 
@@ -45,7 +47,7 @@
 -(void)gameViewController:(GameViewController *)theGameViewController buttonTapped:(GameViewControllerButton)button {
     if (button == CBCGameViewControllerButtonFacebook) {
         // TODO: Should we pivot the render of the button on isAvailable?
-        if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+        if (Facebook.composeServiceAvailable)
         {
             SLComposeViewController * sheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
             [sheet setInitialText:@"Couchbase Checkers\n\n"];
@@ -57,7 +59,7 @@
         }
     } else if (button == CBCGameViewControllerButtonTwitter) {
         // TODO: Should we pivot the render of the button on isAvailable?
-        if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+        if (Twitter.composeServiceAvailable)
         {
             SLComposeViewController * sheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
             //[sheet setInitialText:@"Couchbase Checkers\n\n"];
