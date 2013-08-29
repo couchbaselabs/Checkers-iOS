@@ -12,9 +12,6 @@
 
 @interface GameController : NSObject<GameViewControllerDelegate>
 
--(id)initWithGameViewController:(GameViewController *)gameViewController
-                       database:(CBLDatabase*)database;
-
--(void)gameReady;
+-(id)initWithGameViewController:(GameViewController *)gameViewController;
 
 @end
