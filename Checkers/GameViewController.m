@@ -149,7 +149,7 @@
 }
 
 -(void)setGame:(Game *)theGame {
-    BOOL newWinner = (game && theGame.winningTeam && [NSNumber number:game.winningTeam isEqualToNumber:theGame.winningTeam]);
+    BOOL newWinner = (game && theGame.winningTeam && ![NSNumber number:game.winningTeam isEqualToNumber:theGame.winningTeam]);
     game = theGame;
     
     [checkerboard setGame:game animated:YES];
