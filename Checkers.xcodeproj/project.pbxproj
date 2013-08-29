@@ -15,8 +15,8 @@
 		27278E4A17CE85C3004ABC21 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 27278E4917CE85C3004ABC21 /* libsqlite3.dylib */; };
 		A380CC4A17CF9F63004A33B1 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4917CF9F63004A33B1 /* Icon.png */; };
 		A380CC4C17CF9F6B004A33B1 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4B17CF9F6B004A33B1 /* Icon@2x.png */; };
-		A380CC4E17CF9F71004A33B1 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4D17CF9F71004A33B1 /* Icon-72.png */; };
-		A380CC5017CF9F74004A33B1 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4F17CF9F74004A33B1 /* Icon-72@2x.png */; };
+		A380CC4E17CF9F71004A33B1 /* Icon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4D17CF9F71004A33B1 /* Icon~ipad.png */; };
+		A380CC5017CF9F74004A33B1 /* Icon@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4F17CF9F74004A33B1 /* Icon@2x~ipad.png */; };
 		A380CC5217CF9FB0004A33B1 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC5117CF9FB0004A33B1 /* Default-Portrait~ipad.png */; };
 		A380CC5417CF9FB8004A33B1 /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC5317CF9FB8004A33B1 /* Default-Portrait@2x~ipad.png */; };
 		A380CC5617CFA01C004A33B1 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC5517CFA01C004A33B1 /* Default.png */; };
@@ -68,8 +68,8 @@
 		27278E4917CE85C3004ABC21 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		A380CC4917CF9F63004A33B1 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
 		A380CC4B17CF9F6B004A33B1 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
-		A380CC4D17CF9F71004A33B1 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../Icon-72.png"; sourceTree = "<group>"; };
-		A380CC4F17CF9F74004A33B1 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../Icon-72@2x.png"; sourceTree = "<group>"; };
+		A380CC4D17CF9F71004A33B1 /* Icon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon~ipad.png"; path = "../Icon~ipad.png"; sourceTree = "<group>"; };
+		A380CC4F17CF9F74004A33B1 /* Icon@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x~ipad.png"; path = "../Icon@2x~ipad.png"; sourceTree = "<group>"; };
 		A380CC5117CF9FB0004A33B1 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Portrait~ipad.png"; path = "../Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		A380CC5317CF9FB8004A33B1 /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Portrait@2x~ipad.png"; path = "../Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
 		A380CC5517CFA01C004A33B1 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../Default.png; sourceTree = "<group>"; };
@@ -238,8 +238,8 @@
 				A380CC5317CF9FB8004A33B1 /* Default-Portrait@2x~ipad.png */,
 				A380CC4917CF9F63004A33B1 /* Icon.png */,
 				A380CC4B17CF9F6B004A33B1 /* Icon@2x.png */,
-				A380CC4D17CF9F71004A33B1 /* Icon-72.png */,
-				A380CC4F17CF9F74004A33B1 /* Icon-72@2x.png */,
+				A380CC4D17CF9F71004A33B1 /* Icon~ipad.png */,
+				A380CC4F17CF9F74004A33B1 /* Icon@2x~ipad.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -342,8 +342,8 @@
 				A3CB833417CDD16500FCCE72 /* Couch@2x.png in Resources */,
 				A380CC4A17CF9F63004A33B1 /* Icon.png in Resources */,
 				A380CC4C17CF9F6B004A33B1 /* Icon@2x.png in Resources */,
-				A380CC4E17CF9F71004A33B1 /* Icon-72.png in Resources */,
-				A380CC5017CF9F74004A33B1 /* Icon-72@2x.png in Resources */,
+				A380CC4E17CF9F71004A33B1 /* Icon~ipad.png in Resources */,
+				A380CC5017CF9F74004A33B1 /* Icon@2x~ipad.png in Resources */,
 				A380CC5217CF9FB0004A33B1 /* Default-Portrait~ipad.png in Resources */,
 				A380CC5417CF9FB8004A33B1 /* Default-Portrait@2x~ipad.png in Resources */,
 				A380CC5617CFA01C004A33B1 /* Default.png in Resources */,

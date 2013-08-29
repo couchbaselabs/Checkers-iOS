@@ -18,6 +18,8 @@
 				<string>Icon@2x.png</string>
 				<string>Icon-72.png</string>
 				<string>Icon-72@2x.png</string>
+				<string>Icon~ipad.png</string>
+				<string>Icon@2x~ipad.png</string>
 			</array>
 		</dict>
 	</dict>
