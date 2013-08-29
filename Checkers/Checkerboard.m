@@ -89,7 +89,15 @@
 }
 
 - (UIView *)squareAtLocation:(NSNumber *)location {
-    return [squares objectAtIndex:location.intValue - 1];
+    if (location) {
+        int index = location.intValue - 1;
+        
+        if (index < squares.count) {
+            return [squares objectAtIndex:index];
+        }
+    }
+    
+    return nil;
 }
 
 - (void)clearValidMoves
