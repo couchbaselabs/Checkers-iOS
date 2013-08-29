@@ -149,12 +149,60 @@
 }
 
 -(void)setGame:(Game *)theGame {
+    BOOL newWinner = (game && theGame.winningTeam && [NSNumber number:game.winningTeam isEqualToNumber:theGame.winningTeam]);
     game = theGame;
     
     [checkerboard setGame:game animated:YES];
     
     [self layoutGameInfo];
     [self layoutTeamInfo];
+    
+    // On new winner...show.
+    if (newWinner) {
+        int winningTeam = theGame.winningTeam.intValue;
+        UILabel * winnerView = [[UILabel alloc] init];
+        winnerView.text = (winningTeam == 1 ? @"Blue Wins!" : @"Red Wins!");
+        winnerView.font = [UIFont boldSystemFontOfSize:32];
+        winnerView.textColor = [AppStyle colorForTeam:winningTeam];
+        winnerView.backgroundColor = UIColor.clearColor;
+        [winnerView sizeToFit];
+        winnerView.center = checkerboard.center;
+        [self.view addSubview:winnerView];
+        
+        float zoom = (self.view.bounds.size.width / winnerView.frame.size.width);
+        winnerView.alpha = 0;
+        winnerView.transform = CGAffineTransformScale(CGAffineTransformIdentity, zoom, zoom);
+        [UIView animateWithDuration: 0.1
+                              delay: 0
+                            options: (UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction)
+                         animations:^{
+                             winnerView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
+                             winnerView.alpha = 1;
+                         }
+                         completion:^(BOOL finished) {
+                             [UIView animateWithDuration: 3
+                                                   delay: 0
+                                                 options: (UIViewAnimationOptionCurveLinear | UIViewAnimationOptionAllowUserInteraction)
+                                              animations:^{
+                                                  winnerView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.90, 0.90);
+                                              }
+                                              completion:^(BOOL finished) {
+                                                  [UIView animateWithDuration: 0.2
+                                                                        delay: 0
+                                                                      options: (UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction)
+                                                                   animations:^{
+                                                                       winnerView.transform = CGAffineTransformScale(CGAffineTransformIdentity, zoom, zoom);
+                                                                       winnerView.alpha = 0;
+                                                                   }
+                                                                   completion:^(BOOL finished) {
+                                                                       [winnerView removeFromSuperview];
+                                                                   }
+                                                   ];
+                                              }
+                              ];
+                         }
+         ];
+    }
 }
 
 -(Vote *)vote {
