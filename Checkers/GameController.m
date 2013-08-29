@@ -122,6 +122,12 @@
         }
     }
     NSDictionary* userProps = userDoc.properties;
+    
+    // Listen for user changes (e.g. team change).
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(_updateUser:)
+                                                 name:kCBLDocumentChangeNotification
+                                               object:userDoc];
 
     // Load the voting-statistics document:
     votesDoc = database[[NSString stringWithFormat:@"vote:%@", userID]];
@@ -154,6 +160,17 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         self.gameNumber = properties[@"number"];
         gameViewController.game = [[Game alloc] initWithDictionary:properties];
+    });
+}
+
+- (void)_updateUser:(NSNotification*)n {
+    // Update gameViewController.game when we receive data changes from server.
+    NSLog(@"** Got user document: %@", userDoc.currentRevision);
+    NSDictionary* properties = userDoc.properties;
+    NSAssert(properties, @"Missing user document!");
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        gameViewController.user = [[User alloc] initWithDictionary:properties];
     });
 }
 
