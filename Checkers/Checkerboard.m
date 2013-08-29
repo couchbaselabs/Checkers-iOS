@@ -9,6 +9,7 @@
 #import "Checkerboard.h"
 #import "AppStyle.h"
 #import <QuartzCore/QuartzCore.h>
+#import "NSNumber+Equality.h"
 
 // Piece.
 @interface CheckerboardPieceView : UIImageView
@@ -106,7 +107,7 @@
     for (int i=0; i<validMoves.count; i++) {
         CheckerboardValidMoveView * existingValidMove = [validMoves objectAtIndex:i];
         
-        if ([existingValidMove.location isEqualToNumber:validMove.location]) {
+        if ([NSNumber number:existingValidMove.location isEqualToNumber:validMove.location]) {
             existingIndex = i;
             break;
         }
@@ -249,7 +250,7 @@
     }
     
     GameMove * lastMove = theGame.moves.lastObject;
-    BOOL animateLastMove = (animated && [game.number isEqualToNumber:theGame.number] && lastMove.locations.count > 0 ? YES : NO);
+    BOOL animateLastMove = (animated && [NSNumber number:game.number isEqualToNumber:theGame.number] && lastMove.locations.count > 0 ? YES : NO);
     game = theGame;
     
     float squareSize = self.squareSize;

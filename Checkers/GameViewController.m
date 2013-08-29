@@ -14,6 +14,7 @@
 #import "Facebook.h"
 #import "Twitter.h"
 #import <QuartzCore/QuartzCore.h>
+#import "NSNumber+Equality.h"
 
 @implementation GameViewController
 
@@ -339,9 +340,9 @@
         
         if (secondsUntilMoveDeadline <= 0) {
             checkerboard.userInteractionEnabled = NO;
-        } else if (![game.activeTeam isEqualToNumber:user.team]) {
+        } else if (![NSNumber number:game.activeTeam isEqualToNumber:user.team]) {
             checkerboard.userInteractionEnabled = NO;
-        } else if (vote && vote.game && [game.number isEqualToNumber:vote.game] && [game.number isEqualToNumber:vote.game]) {
+        } else if (vote && [NSNumber number:game.number isEqualToNumber:vote.game] && [game.number isEqualToNumber:vote.game]) {
             checkerboard.userInteractionEnabled = NO;
         } else {
             checkerboard.userInteractionEnabled = YES;
@@ -373,8 +374,8 @@
 
 - (void)layoutTeamInfo {
     team1Info.team = 0;
-    team1Info.userOnTeam = (self.user.team && [self.user.team isEqualToNumber:[NSNumber numberWithInt:0]]);
-    team1Info.userCanJoinTeam = (!self.vote || !self.vote.game || ![self.game.number isEqualToNumber:self.vote.game]);
+    team1Info.userOnTeam = (self.user.team && [NSNumber number:self.user.team isEqualToNumber:[NSNumber numberWithInt:0]]);
+    team1Info.userCanJoinTeam = (!self.vote || !self.vote.game || ![NSNumber number:self.game.number isEqualToNumber:self.vote.game]);
     team1Info.people = ((GameTeam *)[self.game.teams objectAtIndex:0]).participantCount;
     team1Info.votes = votes.count.integerValue;
     team1Info.frame = CGRectMake(0,
@@ -383,8 +384,8 @@
                                  checkerboard.frame.origin.y - (header.frame.origin.y + header.frame.size.height));
     
     team2Info.team = 1;
-    team2Info.userOnTeam = (self.user.team && [self.user.team isEqualToNumber:[NSNumber numberWithInt:1]]);
-    team2Info.userCanJoinTeam = (!self.vote || !self.vote.game|| ![self.game.number isEqualToNumber:self.vote.game]);
+    team2Info.userOnTeam = (self.user.team && [NSNumber number:self.user.team isEqualToNumber:[NSNumber numberWithInt:1]]);
+    team2Info.userCanJoinTeam = (!self.vote || !self.vote.game|| ![NSNumber number:self.game.number isEqualToNumber:self.vote.game]);
     team2Info.people = ((GameTeam *)[self.game.teams objectAtIndex:1]).participantCount;
     team2Info.votes = votes.count.integerValue;
     team2Info.frame = CGRectMake(0,

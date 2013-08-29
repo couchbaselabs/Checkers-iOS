@@ -10,7 +10,8 @@
 #import <CouchbaseLite/CouchbaseLite.h>
 
 //#define kSyncURL @"http://sync.couchbasecloud.com:4984/checkers"
-#define kSyncURL @"http://localhost:5984/checkers"
+#define kSyncURL @"http://localhost:4984/checkers"
+//#define kSyncURL @"http://Waynes-MacBook-Pro-2.local/checkers"
 
 @implementation AppDelegate
 {
