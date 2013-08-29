@@ -404,9 +404,6 @@
         self.countdownTime = game.startTime;
     }
     
-    // TODO: Delete.  For debugging always allow input.
-    checkerboard.userInteractionEnabled = YES;
-    
     // Facebook/Twitter compose services.
     twitterButton.hidden = !Twitter.composeServiceAvailable;
     facebookButton.hidden = !Facebook.composeServiceAvailable;
