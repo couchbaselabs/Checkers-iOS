@@ -128,6 +128,12 @@
                                              selector:@selector(_updateUser:)
                                                  name:kCBLDocumentChangeNotification
                                                object:userDoc];
+    
+    // Listen for vote changes (e.g. user voted).
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(_updateVote:)
+                                                 name:kCBLDocumentChangeNotification
+                                               object:voteDoc];
 
     // Load the voting-statistics document:
     votesDoc = database[[NSString stringWithFormat:@"vote:%@", userID]];
@@ -171,6 +177,17 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         gameViewController.user = [[User alloc] initWithDictionary:properties];
+    });
+}
+
+- (void)_updateVote:(NSNotification*)n {
+    // Update gameViewController.game when we receive data changes from server.
+    NSLog(@"** Got vote document: %@", voteDoc.currentRevision);
+    NSDictionary* properties = voteDoc.properties;
+    NSAssert(properties, @"Missing vote document!");
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        gameViewController.vote = [[Vote alloc] initWithDictionary:properties];
     });
 }
 
