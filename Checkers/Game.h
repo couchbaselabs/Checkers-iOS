@@ -16,7 +16,7 @@
     NSArray * pieces;
 }
 
--(id)initWithData:(NSMutableDictionary *)theData number:(int)number;
+-(id)initWithData:(NSDictionary *)theData number:(int)number;
 
 @property (readonly) int number;
 @property (readonly) int participantCount;
@@ -33,7 +33,7 @@
     NSMutableArray * validMoves;
 }
 
--(id)initWithData:(NSMutableDictionary *)theData number:(int)number team:(int)team;
+-(id)initWithData:(NSDictionary *)theData number:(int)number team:(int)team;
 
 @property (readonly) int number;
 @property (readonly) int team;
@@ -50,7 +50,7 @@
     NSMutableDictionary * data;
 }
 
-- (id)initWithData:(NSMutableDictionary *)data;
+- (id)initWithData:(NSDictionary *)data;
 
 @property (readonly) int team;
 @property (readonly) int piece;
@@ -63,7 +63,7 @@
     NSMutableDictionary * data;
 }
 
-- (id)initWithData:(NSMutableDictionary *)data;
+- (id)initWithData:(NSDictionary *)data;
 - (id)initWithTeam:(int)team piece:(int)piece locations:(NSArray *)locations;
 
 @property (readonly) int team;
@@ -78,7 +78,7 @@
     NSMutableArray * captures;
 }
 
-- (id)initWithData:(NSMutableDictionary *)data team:(int)team piece:(int)piece;
+- (id)initWithData:(NSDictionary *)data team:(int)team piece:(int)piece;
 
 @property (readonly) NSArray * captures;
 @property (readonly) BOOL king;
@@ -97,7 +97,7 @@
 }
 
 - (id)initWithData:(NSData *)data;
-- (id)initWithDictionary:(NSMutableDictionary *)dictionary;
+- (id)initWithDictionary:(NSDictionary *)dictionary;
 
 @property (readonly) NSNumber * number;
 @property (readonly) NSDate * startTime;

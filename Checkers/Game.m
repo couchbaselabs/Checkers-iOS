@@ -11,10 +11,10 @@
 // Team
 @implementation GameTeam
 
--(id)initWithData:(NSMutableDictionary *)theData number:(int)number
+-(id)initWithData:(NSDictionary *)theData number:(int)number
 {
     if (self = [self init]) {
-        data = theData;
+        data = [theData mutableCopy];
         _number = number;
     }
     
@@ -57,10 +57,10 @@
 // Piece
 @implementation GamePiece
 
--(id)initWithData:(NSMutableDictionary *)theData number:(int)number team:(int)team
+-(id)initWithData:(NSDictionary *)theData number:(int)number team:(int)team
 {
     if (self = [self init]) {
-        data = theData;
+        data = [theData mutableCopy];
         _number = number;
         _team = team;
     }
@@ -80,7 +80,7 @@
     if (validMoves == nil) {
         validMoves = [NSMutableArray array];
         
-        for (NSMutableDictionary * validMove in [data objectForKey:@"validMoves"]) {
+        for (NSDictionary * validMove in [data objectForKey:@"validMoves"]) {
             [validMoves addObject:[[GameValidMove alloc] initWithData:validMove team:self.team piece:self.number]];
         }
     }
@@ -109,10 +109,10 @@
 // Capture
 @implementation GameCapture
 
--(id)initWithData:(NSMutableDictionary *)theData
+-(id)initWithData:(NSDictionary *)theData
 {
     if (self = [self init]) {
-        data = theData;
+        data = [theData mutableCopy];
     }
     
     return self;
@@ -131,7 +131,7 @@
 // Move
 @implementation GameMove
 
--(id)initWithData:(NSMutableDictionary *)theData
+-(id)initWithData:(NSDictionary *)theData
 {
     return [self initWithTeam:((NSNumber *)[theData objectForKey:@"team"]).intValue piece:((NSNumber *)[theData objectForKey:@"piece"]).intValue locations:[theData objectForKey:@"locations"]];
 }
@@ -151,9 +151,9 @@
 // Move
 @implementation GameValidMove
 
--(id)initWithData:(NSMutableDictionary *)theData team:(int)team piece:(int)piece {
+-(id)initWithData:(NSDictionary *)theData team:(int)team piece:(int)piece {
     if (self = [super initWithTeam:team piece:piece locations:[theData objectForKey:@"locations"]]) {
-        data = theData;
+        data = [theData mutableCopy];
     }
     
     return self;
@@ -163,7 +163,7 @@
     if (captures == nil) {
         captures = [NSMutableArray array];
         
-        for (NSMutableDictionary * captureData in [data objectForKey:@"captures"]) {
+        for (NSDictionary * captureData in [data objectForKey:@"captures"]) {
             [captures addObject:[[GameCapture alloc] initWithData:captureData]];
         }
     }
@@ -182,15 +182,15 @@ static NSString * kCBCGameDateFormate = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
 @implementation Game
 
 -(id)initWithData:(NSData *)theData {
-    NSMutableDictionary * dictionary = [NSJSONSerialization JSONObjectWithData:theData options:(NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves) error:nil];
+    NSDictionary * dictionary = [NSJSONSerialization JSONObjectWithData:theData options:(NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves) error:nil];
     
     return [self initWithDictionary:dictionary];
 }
 
--(id)initWithDictionary:(NSMutableDictionary *)dictionary
+-(id)initWithDictionary:(NSDictionary *)dictionary
 {
     if (self = [self init]) {
-        data = dictionary;
+        data = [dictionary mutableCopy];
     }
     
     return self;
@@ -260,7 +260,7 @@ static NSString * kCBCGameDateFormate = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
     if (moves == nil) {
         moves = [NSMutableArray array];
         
-        for (NSMutableDictionary * moveData in [data objectForKey:@"moves"]) {
+        for (NSDictionary * moveData in [data objectForKey:@"moves"]) {
             [moves addObject:[[GameMove alloc] initWithData:moveData]];
         }
     }
