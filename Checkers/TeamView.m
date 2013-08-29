@@ -71,20 +71,20 @@
     [self setNeedsLayout];
 }
 
--(NSUInteger)peopleLabel {
+-(NSUInteger)people {
     return [peopleLabel.text intValue];
 }
 
--(void)setPeopleLabel:(NSUInteger)thePeople {
+-(void)setPeople:(NSUInteger)thePeople {
     peopleLabel.text = [NSString stringWithFormat:@"%d", thePeople];
     [self setNeedsLayout];
 }
 
--(NSUInteger)votesLabel {
+-(NSUInteger)votes {
     return [votesLabel.text intValue];
 }
 
--(void)setVotesLabel:(NSUInteger)theVotes {
+-(void)setVotes:(NSUInteger)theVotes {
     votesLabel.text = [NSString stringWithFormat:@"%d", theVotes];
     [self setNeedsLayout];
 }
@@ -129,7 +129,7 @@
         peopleLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
         peopleLabel.textAlignment = NSTextAlignmentLeft;
         peopleLabel.textColor = [AppStyle darkColor];
-        peopleLabel.text = [NSString stringWithFormat:@"+ %@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.peopleLabel]]];
+        peopleLabel.text = [NSString stringWithFormat:@"+ %@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
         [peopleLabel sizeToFit];
         peopleLabel.frame = CGRectMake(8 + userIdentifier.frame.origin.x + userIdentifier.frame.size.width, infoView.center.y - (peopleLabel.frame.size.height / 2), peopleLabel.frame.size.width, peopleLabel.frame.size.height);
     } else {
@@ -142,11 +142,11 @@
         peopleLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
         if (self.userCanJoinTeam) {
             peopleLabel.textColor = [AppStyle colorForTeam:self.team];
-            peopleLabel.text = [NSString stringWithFormat:@"Join\n%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.peopleLabel]]];
+            peopleLabel.text = [NSString stringWithFormat:@"Join\n%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
             self.userInteractionEnabled = YES;
         } else {
             peopleLabel.textColor = [AppStyle darkColor];
-            peopleLabel.text = [NSString stringWithFormat:@"%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.peopleLabel]]];
+            peopleLabel.text = [NSString stringWithFormat:@"%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
             self.userInteractionEnabled = NO;
         }
         [peopleLabel sizeToFit];

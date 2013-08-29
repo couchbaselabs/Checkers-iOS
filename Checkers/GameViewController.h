@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "User.h"
 #import "Vote.h"
+#import "Votes.h"
 #import "Checkerboard.h"
 #import "TeamView.h"
 
@@ -25,6 +26,7 @@ typedef NS_ENUM(NSInteger, GameViewControllerButton) {
     User * user;
     Game * game;
     Vote * vote;
+    Votes * votes;
     
     // Header
     UIView * header;

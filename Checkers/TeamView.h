@@ -32,7 +32,7 @@ typedef void(^TeamSelectionHandler)(NSUInteger team);
 @property NSUInteger team;
 @property BOOL userOnTeam;
 @property BOOL userCanJoinTeam;
-@property NSUInteger peopleLabel;
-@property NSUInteger votesLabel;
+@property NSUInteger people;
+@property NSUInteger votes;
 
 @end
