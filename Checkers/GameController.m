@@ -13,13 +13,10 @@
 #import <CouchbaseLite/CouchbaseLite.h>
 
 //#define kSyncURL @"http://sync.couchbasecloud.com:4984/checkers"
-#define kSyncURL @"http://localhost:5984/checkers"
+//#define kSyncURL @"http://localhost:5984/checkers"
+#define kSyncURL @"http://Waynes-MacBook-Pro-2.local:4984/checkers"
 
 #define kGameDocID @"game-1"
-
-@interface GameController ()
-@property id gameNumber;
-@end
 
 @implementation GameController
 {
@@ -98,7 +95,6 @@
     }
 
     NSLog(@"GameController: Initial game data ready, updating UI...");
-    self.gameNumber = gameProps[@"number"];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(_updateGame:)
                                                  name:kCBLDocumentChangeNotification
@@ -164,7 +160,6 @@
     NSAssert(properties, @"Missing game document!");
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.gameNumber = properties[@"number"];
         gameViewController.game = [[Game alloc] initWithDictionary:properties];
     });
 }
@@ -247,16 +242,21 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
          didMakeValidMove:(GameValidMove *)validMove {
     [self performSelector: @selector(_submitMove:)
                  onThread: bgThread
-               withObject: validMove
+               withObject: [NSArray arrayWithObjects:theGameViewController.game, validMove, nil]
             waitUntilDone:NO];
 }
 
-- (void)_submitMove:(GameValidMove*)validMove {
+- (void)_submitMove:(NSArray*)gameAndValidMove {
     NSError* error = updateDoc(voteDoc, ^(NSMutableDictionary *props) {
-        props[@"game"] = self.gameNumber;
+        Game* game = (Game *)gameAndValidMove[0];
+        GameValidMove* validMove = (GameValidMove *)gameAndValidMove[1];
+        
+        props[@"game"] = game.number;
+        props[@"turn"] = game.turn;
         props[@"team"] = @(validMove.team);
-        props[@"pieces"] = @(validMove.piece);
+        props[@"piece"] = @(validMove.piece);
         props[@"locations"] = validMove.locations;
+        
         return YES;
     });
     if (error) {
