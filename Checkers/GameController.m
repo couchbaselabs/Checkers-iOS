@@ -76,16 +76,34 @@
     CBLReplication* repl = n.object;
     [UIApplication sharedApplication].networkActivityIndicatorVisible = (repl.mode == kCBLReplicationActive);
     if (repl.mode == kCBLReplicationIdle) {
-        // When pull goes idle, tell the GameController and then stop observing:
         [self _gameReady];
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name: kCBLReplicationChangeNotification
-                                                      object: repl];
     }
 }
 
 - (void) _gameReady {
+    // Load the current game state:
+    gameDoc = database[kGameDocID];
+    NSDictionary* gameProps = gameDoc.properties;
+    if (gameProps) {
+        // OK, we're ready to start; stop listening for replication notifications:
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name: kCBLReplicationChangeNotification
+                                                      object: pull];
+        pull = nil;
+    } else {
+        // Game document isn't available; initial replication must've failed, or the server
+        // somehow doesn't have a game set up yet. Either way, give up for now.
+        NSLog(@"Game doc '%@' isn't available yet; waiting for replicator...", kGameDocID);
+        return;
+    }
+
     NSLog(@"GameController: Initial game data ready, updating UI...");
+    self.gameNumber = gameProps[@"number"];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateGame:)
+                                                 name:kCBLDocumentChangeNotification
+                                               object:gameDoc];
+
     // Get or create my unique player ID:
     userID = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserID"];
     if (!userID) {
@@ -104,15 +122,6 @@
         }
     }
     NSDictionary* userProps = userDoc.properties;
-
-    // Load the current game state:
-    gameDoc = database[kGameDocID];
-    NSDictionary* gameProps = gameDoc.properties;
-    self.gameNumber = gameProps[@"number"];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateGame:)
-                                                 name:kCBLDocumentChangeNotification
-                                               object:gameDoc];
 
     // Load the voting-statistics document:
     votesDoc = database[[NSString stringWithFormat:@"vote:%@", userID]];
