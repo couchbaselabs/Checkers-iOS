@@ -11,7 +11,7 @@
 
 //#define kSyncURL @"http://sync.couchbasecloud.com:4984/checkers"
 #define kSyncURL @"http://localhost:4984/checkers"
-//#define kSyncURL @"http://Waynes-MacBook-Pro-2.local/checkers"
+//#define kSyncURL @"http://Waynes-MacBook-Pro-2.local:4984/checkers"
 
 @implementation AppDelegate
 {
@@ -26,6 +26,7 @@
 
     // Initialize Couchbase Lite:
     NSError* error;
+    // TODO: Try sending to background NSThread
     self.database = [[CBLManager sharedInstance] createDatabaseNamed:@"checkers" error:&error];
     if (!self.database) {
         NSLog(@"FATAL: Couldn't open database: %@", error);
@@ -50,15 +51,12 @@
     gameViewController = [[GameViewController alloc] init];
     self.viewController = gameViewController;
     
+    gameController = [[GameController alloc] initWithGameViewController:gameViewController
+                                                               database:_database];
+    
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     return YES;
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    gameController = [[GameController alloc] initWithGameViewController:gameViewController
-                                                               database:_database];
 }
 
 void uncaughtExceptionHandler(NSException *exception) {
