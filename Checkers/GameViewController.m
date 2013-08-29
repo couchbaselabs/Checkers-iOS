@@ -341,7 +341,7 @@
             checkerboard.userInteractionEnabled = NO;
         } else if (![game.activeTeam isEqualToNumber:user.team]) {
             checkerboard.userInteractionEnabled = NO;
-        } else if ([game.number isEqualToNumber:vote.game] && [game.number isEqualToNumber:vote.game]) {
+        } else if (vote && vote.game && [game.number isEqualToNumber:vote.game] && [game.number isEqualToNumber:vote.game]) {
             checkerboard.userInteractionEnabled = NO;
         } else {
             checkerboard.userInteractionEnabled = YES;
