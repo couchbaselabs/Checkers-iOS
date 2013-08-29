@@ -100,7 +100,7 @@
     NSLog(@"GameController: Initial game data ready, updating UI...");
     self.gameNumber = gameProps[@"number"];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateGame:)
+                                             selector:@selector(_updateGame:)
                                                  name:kCBLDocumentChangeNotification
                                                object:gameDoc];
 
@@ -127,7 +127,7 @@
     votesDoc = database[[NSString stringWithFormat:@"vote:%@", userID]];
     NSDictionary* votesProps = votesDoc.properties ?: @{};
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateVotes:)
+                                             selector:@selector(_updateVotes:)
                                                  name:kCBLDocumentChangeNotification
                                                object:votesDoc];
 
