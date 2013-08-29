@@ -374,7 +374,7 @@
 - (void)layoutTeamInfo {
     team1Info.team = 0;
     team1Info.userOnTeam = (self.user.team && [self.user.team isEqualToNumber:[NSNumber numberWithInt:0]]);
-    team1Info.userCanJoinTeam = (!vote || ![self.game.number isEqualToNumber:self.vote.game]);
+    team1Info.userCanJoinTeam = (!self.vote || !self.vote.game || ![self.game.number isEqualToNumber:self.vote.game]);
     team1Info.people = ((GameTeam *)[self.game.teams objectAtIndex:0]).participantCount;
     team1Info.votes = votes.count.integerValue;
     team1Info.frame = CGRectMake(0,
@@ -384,7 +384,7 @@
     
     team2Info.team = 1;
     team2Info.userOnTeam = (self.user.team && [self.user.team isEqualToNumber:[NSNumber numberWithInt:1]]);
-    team2Info.userCanJoinTeam = (!vote || ![self.game.number isEqualToNumber:self.vote.game]);
+    team2Info.userCanJoinTeam = (!self.vote || !self.vote.game|| ![self.game.number isEqualToNumber:self.vote.game]);
     team2Info.people = ((GameTeam *)[self.game.teams objectAtIndex:1]).participantCount;
     team2Info.votes = votes.count.integerValue;
     team2Info.frame = CGRectMake(0,
