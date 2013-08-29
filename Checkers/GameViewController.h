@@ -10,6 +10,7 @@
 #import "User.h"
 #import "Vote.h"
 #import "Checkerboard.h"
+#import "TeamView.h"
 
 typedef NS_ENUM(NSInteger, GameViewControllerButton) {
     CBCGameViewControllerButtonFacebook,
@@ -48,8 +49,8 @@ typedef NS_ENUM(NSInteger, GameViewControllerButton) {
     NSTimer * countdownTimeoutTimer;
     
     // Team Info
-    UIView * team1Info;
-    UIView * team2Info;
+    TeamView * team1Info;
+    TeamView * team2Info;
 }
 
 @property id<GameViewControllerDelegate> delegate;

@@ -119,10 +119,14 @@
     
     // Team Info -----------------
     
-    team1Info = [[UIView alloc] init];
+    team1Info = [[TeamView alloc] initWithHandler:^(NSUInteger team) {
+        [self.delegate gameViewController:self didSelectTeam:[self.game.teams objectAtIndex:team]];
+    }];
     [self.view addSubview:team1Info];
     
-    team2Info = [[UIView alloc] init];
+    team2Info = [[TeamView alloc] initWithHandler:^(NSUInteger team) {
+        [self.delegate gameViewController:self didSelectTeam:[self.game.teams objectAtIndex:team]];
+    }];
     [self.view addSubview:team2Info];
     
     // ---------------------------
@@ -358,142 +362,25 @@
 }
 
 - (void)layoutTeamInfo {
-    // Clear info.
-    [team1Info removeAllSubviews];
-    [team2Info removeAllSubviews];
+    team1Info.team = 0;
+    team1Info.userOnTeam = (self.user.team && [self.user.team isEqualToNumber:[NSNumber numberWithInt:0]]);
+    team1Info.userCanJoinTeam = (!vote || ![self.game.number isEqualToNumber:self.vote.game]);
+    team1Info.peopleLabel = ((GameTeam *)[self.game.teams objectAtIndex:0]).participantCount;
+    team1Info.frame = CGRectMake(0,
+                                 header.frame.origin.y + header.frame.size.height,
+                                 self.view.bounds.size.width,
+                                 checkerboard.frame.origin.y - (header.frame.origin.y + header.frame.size.height));
+    // TODO: Votes
     
-    team1Info.frame = CGRectZero;
-    team2Info.frame = CGRectZero;
-    
-    if (!game) {
-        return;
-    }
-    
-    int teamInfoSize = checkerboard.frame.origin.y - (header.frame.origin.y + header.frame.size.height);
-    int teamInfoPadding = (teamInfoSize > 44 + 32 ? 16 : 8);
-    
-    // Set facebook image.
-    if (user.team) {
-        int teamNumber = (user.team.intValue == 1 ? 1 : 0);
-        int otherTeamNumber = (user.team.intValue == 1 ? 0 : 1);
-        GameTeam * team = [self.game.teams objectAtIndex:teamNumber];
-        GameTeam * otherTeam = [self.game.teams objectAtIndex:otherTeamNumber];
-        
-        UIView * teamInfo = (teamNumber == 1 ? team2Info : team1Info);
-        UIView * otherTeamInfo = (otherTeamNumber == 1 ? team2Info : team1Info);
-        
-        // Image or "You"
-        UIView * userIdentifier;
-        int pictureSize = MIN(teamInfoSize - (2 * teamInfoPadding), 44);
-        UIImage * userPicture = [Facebook pictureWithSize:(pictureSize * 2)];
-        if (userPicture) {
-            UIImageView * userImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, pictureSize + 4, pictureSize + 4)];
-            userImage.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-            userImage.image = [AppStyle strokeImage:userPicture forTeam:user.team.intValue];
-            
-            userIdentifier = userImage;
-            [teamInfo addSubview:userImage];
-        } else {
-            UILabel * userLabel = [[UILabel alloc] init];
-            userLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-            
-            userLabel.textColor = [AppStyle colorForTeam:user.team.intValue];
-            userLabel.text = @"You";
-            [userLabel sizeToFit];
-            
-            userIdentifier = userLabel;
-            [teamInfo addSubview:userLabel];
-            
-            if (!Facebook.accessRejected) {
-                [Facebook pictureWithSize:(pictureSize * 2) handler:^(UIImage *image) {
-                    if (image) {
-                        [self layoutTeamInfo];
-                    }
-                }];
-            }
-        }
-        
-        // Team
-        UILabel * people = [[UILabel alloc] init];
-        people.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-        people.textColor = [AppStyle darkColor];
-        NSNumberFormatter * numberFormatter = [[NSNumberFormatter alloc] init];
-        [numberFormatter setGroupingSeparator: [[NSLocale currentLocale] objectForKey:NSLocaleGroupingSeparator]];
-        [numberFormatter setUsesGroupingSeparator:YES];
-        [numberFormatter setGroupingSize:3];
-        people.text = [NSString stringWithFormat:@"+ %@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:team.participantCount]]];
-        [people sizeToFit];
-        people.frame = CGRectMake(8 + userIdentifier.frame.origin.x + userIdentifier.frame.size.width, teamInfo.center.y - (people.frame.size.height / 2), people.frame.size.width, people.frame.size.height);
-        [teamInfo addSubview:people];
-        
-        // Other team
-        UILabel * otherPeople = [[UILabel alloc] init];
-        otherPeople.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-        otherPeople.numberOfLines = 0;
-        otherPeople.textAlignment = NSTextAlignmentCenter;
-        if (!vote || ![self.game.number isEqualToNumber:self.vote.game]) {
-            otherPeople.tag = otherTeamNumber;
-            otherPeople.textColor = [AppStyle colorForTeam:otherTeamNumber];
-            otherPeople.text = [NSString stringWithFormat:@"Join\n%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:otherTeam.participantCount]]];
-            [otherPeople addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTeamTap:)]];
-            otherPeople.userInteractionEnabled = YES;
-        } else {
-            otherPeople.textColor = [AppStyle darkColor];
-            otherPeople.text = [NSString stringWithFormat:@"%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:otherTeam.participantCount]]];
-        }
-        [otherPeople sizeToFit];
-        [otherTeamInfo addSubview:otherPeople];
-    } else {
-        NSNumberFormatter * numberFormatter = [[NSNumberFormatter alloc] init];
-        [numberFormatter setGroupingSeparator: [[NSLocale currentLocale] objectForKey:NSLocaleGroupingSeparator]];
-        [numberFormatter setUsesGroupingSeparator:YES];
-        [numberFormatter setGroupingSize:3];
-        
-        // Team 1
-        GameTeam * team1 = [self.game.teams objectAtIndex:0];
-        UILabel * team1People = [[UILabel alloc] init];
-        team1People.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-        team1People.tag = 0;
-        team1People.numberOfLines = 0;
-        team1People.textAlignment = NSTextAlignmentCenter;
-        team1People.textColor = [AppStyle colorForTeam:0];
-        team1People.text = [NSString stringWithFormat:@"Join\n%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:team1.participantCount]]];
-        [team1People addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTeamTap:)]];
-        team1People.userInteractionEnabled = YES;
-        [team1People sizeToFit];
-        [team1Info addSubview:team1People];
-        
-        // Team 2
-        GameTeam * team2 = [self.game.teams objectAtIndex:0];
-        UILabel * team2People = [[UILabel alloc] init];
-        team2People.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-        team2People.tag = 1;
-        team2People.numberOfLines = 0;
-        team2People.textAlignment = NSTextAlignmentCenter;
-        team2People.textColor = [AppStyle colorForTeam:1];
-        team2People.text = [NSString stringWithFormat:@"Join\n%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:team2.participantCount]]];
-        [team2People addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTeamTap:)]];
-        team2People.userInteractionEnabled = YES;
-        [team2People sizeToFit];
-        [team2Info addSubview:team2People];
-    }
-    
-    // Center team info.
-    [team1Info sizeToFitSubviews];
-    team1Info.frame = CGRectMake(self.view.center.x - (team1Info.frame.size.width / 2),
-                                 checkerboard.frame.origin.y - team1Info.frame.size.height - teamInfoPadding,
-                                 team1Info.frame.size.width,
-                                 team1Info.frame.size.height);
-    
-    [team2Info sizeToFitSubviews];
-    team2Info.frame = CGRectMake(self.view.center.x - (team2Info.frame.size.width / 2),
-                                 checkerboard.frame.origin.y + checkerboard.frame.size.height + teamInfoPadding,
-                                 team2Info.frame.size.width,
-                                 team2Info.frame.size.height);
-}
-
-- (void)handleTeamTap:(UITapGestureRecognizer *)recognizer {
-    [self.delegate gameViewController:self didSelectTeam:[self.game.teams objectAtIndex:recognizer.view.tag]];
+    team2Info.team = 1;
+    team2Info.userOnTeam = (self.user.team && [self.user.team isEqualToNumber:[NSNumber numberWithInt:1]]);
+    team2Info.userCanJoinTeam = (!vote || ![self.game.number isEqualToNumber:self.vote.game]);
+    team2Info.peopleLabel = ((GameTeam *)[self.game.teams objectAtIndex:1]).participantCount;
+    team2Info.frame = CGRectMake(0,
+                                 checkerboard.frame.origin.y + checkerboard.frame.size.height,
+                                 self.view.bounds.size.width,
+                                 footer.frame.origin.y - (checkerboard.frame.origin.y + checkerboard.frame.size.height));
+    // TODO: Votes
 }
 
 -(UIImage *)gameAsImage {
