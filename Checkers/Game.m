@@ -206,6 +206,7 @@ static NSString * kCBCGameDateFormate = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
         
         if (startTimeString) {
             NSDateFormatter * dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
             [dateFormatter setDateFormat:kCBCGameDateFormate];
             
             startTime = [dateFormatter dateFromString:startTimeString];
@@ -221,6 +222,7 @@ static NSString * kCBCGameDateFormate = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
         
         if (moveDeadlineString) {
             NSDateFormatter * dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
             [dateFormatter setDateFormat:kCBCGameDateFormate];
             
             moveDeadline = [dateFormatter dateFromString:moveDeadlineString];
