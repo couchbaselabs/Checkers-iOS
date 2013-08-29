@@ -46,6 +46,7 @@
 		A3DBD13217CBF7B7004E74B9 /* GameController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DBD13117CBF7B7004E74B9 /* GameController.m */; };
 		A3EE99FB17CE9ABC00D7437F /* Twitter.m in Sources */ = {isa = PBXBuildFile; fileRef = A3EE99FA17CE9ABB00D7437F /* Twitter.m */; };
 		A3EE99FE17CEA07D00D7437F /* TeamView.m in Sources */ = {isa = PBXBuildFile; fileRef = A3EE99FD17CEA07D00D7437F /* TeamView.m */; };
+		A3EE9A0217CED39400D7437F /* Votes.m in Sources */ = {isa = PBXBuildFile; fileRef = A3EE9A0117CED39300D7437F /* Votes.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -104,6 +105,8 @@
 		A3EE99FC17CEA07C00D7437F /* TeamView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamView.h; sourceTree = "<group>"; };
 		A3EE99FD17CEA07D00D7437F /* TeamView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeamView.m; sourceTree = "<group>"; };
 		A3EE99FF17CEA42500D7437F /* Votes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Votes.json; sourceTree = "<group>"; };
+		A3EE9A0017CED39300D7437F /* Votes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Votes.h; sourceTree = "<group>"; };
+		A3EE9A0117CED39300D7437F /* Votes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Votes.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +180,8 @@
 				A3949E5D17C440CF00559283 /* Game.m */,
 				A3DBD11317CB072F004E74B9 /* Vote.h */,
 				A3DBD11417CB072F004E74B9 /* Vote.m */,
+				A3EE9A0017CED39300D7437F /* Votes.h */,
+				A3EE9A0117CED39300D7437F /* Votes.m */,
 				A3DBD12D17CBB8A8004E74B9 /* UIView+Extended.h */,
 				A3DBD12E17CBB8A8004E74B9 /* UIView+Extended.m */,
 				A3CB830C17CD79B800FCCE72 /* Facebook.h */,
@@ -327,6 +332,7 @@
 				A3CB830E17CD79B800FCCE72 /* Facebook.m in Sources */,
 				A3EE99FB17CE9ABC00D7437F /* Twitter.m in Sources */,
 				A3EE99FE17CEA07D00D7437F /* TeamView.m in Sources */,
+				A3EE9A0217CED39400D7437F /* Votes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
