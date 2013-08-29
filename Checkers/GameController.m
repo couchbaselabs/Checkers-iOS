@@ -27,7 +27,7 @@
     NSThread* bgThread;
     CBLDatabase* database;
     CBLReplication* pull;
-    CBLDocument* userDoc, *gameDoc, *voteDoc;
+    CBLDocument* userDoc, *gameDoc, *voteDoc, *votesDoc;
     NSString* userID;
 }
 
@@ -114,17 +114,25 @@
                                                  name:kCBLDocumentChangeNotification
                                                object:gameDoc];
 
+    // Load the voting-statistics document:
+    votesDoc = database[[NSString stringWithFormat:@"vote:%@", userID]];
+    NSDictionary* votesProps = votesDoc.properties ?: @{};
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateVotes:)
+                                                 name:kCBLDocumentChangeNotification
+                                               object:votesDoc];
+
     // Load my current vote (if any):
     voteDoc = database[[NSString stringWithFormat:@"vote:%@", userID]];
-    NSDictionary* voteProps = voteDoc.properties;
-    if (!voteProps)
-        voteProps = @{};
+    NSDictionary* voteProps = voteDoc.properties ?: @{};
 
     // Set up the UI code:
     dispatch_async(dispatch_get_main_queue(), ^{
         gameViewController.game = [[Game alloc] initWithDictionary:gameProps];
         gameViewController.user = [[User alloc] initWithDictionary:userProps];
         gameViewController.vote = [[Vote alloc] initWithDictionary:voteProps];
+        if (votesProps)
+            gameViewController.votes = [[Votes alloc] initWithDictionary:votesProps];
     });
 }
 
@@ -137,6 +145,17 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         self.gameNumber = properties[@"number"];
         gameViewController.game = [[Game alloc] initWithDictionary:properties];
+    });
+}
+
+- (void)_updateVotes:(NSNotification*)n {
+    // Update gameViewController.votes when we receive data changes from server.
+    NSLog(@"** Got votes document: %@", votesDoc.currentRevision);
+    NSDictionary* properties = votesDoc.properties;
+    NSAssert(properties, @"Missing votes document!");
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        gameViewController.votes = [[Votes alloc] initWithDictionary:properties];
     });
 }
 

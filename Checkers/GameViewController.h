@@ -59,6 +59,7 @@ typedef NS_ENUM(NSInteger, GameViewControllerButton) {
 @property User * user;
 @property Game * game;
 @property Vote * vote;
+@property Votes * votes;
 
 -(UIImage *)gameAsImage;
 
