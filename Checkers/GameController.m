@@ -25,6 +25,7 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
             return nil;
         }
         if ([doc putProperties: props error: &error]) {
+            NSLog(@"Saved %@", doc);
             return nil; // success
         }
     } while (error.code == 409 && [error.domain isEqualToString: CBLHTTPErrorDomain]);
@@ -108,7 +109,7 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
 
 -(void)gameViewController:(GameViewController *)theGameViewController
          didMakeValidMove:(GameValidMove *)validMove {
-    NSError* error = updateDoc(userDoc, ^(NSMutableDictionary *props) {
+    NSError* error = updateDoc(voteDoc, ^(NSMutableDictionary *props) {
         props[@"game"] = theGameViewController.game.number;
         props[@"team"] = @(validMove.team);
         props[@"pieces"] = @(validMove.piece);
