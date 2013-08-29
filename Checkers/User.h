@@ -14,7 +14,7 @@
 }
 
 - (id)initWithData:(NSData *)data;
-- (id)initWithDictionary:(NSMutableDictionary *)dictionary;
+- (id)initWithDictionary:(NSDictionary *)dictionary;
 
 @property (readonly) NSNumber * team;
 
