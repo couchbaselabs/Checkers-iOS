@@ -45,6 +45,7 @@
 		A3DBD12F17CBB8A8004E74B9 /* UIView+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DBD12E17CBB8A8004E74B9 /* UIView+Extended.m */; };
 		A3DBD13217CBF7B7004E74B9 /* GameController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DBD13117CBF7B7004E74B9 /* GameController.m */; };
 		A3EE99FB17CE9ABC00D7437F /* Twitter.m in Sources */ = {isa = PBXBuildFile; fileRef = A3EE99FA17CE9ABB00D7437F /* Twitter.m */; };
+		A3EE99FE17CEA07D00D7437F /* TeamView.m in Sources */ = {isa = PBXBuildFile; fileRef = A3EE99FD17CEA07D00D7437F /* TeamView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,6 +101,9 @@
 		A3DBD13117CBF7B7004E74B9 /* GameController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameController.m; sourceTree = "<group>"; };
 		A3EE99F917CE9ABB00D7437F /* Twitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Twitter.h; sourceTree = "<group>"; };
 		A3EE99FA17CE9ABB00D7437F /* Twitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Twitter.m; sourceTree = "<group>"; };
+		A3EE99FC17CEA07C00D7437F /* TeamView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamView.h; sourceTree = "<group>"; };
+		A3EE99FD17CEA07D00D7437F /* TeamView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeamView.m; sourceTree = "<group>"; };
+		A3EE99FF17CEA42500D7437F /* Votes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Votes.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +169,8 @@
 				A3949DD417C2EECB00559283 /* GameViewController.m */,
 				A3949E0A17C338E200559283 /* Checkerboard.h */,
 				A3949E0B17C338E200559283 /* Checkerboard.m */,
+				A3EE99FC17CEA07C00D7437F /* TeamView.h */,
+				A3EE99FD17CEA07D00D7437F /* TeamView.m */,
 				A3DBD11817CB1ED5004E74B9 /* User.h */,
 				A3DBD11917CB1ED5004E74B9 /* User.m */,
 				A3949E5C17C440CF00559283 /* Game.h */,
@@ -221,6 +227,7 @@
 				A3949E0D17C3C4A200559283 /* Game-1.json */,
 				A3949E1017C3E60B00559283 /* Game-2.json */,
 				A3DBD11617CB0990004E74B9 /* Vote-1.json */,
+				A3EE99FF17CEA42500D7437F /* Votes.json */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -319,6 +326,7 @@
 				A3DBD13217CBF7B7004E74B9 /* GameController.m in Sources */,
 				A3CB830E17CD79B800FCCE72 /* Facebook.m in Sources */,
 				A3EE99FB17CE9ABC00D7437F /* Twitter.m in Sources */,
+				A3EE99FE17CEA07D00D7437F /* TeamView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
