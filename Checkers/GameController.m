@@ -13,7 +13,8 @@
 #import <CouchbaseLite/CouchbaseLite.h>
 #import "NSNumber+Equality.h"
 
-#define kSyncURL @"http://sync.couchbasecloud.com/checkers"
+#define kSyncURL @"http://checkers.sync.couchbasecloud.com/checkers"
+//#define kSyncURL @"http://sync.couchbasecloud.com/checkers"
 //#define kSyncURL @"http://localhost:4984/checkers"
 //#define kSyncURL @"http://tyrathect.local:4984/checkers"
 //#define kSyncURL @"http://Waynes-MacBook-Pro-2.local:4984/checkers"
