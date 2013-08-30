@@ -42,14 +42,13 @@
     timeLabel.backgroundColor = UIColor.clearColor;
     timeLabel.font = [UIFont systemFontOfSize:18];
     timeLabel.textColor = AppStyle.darkColor;
-    self.timeLabel = @"starts in";
+    self.timeLabel = @"waiting for game...";
     [header addSubview:timeLabel];
     //   Value
     timeValue = [[UILabel alloc] init];
     timeValue.backgroundColor = UIColor.clearColor;
     timeValue.font = [UIFont systemFontOfSize:24];
     timeValue.textColor = AppStyle.darkColor;
-    self.timeValue = @"--";
     [header addSubview:timeValue];
     
     // Twitter Button
@@ -59,6 +58,7 @@
     twitterButton.frame = CGRectMake(width - headerSize, 0, headerSize, headerSize);
     twitterButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
     twitterButton.contentMode = UIViewContentModeCenter;
+    twitterButton.hidden = YES;
     [twitterButton addTarget:self action:@selector(twitterClick:) forControlEvents:UIControlEventTouchUpInside];
     [header addSubview:twitterButton];
     
@@ -69,6 +69,7 @@
     facebookButton.frame = CGRectMake(twitterButton.frame.origin.x - headerSize, 0, headerSize, headerSize);
     facebookButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
     facebookButton.contentMode = UIViewContentModeCenter;
+    facebookButton.hidden = YES;
     [facebookButton addTarget:self action:@selector(facebookClick:) forControlEvents:UIControlEventTouchUpInside];
     [header addSubview:facebookButton];
     
