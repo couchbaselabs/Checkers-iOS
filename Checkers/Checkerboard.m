@@ -258,7 +258,9 @@
     }
     
     GameMove * lastMove = theGame.moves.lastObject;
-    BOOL animateLastMove = (animated && [NSNumber number:game.number isEqualToNumber:theGame.number] && lastMove.locations.count > 0 ? YES : NO);
+    BOOL animateLastMove = (animated
+                            && [NSNumber number:game.number isEqualToNumber:theGame.number]
+                            && lastMove.locations.count > 0 ? YES : NO);
     game = theGame;
     
     float squareSize = self.squareSize;
@@ -332,7 +334,7 @@
                 
                 CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
                 animation.path = path.CGPath;
-                animation.duration = (0.1 * locations.count);
+                animation.duration = (0.2 * locations.count);
                 
                 pieceView.layer.position = [path currentPoint];
                 pieceView.alpha = (piece.captured ? 0 : 1);
