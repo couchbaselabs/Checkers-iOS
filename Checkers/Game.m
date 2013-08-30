@@ -133,7 +133,11 @@
 
 -(id)initWithData:(NSDictionary *)theData
 {
-    return [self initWithTeam:((NSNumber *)[theData objectForKey:@"team"]).intValue piece:((NSNumber *)[theData objectForKey:@"piece"]).intValue locations:[theData objectForKey:@"locations"]];
+    if (self = [self initWithTeam:((NSNumber *)[theData objectForKey:@"team"]).intValue piece:((NSNumber *)[theData objectForKey:@"piece"]).intValue locations:[theData objectForKey:@"locations"]]) {
+        data = [theData mutableCopy];
+    }
+    
+    return self;
 }
 
 -(id)initWithTeam:(int)theTeam piece:(int)thePiece locations:(NSArray *)theLocations {

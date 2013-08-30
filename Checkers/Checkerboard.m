@@ -374,6 +374,96 @@
             }
         }
     }
+    
+    [self layoutVotes];
+}
+
+-(Votes *)votes
+{
+    return votes;
+}
+
+-(void)setVotes:(Votes *)theVotes
+{
+    votes = theVotes;
+    
+    [self layoutVotes];
+}
+
+-(void)layoutVotes
+{
+    if ([NSNumber number:votes.game isEqualToNumber:game.number]
+        && [NSNumber number:votes.turn isEqualToNumber:game.turn]
+        && [NSNumber number:votes.team isEqualToNumber:game.activeTeam]) {
+        
+        // Sort valid moves ascending based on count.
+        NSArray * moves = [votes.moves sortedArrayUsingComparator:^NSComparisonResult(VotesMove * move1, VotesMove * move2) {
+            if (move1.count.intValue > move2.count.intValue) {
+                return NSOrderedDescending;
+            } else if (move1.count.intValue < move2.count.intValue) {
+                return NSOrderedAscending;
+            }
+            
+            return NSOrderedSame;
+        }];
+        
+        // Hightlight trending moves.
+        NSMutableArray * trendingLocations = [NSMutableArray array];
+        float step = (0.7 / moves.count);
+        for (int i=0; i<moves.count; i++) {
+            VotesMove * move = [moves objectAtIndex:i];
+            float alpha = 0.2f + (i * step * 0.7f);  // 0.2 - 0.9
+            
+            for (NSNumber * location in move.locations) {
+                // Skip locations that are also included in a higher move.
+                BOOL skip = NO;
+                for (int j=i+1; j<moves.count; j++) {
+                    VotesMove * higherMove = [moves objectAtIndex:j];
+                    
+                    for (NSNumber * higherLocation in higherMove.locations) {
+                        if ([NSNumber number:location isEqualToNumber:higherLocation]) {
+                            skip = YES;
+                            break;
+                        }
+                    }
+                    
+                    if (skip) break;
+                }
+                if (skip) continue;
+                
+                UIView * square = [self squareAtLocation:location];
+                
+                [UIView animateWithDuration:1.0 animations:^{
+                    square.backgroundColor = AppStyle.highlightColor;
+                    square.alpha = alpha;
+                }];
+                
+                [trendingLocations addObject:location];
+            }
+        }
+        
+        // Unhighlight non-trending moves.
+        for (int i=0; i<squares.count; i++) {
+            if ([trendingLocations indexOfObject:[NSNumber numberWithInt:i+1]] == NSNotFound) {
+                UIView * square = [self squareAtLocation:[NSNumber numberWithInt:i+1]];
+                
+                [UIView animateWithDuration:1.0 animations:^{
+                    square.backgroundColor = AppStyle.mediumColor;
+                    square.alpha = 1;
+                }];
+            }
+        }
+    } else {
+        // Unhighlight all squares.
+        for (int i=0; i<squares.count; i++) {
+            UIView * square = [self squareAtLocation:[NSNumber numberWithInt:i+1]];
+            
+            [UIView animateWithDuration:0.5 animations:^{
+                square.backgroundColor = AppStyle.mediumColor;
+                square.alpha = 1;
+            }];
+        }
+    }
 }
 
 - (void)layoutSubviews {

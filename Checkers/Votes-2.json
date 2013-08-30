@@ -8,19 +8,19 @@
               "team":0,
               "piece":8,
               "locations":[9, 14],
-              "count":100
+              "count":200
               },
               {
               "team":0,
               "piece":9,
               "locations":[10, 15],
-              "count":300
+              "count":100
               },
               {
               "team":0,
               "piece":10,
               "locations":[11, 15, 18],
-              "count":200
+              "count":300
               }
-    ]
+              ]
 }

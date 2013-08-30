@@ -16,6 +16,7 @@
 + (UIColor *)lightColor;
 + (UIColor *)mediumColor;
 + (UIColor *)darkColor;
++ (UIColor *)highlightColor;
 
 + (UIColor *)colorForTeam:(int)team;
 

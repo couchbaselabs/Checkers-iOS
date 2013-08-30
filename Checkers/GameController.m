@@ -13,8 +13,9 @@
 #import <CouchbaseLite/CouchbaseLite.h>
 
 //#define kSyncURL @"http://sync.couchbasecloud.com:4984/checkers"
-//#define kSyncURL @"http://localhost:5984/checkers"
-#define kSyncURL @"http://Waynes-MacBook-Pro-2.local:4984/checkers"
+#define kSyncURL @"http://localhost:4984/checkers"
+//#define kSyncURL @"http://tyrathect.local:4984/checkers"
+//#define kSyncURL @"http://Waynes-MacBook-Pro-2.local:4984/checkers"
 
 #define kGameDocID @"game-1"
 
@@ -132,7 +133,7 @@
                                                object:voteDoc];
 
     // Load the voting-statistics document:
-    votesDoc = database[[NSString stringWithFormat:@"vote:%@", userID]];
+    votesDoc = database[@"votes"];
     NSDictionary* votesProps = votesDoc.properties ?: @{};
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(_updateVotes:)
@@ -148,8 +149,7 @@
         gameViewController.game = [[Game alloc] initWithDictionary:gameProps];
         gameViewController.user = [[User alloc] initWithDictionary:userProps];
         gameViewController.vote = [[Vote alloc] initWithDictionary:voteProps];
-        if (votesProps)
-            gameViewController.votes = [[Votes alloc] initWithDictionary:votesProps];
+        gameViewController.votes = [[Votes alloc] initWithDictionary:votesProps];
     });
 }
 

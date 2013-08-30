@@ -8,6 +8,22 @@
 
 #import "Votes.h"
 
+// Moves
+@implementation VotesMove
+
+-(id)initWithData:(NSDictionary *)theData
+{
+    return [super initWithData:theData];
+}
+
+-(NSNumber *)count
+{
+    return [data objectForKey:@"count"];
+}
+
+@end
+
+// Votes
 @implementation Votes
 
 -(id)initWithData:(NSData *)theData {
@@ -39,6 +55,18 @@
 
 -(NSNumber *)count {
     return [data objectForKey:@"count"];
+}
+
+-(NSArray *)moves {
+    if (moves == nil) {
+        moves = [NSMutableArray array];
+        
+        for (NSDictionary * moveData in [data objectForKey:@"moves"]) {
+            [moves addObject:[[VotesMove alloc] initWithData:moveData]];
+        }
+    }
+    
+    return moves;
 }
 
 @end

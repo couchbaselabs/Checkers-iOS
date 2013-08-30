@@ -23,6 +23,8 @@
 		A380CC5817CFA026004A33B1 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC5717CFA026004A33B1 /* Default@2x.png */; };
 		A380CC5A17CFA02A004A33B1 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC5917CFA02A004A33B1 /* Default-568h@2x.png */; };
 		A380CC5D17CFA715004A33B1 /* NSNumber+Equality.m in Sources */ = {isa = PBXBuildFile; fileRef = A380CC5C17CFA715004A33B1 /* NSNumber+Equality.m */; };
+		A380CC5E17D0F545004A33B1 /* Votes.json in Resources */ = {isa = PBXBuildFile; fileRef = A3EE99FF17CEA42500D7437F /* Votes.json */; };
+		A380CC6017D0FC34004A33B1 /* Votes-2.json in Resources */ = {isa = PBXBuildFile; fileRef = A380CC5F17D0FBD5004A33B1 /* Votes-2.json */; };
 		A3949DBC17C2EECB00559283 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3949DBB17C2EECB00559283 /* UIKit.framework */; };
 		A3949DBE17C2EECB00559283 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3949DBD17C2EECB00559283 /* Foundation.framework */; };
 		A3949DC017C2EECB00559283 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3949DBF17C2EECB00559283 /* CoreGraphics.framework */; };
@@ -78,6 +80,7 @@
 		A380CC5917CFA02A004A33B1 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		A380CC5B17CFA715004A33B1 /* NSNumber+Equality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+Equality.h"; sourceTree = "<group>"; };
 		A380CC5C17CFA715004A33B1 /* NSNumber+Equality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+Equality.m"; sourceTree = "<group>"; };
+		A380CC5F17D0FBD5004A33B1 /* Votes-2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Votes-2.json"; sourceTree = "<group>"; };
 		A3949DB817C2EECB00559283 /* Checkers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Checkers.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3949DBB17C2EECB00559283 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A3949DBD17C2EECB00559283 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -274,6 +277,7 @@
 				A3949E1017C3E60B00559283 /* Game-2.json */,
 				A3DBD11617CB0990004E74B9 /* Vote-1.json */,
 				A3EE99FF17CEA42500D7437F /* Votes.json */,
+				A380CC5F17D0FBD5004A33B1 /* Votes-2.json */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -334,6 +338,8 @@
 				A3949E6117C460E600559283 /* Game-1.json in Resources */,
 				A3949E6217C46F9000559283 /* Game-2.json in Resources */,
 				A3DBD12C17CBB5D7004E74B9 /* Vote-1.json in Resources */,
+				A380CC5E17D0F545004A33B1 /* Votes.json in Resources */,
+				A380CC6017D0FC34004A33B1 /* Votes-2.json in Resources */,
 				A3949DC617C2EECB00559283 /* InfoPlist.strings in Resources */,
 				A3DBD10717C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png in Resources */,
 				A3DBD10817C90DFA004E74B9 /* Facebook-Dark@2x.png in Resources */,

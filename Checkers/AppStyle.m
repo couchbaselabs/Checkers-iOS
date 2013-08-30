@@ -25,6 +25,11 @@
     return RGB(77, 77, 77);
 }
 
++ (UIColor *)highlightColor
+{
+    return RGB(0, 150, 0);
+}
+
 + (UIColor *)colorForTeam:(int)team
 {
     if (team == 0) return RGB(223, 61, 61);
