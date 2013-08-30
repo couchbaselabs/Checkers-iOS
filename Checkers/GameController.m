@@ -11,9 +11,10 @@
 #import "Twitter.h"
 #import <Social/Social.h>
 #import <CouchbaseLite/CouchbaseLite.h>
+#import "NSNumber+Equality.h"
 
-//#define kSyncURL @"http://sync.couchbasecloud.com:4984/checkers"
-#define kSyncURL @"http://localhost:4984/checkers"
+#define kSyncURL @"http://sync.couchbasecloud.com/checkers"
+//#define kSyncURL @"http://localhost:4984/checkers"
 //#define kSyncURL @"http://tyrathect.local:4984/checkers"
 //#define kSyncURL @"http://Waynes-MacBook-Pro-2.local:4984/checkers"
 
@@ -247,10 +248,10 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
 }
 
 - (void)_submitMove:(NSArray*)gameAndValidMove {
+    Game* game = (Game *)gameAndValidMove[0];
+    GameValidMove* validMove = (GameValidMove *)gameAndValidMove[1];
+    
     NSError* error = updateDoc(voteDoc, ^(NSMutableDictionary *props) {
-        Game* game = (Game *)gameAndValidMove[0];
-        GameValidMove* validMove = (GameValidMove *)gameAndValidMove[1];
-        
         props[@"game"] = game.number;
         props[@"turn"] = game.turn;
         props[@"team"] = @(validMove.team);
@@ -261,6 +262,18 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
     });
     if (error) {
         NSLog(@"WARNING: Couldn't save vote doc: %@", error);
+    }
+    
+    // On 1st vote per game we update the user doc w/ the current game number.
+    if (![NSNumber number:userDoc.properties[@"game"] isEqualToNumber:game.number]) {
+        NSError* error = updateDoc(userDoc, ^(NSMutableDictionary *props) {
+            props[@"game"] = game.number;
+            
+            return YES;
+        });
+        if (error) {
+            NSLog(@"WARNING: Couldn't save vote doc: %@", error);
+        }
     }
 }
 
