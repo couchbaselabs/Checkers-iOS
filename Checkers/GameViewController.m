@@ -102,7 +102,7 @@
     team1Score.backgroundColor = UIColor.clearColor;
     team1Score.font = [UIFont systemFontOfSize:24];
     team1Score.textColor = AppStyle.darkColor;
-    [self setTeam1Score:@"--"];
+    [self setTeam1Score:@""];
     [footer addSubview:team1Score];
     
     // Team 2 Image/Score
@@ -114,7 +114,7 @@
     team2Score.backgroundColor = UIColor.clearColor;
     team2Score.font = [UIFont systemFontOfSize:24];
     team2Score.textColor = AppStyle.darkColor;
-    [self setTeam2Score:@"--"];
+    [self setTeam2Score:@""];
     [footer addSubview:team2Score];
     
     // ---------------------------
