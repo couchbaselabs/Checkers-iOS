@@ -274,4 +274,8 @@ static NSString * kCBCGameDateFormate = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
     return moves;
 }
 
+-(BOOL)revotingAllowed {
+    return ((NSNumber *)[data objectForKey:@"revotingAllowed"]).boolValue;
+}
+
 @end
