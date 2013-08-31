@@ -14,8 +14,6 @@
 
 @interface Checkerboard : UIView {
 @private
-    BOOL allowUserInteraction;
-    
     NSMutableArray * squares;
     NSArray * teamPieces;
     NSMutableArray * validMoves;

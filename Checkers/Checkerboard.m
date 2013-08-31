@@ -64,8 +64,6 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        allowUserInteraction = true;
-        
         int size = self.size;
         float squareSize = self.squareSize;
         
