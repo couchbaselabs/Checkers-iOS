@@ -10,17 +10,18 @@
 
 typedef void(^TeamSelectionHandler)(NSUInteger team);
 
-@interface TeamView : UIView {
+@interface TeamView : UIButton {
 @private
     TeamSelectionHandler handler;
     
     NSUInteger team;
     BOOL userOnTeam;
     BOOL userCanJoinTeam;
+    NSUInteger people;
+    NSUInteger votes;
     
     UIView * infoView;
     UIImageView * userImageView;
-    UILabel * youLabel;
     UILabel * peopleLabel;
     UILabel * votesLabel;
     

@@ -19,17 +19,16 @@
         
         infoView = [[UIView alloc] init];
         userImageView = [[UIImageView alloc] init];
-        youLabel = [[UILabel alloc] init];
         peopleLabel = [[UILabel alloc] init];
         votesLabel = [[UILabel alloc] init];
         
-        youLabel.backgroundColor = UIColor.clearColor;
         peopleLabel.backgroundColor = UIColor.clearColor;
         votesLabel.backgroundColor = UIColor.clearColor;
         
+        infoView.userInteractionEnabled = NO;
+        
         [self addSubview:infoView];
         [infoView addSubview:userImageView];
-        [infoView addSubview:youLabel];
         [infoView addSubview:peopleLabel];
         [infoView addSubview:votesLabel];
         
@@ -38,10 +37,30 @@
         [numberFormatter setUsesGroupingSeparator:YES];
         [numberFormatter setGroupingSize:3];
         
-        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
+        [self addTarget:self action:@selector(touchDown:) forControlEvents:UIControlEventTouchDown];
+        [self addTarget:self action:@selector(touchUp:) forControlEvents:UIControlEventTouchDragExit];
+        [self addTarget:self action:@selector(touchDown:) forControlEvents:UIControlEventTouchDragEnter];
+        [self addTarget:self action:@selector(touchUp:) forControlEvents:UIControlEventTouchUpOutside];
+        [self addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
     }
     
     return self;
+}
+
+-(IBAction)touchDown:(id)sender
+{
+    self.backgroundColor = RGBA(0, 0, 0, 0.025);
+}
+
+-(IBAction)touchUp:(id)sender
+{
+    self.backgroundColor = nil;
+}
+
+-(IBAction)click:(id)sender
+{
+    [self touchUp:sender];
+    handler(self.team);
 }
 
 -(NSUInteger)team {
@@ -72,20 +91,20 @@
 }
 
 -(NSUInteger)people {
-    return [peopleLabel.text intValue];
+    return people;
 }
 
 -(void)setPeople:(NSUInteger)thePeople {
-    peopleLabel.text = [NSString stringWithFormat:@"%d", thePeople];
+    people = thePeople;
     [self setNeedsLayout];
 }
 
 -(NSUInteger)votes {
-    return [votesLabel.text intValue];
+    return votes;
 }
 
 -(void)setVotes:(NSUInteger)theVotes {
-    votesLabel.text = [NSString stringWithFormat:@"%d", theVotes];
+    votes = theVotes;
     [self setNeedsLayout];
 }
 
@@ -97,45 +116,37 @@
     
     if (self.userOnTeam) {
         // Image or "You"
-        UIView * userIdentifier;
         NSUInteger pictureSize = MIN(height - (2 * padding), 44);
         UIImage * userPicture = [Facebook pictureWithSize:(pictureSize * 2)];
         if (userPicture) {
+            userImageView.hidden = NO;
             userImageView.frame = CGRectMake(0, 0, pictureSize + 4, pictureSize + 4);
             userImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
             userImageView.image = [AppStyle strokeImage:userPicture forTeam:self.team];
             
-            userIdentifier = userImageView;
+            peopleLabel.text = [NSString stringWithFormat:@"+ %@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
+            
+            peopleLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+            peopleLabel.textAlignment = NSTextAlignmentLeft;
+            peopleLabel.textColor = AppStyle.darkColor;
+            [peopleLabel sizeToFit];
+            peopleLabel.frame = CGRectMake(8 + userImageView.frame.origin.x + userImageView.frame.size.width, userImageView.center.y - (peopleLabel.frame.size.height / 2), peopleLabel.frame.size.width, peopleLabel.frame.size.height);
         } else {
-            youLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-            youLabel.textColor = [AppStyle colorForTeam:self.team];
-            youLabel.text = @"You";
-            [youLabel sizeToFit];
+            userImageView.hidden = YES;
             
-            userIdentifier = youLabel;
+            NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"You + %@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]]];
+            [text addAttribute: NSForegroundColorAttributeName value:[AppStyle colorForTeam:self.team] range: NSMakeRange(0, 3)];
+            [text addAttribute: NSForegroundColorAttributeName value:AppStyle.darkColor range: NSMakeRange(3, text.length - 3)];
+            peopleLabel.attributedText = text;
             
-            if (!Facebook.accessRejected) {
-                [Facebook pictureWithSize:(pictureSize * 2) handler:^(UIImage *image) {
-                    if (image) {
-                        [self setNeedsLayout];
-                    }
-                }];
-            }
+            peopleLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+            peopleLabel.textAlignment = NSTextAlignmentLeft;
+            [peopleLabel sizeToFit];
+            peopleLabel.frame = CGRectMake(0, 0, peopleLabel.frame.size.width, peopleLabel.frame.size.height);
         }
-        userImageView.hidden = (userIdentifier != userImageView);
-        youLabel.hidden = (userIdentifier != youLabel);
-        
-        // Team
-        peopleLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-        peopleLabel.textAlignment = NSTextAlignmentLeft;
-        peopleLabel.textColor = [AppStyle darkColor];
-        peopleLabel.text = [NSString stringWithFormat:@"+ %@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
-        [peopleLabel sizeToFit];
-        peopleLabel.frame = CGRectMake(8 + userIdentifier.frame.origin.x + userIdentifier.frame.size.width, infoView.center.y - (peopleLabel.frame.size.height / 2), peopleLabel.frame.size.width, peopleLabel.frame.size.height);
     } else {
-        // Hide Image and "You"
+        // Hide Image
         userImageView.hidden = YES;
-        youLabel.hidden = YES;
         
         // Other team
         peopleLabel.textAlignment = NSTextAlignmentCenter;
@@ -143,15 +154,15 @@
         if (self.userCanJoinTeam) {
             peopleLabel.textColor = [AppStyle colorForTeam:self.team];
             peopleLabel.text = [NSString stringWithFormat:@"Join\n%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
-            self.userInteractionEnabled = YES;
         } else {
-            peopleLabel.textColor = [AppStyle darkColor];
+            peopleLabel.textColor = AppStyle.darkColor;
             peopleLabel.text = [NSString stringWithFormat:@"%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
-            self.userInteractionEnabled = NO;
         }
         [peopleLabel sizeToFit];
         peopleLabel.frame = CGRectMake(0, 0, peopleLabel.frame.size.width, peopleLabel.frame.size.height);
     }
+    
+    self.userInteractionEnabled = (!self.userOnTeam && self.userCanJoinTeam);
     
     [infoView sizeToFitSubviews];
     int infoViewPadding = (self.frame.size.height > 44 + 32 ? 16 : 8);
@@ -166,10 +177,6 @@
                                     infoView.frame.size.width,
                                     infoView.frame.size.height);
     }
-}
-
-- (void)handleTap:(UITapGestureRecognizer *)recognizer {
-    handler(self.team);
 }
 
 @end
