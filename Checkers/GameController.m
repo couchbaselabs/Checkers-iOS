@@ -159,7 +159,7 @@
     // Update gameViewController.game when we receive data changes from server.
     NSLog(@"** Got game document: %@", gameDoc.currentRevision);
     NSDictionary* properties = gameDoc.properties;
-    NSAssert(properties, @"Missing game document!");
+    //NSAssert(properties, @"Missing game document!");
 
     dispatch_async(dispatch_get_main_queue(), ^{
         gameViewController.game = [[Game alloc] initWithDictionary:properties];
@@ -170,7 +170,7 @@
     // Update gameViewController.game when we receive data changes from server.
     NSLog(@"** Got user document: %@", userDoc.currentRevision);
     NSDictionary* properties = userDoc.properties;
-    NSAssert(properties, @"Missing user document!");
+    //NSAssert(properties, @"Missing user document!");
     
     dispatch_async(dispatch_get_main_queue(), ^{
         gameViewController.user = [[User alloc] initWithDictionary:properties];
@@ -181,7 +181,7 @@
     // Update gameViewController.game when we receive data changes from server.
     NSLog(@"** Got vote document: %@", voteDoc.currentRevision);
     NSDictionary* properties = voteDoc.properties;
-    NSAssert(properties, @"Missing vote document!");
+    //NSAssert(properties, @"Missing vote document!");
     
     dispatch_async(dispatch_get_main_queue(), ^{
         gameViewController.vote = [[Vote alloc] initWithDictionary:properties];
@@ -192,7 +192,7 @@
     // Update gameViewController.votes when we receive data changes from server.
     NSLog(@"** Got votes document: %@", votesDoc.currentRevision);
     NSDictionary* properties = votesDoc.properties;
-    NSAssert(properties, @"Missing votes document!");
+    //NSAssert(properties, @"Missing votes document!");
 
     dispatch_async(dispatch_get_main_queue(), ^{
         gameViewController.votes = [[Votes alloc] initWithDictionary:properties];
