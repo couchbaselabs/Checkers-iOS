@@ -16,10 +16,10 @@
 - (id)initWithData:(NSData *)data;
 - (id)initWithDictionary:(NSDictionary *)dictionary;
 
-@property (readonly) NSNumber * game;
-@property (readonly) NSNumber * turn;
-@property (readonly) NSNumber * team;
-@property (readonly) NSNumber * piece;
-@property (readonly) NSArray * locations;
+@property NSNumber * game;
+@property NSNumber * turn;
+@property NSNumber * team;
+@property NSNumber * piece;
+@property NSArray * locations;
 
 @end
