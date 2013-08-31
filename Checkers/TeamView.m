@@ -130,7 +130,9 @@
             [peopleLabel sizeToFit];
             peopleLabel.frame = CGRectMake(userImageView.frame.size.width, ceil(userImageView.center.y - (peopleLabel.frame.size.height / 2)), peopleLabel.frame.size.width, peopleLabel.frame.size.height);
         } else {
+            // Hide Image
             userImageView.hidden = YES;
+            userImageView.frame = CGRectZero;
             
             NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"You + %@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]]];
             [text addAttribute: NSForegroundColorAttributeName value:[AppStyle colorForTeam:self.team] range: NSMakeRange(0, 3)];
@@ -153,6 +155,7 @@
     } else {
         // Hide Image
         userImageView.hidden = YES;
+        userImageView.frame = CGRectZero;
         
         // Other team
         peopleLabel.textAlignment = NSTextAlignmentCenter;
