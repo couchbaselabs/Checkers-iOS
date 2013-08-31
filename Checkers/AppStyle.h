@@ -16,7 +16,6 @@
 + (UIColor *)lightColor;
 + (UIColor *)mediumColor;
 + (UIColor *)darkColor;
-+ (UIColor *)highlightColor;
 
 + (UIColor *)colorForTeam:(int)team;
 
@@ -26,5 +25,7 @@
 + (UIImage *)validMoveForTeam:(int)team squareSize:(float)squareSize;
 
 + (UIImage *)strokeImage:(UIImage *)image forTeam:(int)team;
+
++ (UIImage *)drawTrendingPathForTeam:(int)team size:(float)size locations:(NSArray *)locations squares:(NSArray *)squares rect:(CGRect)rect;
 
 @end

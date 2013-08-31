@@ -7,6 +7,7 @@
 //
 
 #import "AppStyle.h"
+#import "UIBezierPath+Arrow.h"
 
 @implementation AppStyle
 
@@ -25,17 +26,20 @@
     return RGB(77, 77, 77);
 }
 
-+ (UIColor *)highlightColor
++ (UIColor *)highlightColorForTeam:(int)team
 {
-    return RGB(0, 150, 0);
+    float h, s, b, a;
+    UIColor * color = [AppStyle colorForTeam:team];
+    [color getHue:&h saturation:&s brightness:&b alpha:&a];
+    
+    if (team == 1) return [UIColor colorWithHue:h saturation:s brightness:1.0 alpha:a];
+    else return [UIColor colorWithHue:h saturation:s brightness:1.0 alpha:a];
 }
 
 + (UIColor *)colorForTeam:(int)team
 {
-    if (team == 0) return RGB(223, 61, 61);
-    else if (team == 1) return RGB(58, 128, 247);
-    
-    return nil;
+    if (team == 1) return RGB(58, 128, 223);
+    else return RGB(223, 61, 61);
 }
 
 + (UIColor *)validMoveColor
@@ -160,6 +164,74 @@ static NSCache * validMoves;
     UIGraphicsEndImageContext();
     
     return strokedImage;
+}
+
++ (UIImage *)drawTrendingPathForTeam:(int)team size:(float)size locations:(NSArray *)locations squares:(NSArray *)squares rect:(CGRect)rect
+{
+    if (locations.count < 2) return nil;
+    
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    UIGraphicsPushContext(context);
+    
+    UIColor * color = [AppStyle highlightColorForTeam:team];
+    
+    CGContextSetStrokeColorWithColor(context, color.CGColor);
+    CGContextSetFillColorWithColor(context, color.CGColor);
+    CGContextSetLineWidth(context, size);
+    
+    UIBezierPath * path = [[UIBezierPath alloc] init];
+    UIBezierPath * arrowPath;
+    int pathPointCount = 0;
+    for (int i=0; i<locations.count; i++) {
+        NSNumber * location = [locations objectAtIndex:i];
+        NSUInteger squareIndex = location.unsignedIntValue - 1;
+        UIView * square = (squares.count > squareIndex ? [squares objectAtIndex:squareIndex] : nil);
+        CGPoint point = square.center;
+        
+        if (pathPointCount == 0) {
+            [path moveToPoint:point];
+            pathPointCount++;
+        } else if (i == locations.count - 1) {
+            NSNumber * previousLocation = [locations objectAtIndex:i - 1];
+            NSUInteger previousSquareIndex = previousLocation.unsignedIntValue - 1;
+            UIView * previousSquare = (squares.count > previousSquareIndex ? [squares objectAtIndex:previousSquareIndex] : nil);
+            CGPoint previousPoint = previousSquare.center;
+            float dx = (point.x - previousPoint.x);
+            float dy = (point.y - previousPoint.y);
+            
+            CGPoint head = CGPointMake(point.x, point.y);
+            CGPoint tail = CGPointMake((dx >= 0 ? point.x - size : point.x + size),
+                                       (dy >= 0 ? point.y - size : point.y + size));
+            
+            [path addLineToPoint:tail];
+            arrowPath = [UIBezierPath bezierArrowFromPoint:tail toPoint:head width:size * 0.75];
+        } else {
+            [path addLineToPoint:point];
+            pathPointCount++;
+        }
+        
+        if (i < locations.count - 1) {
+            CGContextFillEllipseInRect(context, CGRectMake(square.center.x - size,
+                                                           square.center.y - size,
+                                                           size * 2,
+                                                           size * 2));
+        }
+    }
+    
+    CGContextAddPath(context, path.CGPath);
+    CGContextAddPath(context, arrowPath.CGPath);
+    CGContextStrokePath(context);
+    CGContextAddPath(context, arrowPath.CGPath);
+    CGContextFillPath(context);
+    
+    UIGraphicsPopContext();
+    
+    UIImage * trendingPathImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return trendingPathImage;
 }
 
 @end
