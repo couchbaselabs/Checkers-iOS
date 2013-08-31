@@ -45,10 +45,11 @@
     self.timeLabel = @"waiting for game...";
     [header addSubview:timeLabel];
     //   Value
-    timeValue = [[UILabel alloc] init];
+    timeValue = [[CountdownTimerView alloc] init];
     timeValue.backgroundColor = UIColor.clearColor;
     timeValue.font = [UIFont systemFontOfSize:24];
     timeValue.textColor = AppStyle.darkColor;
+    timeValue.delegate = self;
     [header addSubview:timeValue];
     
     // Twitter Button
@@ -240,67 +241,8 @@
     [self.delegate gameViewController:self didMakeValidMove:validMove];
 }
 
--(void)handleCountdownTimerTick {
-    NSTimeInterval secondsRemaining = [countdownTime timeIntervalSinceNow];
-    int seconds =  floor(secondsRemaining);
-    NSString * milliseconds = [NSString stringWithFormat:@"%.0f", (secondsRemaining - seconds) * 1000];
-    
-    while (milliseconds.length < 3) {
-        milliseconds = [milliseconds stringByAppendingString:@"0"];
-    }
-    
-    if (secondsRemaining > 0) {
-        self.timeValue = [NSString stringWithFormat:@"%d:%@", seconds, milliseconds];
-    } else {
-        [countdownTimer invalidate];
-        
-        self.timeValue = @"00:000";
-        
-        [countdownTimeoutTimer invalidate];
-        countdownTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(handleCountdownTimeoutTimerTick) userInfo:nil repeats:YES];
-        
-        [self layoutGameInfo];
-    }
-}
-
--(void)handleCountdownTimeoutTimerTick {
-    NSTimeInterval secondsRemaining = [countdownTime timeIntervalSinceNow];
-    
-    if (secondsRemaining <= 0) {
-        // Flash time value on timeout.
-        timeValue.hidden = !timeValue.hidden;
-    } else {
-        timeValue.hidden = NO;
-    }
-}
-
--(void)setCountdownTime:(NSDate *)theTime {
-    [countdownTimer invalidate];
-    [countdownTimeoutTimer invalidate];
-    
-    if (theTime) {
-        countdownTime = theTime;
-        NSTimeInterval secondsRemaining = [countdownTime timeIntervalSinceNow];
-        
-        if (secondsRemaining > 0) {
-            countdownTimer = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(handleCountdownTimerTick) userInfo:nil repeats:YES];
-        } else {
-            self.timeValue = @"00:000";
-            countdownTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(handleCountdownTimeoutTimerTick) userInfo:nil repeats:YES];
-        }
-    } else {
-        self.timeValue = @"--";
-    }
-}
-
-- (void)setTimeValue:(NSString *)value
-{
-    timeValue.text = value;
-    [timeValue sizeToFit];
-    timeValue.frame = CGRectMake(timeLabel.frame.origin.x + timeLabel.frame.size.width + 4,
-                                 (header.bounds.size.height / 2) - (timeValue.frame.size.height / 2),
-                                 timeValue.frame.size.width,
-                                 timeValue.frame.size.height);
+-(void)countdownTimerViewTimeout:(CountdownTimerView *)countdownTimerView {
+    checkerboard.userInteractionEnabled = NO;
 }
 
 - (void)setTimeLabel:(NSString *)label
@@ -313,7 +255,16 @@
                                  timeLabel.frame.size.height);
     
     // Kick the value so that it repositions itself.
-    self.timeValue = timeValue.text;
+    self.timeValue = timeValue.time;
+}
+
+- (void)setTimeValue:(NSDate *)time
+{
+    timeValue.time = time;
+    timeValue.frame = CGRectMake(timeLabel.frame.origin.x + timeLabel.frame.size.width + 4,
+                                 0,
+                                 150,
+                                 header.bounds.size.height);
 }
 
 - (void)setTeam1Score:(NSString *)score
@@ -352,7 +303,6 @@
 
 - (void)layoutGameInfo {
     NSTimeInterval secondsUntilStartTime = [game.startTime timeIntervalSinceNow];
-    NSTimeInterval secondsUntilMoveDeadline = [game.moveDeadline timeIntervalSinceNow];
     
     if (secondsUntilStartTime <= 0 && game.activeTeam) {
         header.backgroundColor = [AppStyle colorForTeam:game.activeTeam.intValue];
@@ -383,7 +333,27 @@
     self.team1Score = [NSNumber numberWithInteger:((GameTeam *)game.teams[0]).score].stringValue;
     self.team2Score = [NSNumber numberWithInteger:((GameTeam *)game.teams[1]).score].stringValue;
     
+    // Facebook/Twitter compose services.
+    twitterButton.hidden = !Twitter.composeServiceAvailable;
+    facebookButton.hidden = !Facebook.composeServiceAvailable;
+    if (twitterButton.hidden) {
+        facebookButton.frame = twitterButton.frame;
+    } else {
+        facebookButton.frame = CGRectMake(twitterButton.frame.origin.x - facebookButton.frame.size.width,
+                                          facebookButton.frame.origin.y,
+                                          facebookButton.frame.size.width,
+                                          facebookButton.frame.size.height);
+    }
+    
+    [self layoutTimeInfo];
+}
+
+- (void)layoutTimeInfo {
+    NSTimeInterval secondsUntilStartTime = [game.startTime timeIntervalSinceNow];
+    
     if (secondsUntilStartTime <= 0 && game.moveDeadline) {
+        NSTimeInterval secondsUntilMoveDeadline = [game.moveDeadline timeIntervalSinceNow];
+        
         self.timeLabel = @"time";
         
         if (secondsUntilMoveDeadline <= 0) {
@@ -396,24 +366,12 @@
             checkerboard.userInteractionEnabled = YES;
         }
         
-        self.countdownTime = game.moveDeadline;
+        self.timeValue = game.moveDeadline;
     } else {
         self.timeLabel = @"starts in";
         
         checkerboard.userInteractionEnabled = NO;
-        self.countdownTime = game.startTime;
-    }
-    
-    // Facebook/Twitter compose services.
-    twitterButton.hidden = !Twitter.composeServiceAvailable;
-    facebookButton.hidden = !Facebook.composeServiceAvailable;
-    if (twitterButton.hidden) {
-        facebookButton.frame = twitterButton.frame;
-    } else {
-        facebookButton.frame = CGRectMake(twitterButton.frame.origin.x - facebookButton.frame.size.width,
-                                          facebookButton.frame.origin.y,
-                                          facebookButton.frame.size.width,
-                                          facebookButton.frame.size.height);
+        self.timeValue = game.startTime;
     }
 }
 

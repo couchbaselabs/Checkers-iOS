@@ -13,6 +13,7 @@
 		27278E4617CE85B3004ABC21 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 27278E4517CE85B3004ABC21 /* libz.dylib */; };
 		27278E4817CE85BD004ABC21 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27278E4717CE85BD004ABC21 /* Security.framework */; };
 		27278E4A17CE85C3004ABC21 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 27278E4917CE85C3004ABC21 /* libsqlite3.dylib */; };
+		A307BDFC17D1D91000E4FFDD /* CountdownTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A307BDFB17D1D91000E4FFDD /* CountdownTimerView.m */; };
 		A380CC4A17CF9F63004A33B1 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4917CF9F63004A33B1 /* Icon.png */; };
 		A380CC4C17CF9F6B004A33B1 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4B17CF9F6B004A33B1 /* Icon@2x.png */; };
 		A380CC4E17CF9F71004A33B1 /* Icon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4D17CF9F71004A33B1 /* Icon~ipad.png */; };
@@ -70,6 +71,8 @@
 		27278E4517CE85B3004ABC21 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		27278E4717CE85BD004ABC21 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		27278E4917CE85C3004ABC21 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		A307BDFA17D1D91000E4FFDD /* CountdownTimerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountdownTimerView.h; sourceTree = "<group>"; };
+		A307BDFB17D1D91000E4FFDD /* CountdownTimerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CountdownTimerView.m; sourceTree = "<group>"; };
 		A380CC4917CF9F63004A33B1 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
 		A380CC4B17CF9F6B004A33B1 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
 		A380CC4D17CF9F71004A33B1 /* Icon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon~ipad.png"; path = "../Icon~ipad.png"; sourceTree = "<group>"; };
@@ -215,6 +218,8 @@
 				A3949E0B17C338E200559283 /* Checkerboard.m */,
 				A3EE99FC17CEA07C00D7437F /* TeamView.h */,
 				A3EE99FD17CEA07D00D7437F /* TeamView.m */,
+				A307BDFA17D1D91000E4FFDD /* CountdownTimerView.h */,
+				A307BDFB17D1D91000E4FFDD /* CountdownTimerView.m */,
 				A3DBD11817CB1ED5004E74B9 /* User.h */,
 				A3DBD11917CB1ED5004E74B9 /* User.m */,
 				A3949E5C17C440CF00559283 /* Game.h */,
@@ -391,6 +396,7 @@
 				A3EE9A0217CED39400D7437F /* Votes.m in Sources */,
 				A380CC5D17CFA715004A33B1 /* NSNumber+Equality.m in Sources */,
 				A3DA42C417D17E8E005EAFEE /* UIBezierPath+Arrow.m in Sources */,
+				A307BDFC17D1D91000E4FFDD /* CountdownTimerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
