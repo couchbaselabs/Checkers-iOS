@@ -123,12 +123,22 @@
     // Team Info -----------------
     
     team1Info = [[TeamView alloc] initWithHandler:^(NSUInteger team) {
+        // Dispatch selection.
         [self.delegate gameViewController:self didSelectTeam:[self.game.teams objectAtIndex:team]];
+        
+        // Update team.
+        user.team = [NSNumber numberWithUnsignedInt:team];
+        self.user = user;
     }];
     [self.view addSubview:team1Info];
     
     team2Info = [[TeamView alloc] initWithHandler:^(NSUInteger team) {
+        // Dispatch selection.
         [self.delegate gameViewController:self didSelectTeam:[self.game.teams objectAtIndex:team]];
+        
+        // Update team.
+        user.team = [NSNumber numberWithUnsignedInt:team];
+        self.user = user;
     }];
     [self.view addSubview:team2Info];
     
@@ -238,7 +248,20 @@
 }
 
 -(void)checkerboard:(Checkerboard *)checkerboard didMakeValidMove:(GameValidMove *)validMove {
+    // Dispatch move.
     [self.delegate gameViewController:self didMakeValidMove:validMove];
+    
+    // Update user.
+    user.game = game.number;
+    self.user = user;
+    
+    // Update vote.
+    vote.game = game.number;
+    vote.turn = game.turn;
+    vote.team = [NSNumber numberWithInt:validMove.team];
+    vote.piece = [NSNumber numberWithInt:validMove.piece];
+    vote.locations = validMove.locations;
+    self.vote = vote;
 }
 
 -(void)countdownTimerViewTimeout:(CountdownTimerView *)countdownTimerView {
@@ -395,7 +418,6 @@
                                  checkerboard.frame.origin.y + checkerboard.frame.size.height,
                                  self.view.bounds.size.width,
                                  footer.frame.origin.y - (checkerboard.frame.origin.y + checkerboard.frame.size.height));
-    // TODO: Votes
 }
 
 -(UIImage *)gameAsImage {
@@ -413,7 +435,7 @@
     UILabel * title = [[UILabel alloc] init];
     title.backgroundColor = timeValue.backgroundColor;
     title.textColor = timeValue.textColor;
-    title.text = @"Checkers";
+    title.text = (game.applicationName ? game.applicationName : @"Checkers");
     [title sizeToFit];
     title.frame = CGRectMake(icon.frame.origin.x + icon.frame.size.width,
                              (titleBar.bounds.size.height / 2) - (title.frame.size.height / 2),
