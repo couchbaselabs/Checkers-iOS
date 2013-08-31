@@ -14,6 +14,7 @@
 		27278E4817CE85BD004ABC21 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27278E4717CE85BD004ABC21 /* Security.framework */; };
 		27278E4A17CE85C3004ABC21 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 27278E4917CE85C3004ABC21 /* libsqlite3.dylib */; };
 		A307BDFC17D1D91000E4FFDD /* CountdownTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A307BDFB17D1D91000E4FFDD /* CountdownTimerView.m */; };
+		A307BDFE17D289D900E4FFDD /* Couch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A307BDFD17D289D900E4FFDD /* Couch@2x.png */; };
 		A380CC4A17CF9F63004A33B1 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4917CF9F63004A33B1 /* Icon.png */; };
 		A380CC4C17CF9F6B004A33B1 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4B17CF9F6B004A33B1 /* Icon@2x.png */; };
 		A380CC4E17CF9F71004A33B1 /* Icon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4D17CF9F71004A33B1 /* Icon~ipad.png */; };
@@ -41,7 +42,6 @@
 		A3949E6417C482BA00559283 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3949E6317C482BA00559283 /* QuartzCore.framework */; };
 		A3CB830B17CD631D00FCCE72 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3CB830A17CD631D00FCCE72 /* Accounts.framework */; };
 		A3CB830E17CD79B800FCCE72 /* Facebook.m in Sources */ = {isa = PBXBuildFile; fileRef = A3CB830D17CD79B800FCCE72 /* Facebook.m */; };
-		A3CB833417CDD16500FCCE72 /* Couch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB833317CDD16500FCCE72 /* Couch@2x.png */; };
 		A3DA42C417D17E8E005EAFEE /* UIBezierPath+Arrow.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DA42C317D17E8E005EAFEE /* UIBezierPath+Arrow.m */; };
 		A3DBD10717C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3DBD0FF17C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png */; };
 		A3DBD10817C90DFA004E74B9 /* Facebook-Dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3DBD10017C90DFA004E74B9 /* Facebook-Dark@2x.png */; };
@@ -73,6 +73,7 @@
 		27278E4917CE85C3004ABC21 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		A307BDFA17D1D91000E4FFDD /* CountdownTimerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountdownTimerView.h; sourceTree = "<group>"; };
 		A307BDFB17D1D91000E4FFDD /* CountdownTimerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CountdownTimerView.m; sourceTree = "<group>"; };
+		A307BDFD17D289D900E4FFDD /* Couch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Couch@2x.png"; sourceTree = "<group>"; };
 		A380CC4917CF9F63004A33B1 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
 		A380CC4B17CF9F6B004A33B1 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
 		A380CC4D17CF9F71004A33B1 /* Icon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon~ipad.png"; path = "../Icon~ipad.png"; sourceTree = "<group>"; };
@@ -109,7 +110,6 @@
 		A3CB830A17CD631D00FCCE72 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		A3CB830C17CD79B800FCCE72 /* Facebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Facebook.h; sourceTree = "<group>"; };
 		A3CB830D17CD79B800FCCE72 /* Facebook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Facebook.m; sourceTree = "<group>"; };
-		A3CB833317CDD16500FCCE72 /* Couch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Couch@2x.png"; sourceTree = "<group>"; };
 		A3DA42C217D17E8E005EAFEE /* UIBezierPath+Arrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIBezierPath+Arrow.h"; path = "../UIBezierPath+Arrow.h"; sourceTree = "<group>"; };
 		A3DA42C317D17E8E005EAFEE /* UIBezierPath+Arrow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIBezierPath+Arrow.m"; path = "../UIBezierPath+Arrow.m"; sourceTree = "<group>"; };
 		A3DBD0FF17C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Facebook-Dark-Highlighted@2x.png"; sourceTree = "<group>"; };
@@ -265,7 +265,7 @@
 		A3949E0617C3048900559283 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				A3CB833317CDD16500FCCE72 /* Couch@2x.png */,
+				A307BDFD17D289D900E4FFDD /* Couch@2x.png */,
 				A3DBD10F17C93459004E74B9 /* King@2x.png */,
 				A3DBD0FF17C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png */,
 				A3DBD10017C90DFA004E74B9 /* Facebook-Dark@2x.png */,
@@ -360,7 +360,6 @@
 				A3DBD10D17C90DFA004E74B9 /* Twitter-Light-Highlighted@2x.png in Resources */,
 				A3DBD10E17C90DFA004E74B9 /* Twitter-Light@2x.png in Resources */,
 				A3DBD11017C93459004E74B9 /* King@2x.png in Resources */,
-				A3CB833417CDD16500FCCE72 /* Couch@2x.png in Resources */,
 				A380CC4A17CF9F63004A33B1 /* Icon.png in Resources */,
 				A380CC4C17CF9F6B004A33B1 /* Icon@2x.png in Resources */,
 				A380CC4E17CF9F71004A33B1 /* Icon~ipad.png in Resources */,
@@ -370,6 +369,7 @@
 				A380CC5617CFA01C004A33B1 /* Default.png in Resources */,
 				A380CC5817CFA026004A33B1 /* Default@2x.png in Resources */,
 				A380CC5A17CFA02A004A33B1 /* Default-568h@2x.png in Resources */,
+				A307BDFE17D289D900E4FFDD /* Couch@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
