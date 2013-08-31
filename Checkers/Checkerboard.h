@@ -19,6 +19,7 @@
     NSMutableArray * squares;
     NSArray * teamPieces;
     NSMutableArray * validMoves;
+    NSMutableArray * voteViews;
     
     Game * game;
     Votes * votes;
