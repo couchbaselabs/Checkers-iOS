@@ -278,4 +278,15 @@ static NSString * kCBCGameDateFormate = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
     return ((NSNumber *)[data objectForKey:@"revotingAllowed"]).boolValue;
 }
 
+-(NSString *)applicationName {
+    return [data objectForKey:@"applicationName"];
+}
+
+-(NSString *)applicationUrl {
+    NSString * url = [data objectForKey:@"applicationUrl"];
+    if (!url) url = @"http://www.couchbase.com";
+    
+    return url;
+}
+
 @end

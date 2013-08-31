@@ -109,4 +109,7 @@
 @property (readonly) NSArray * teams;
 @property (readonly) BOOL revotingAllowed;
 
+@property (readonly) NSString * applicationName;
+@property (readonly) NSString * applicationUrl;
+
 @end
