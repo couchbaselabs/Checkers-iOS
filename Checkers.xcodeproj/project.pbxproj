@@ -41,6 +41,7 @@
 		A3CB830B17CD631D00FCCE72 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3CB830A17CD631D00FCCE72 /* Accounts.framework */; };
 		A3CB830E17CD79B800FCCE72 /* Facebook.m in Sources */ = {isa = PBXBuildFile; fileRef = A3CB830D17CD79B800FCCE72 /* Facebook.m */; };
 		A3CB833417CDD16500FCCE72 /* Couch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB833317CDD16500FCCE72 /* Couch@2x.png */; };
+		A3DA42C417D17E8E005EAFEE /* UIBezierPath+Arrow.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DA42C317D17E8E005EAFEE /* UIBezierPath+Arrow.m */; };
 		A3DBD10717C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3DBD0FF17C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png */; };
 		A3DBD10817C90DFA004E74B9 /* Facebook-Dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3DBD10017C90DFA004E74B9 /* Facebook-Dark@2x.png */; };
 		A3DBD10917C90DFA004E74B9 /* Facebook-Light-Highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3DBD10117C90DFA004E74B9 /* Facebook-Light-Highlighted@2x.png */; };
@@ -106,6 +107,8 @@
 		A3CB830C17CD79B800FCCE72 /* Facebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Facebook.h; sourceTree = "<group>"; };
 		A3CB830D17CD79B800FCCE72 /* Facebook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Facebook.m; sourceTree = "<group>"; };
 		A3CB833317CDD16500FCCE72 /* Couch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Couch@2x.png"; sourceTree = "<group>"; };
+		A3DA42C217D17E8E005EAFEE /* UIBezierPath+Arrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIBezierPath+Arrow.h"; path = "../UIBezierPath+Arrow.h"; sourceTree = "<group>"; };
+		A3DA42C317D17E8E005EAFEE /* UIBezierPath+Arrow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIBezierPath+Arrow.m"; path = "../UIBezierPath+Arrow.m"; sourceTree = "<group>"; };
 		A3DBD0FF17C90DFA004E74B9 /* Facebook-Dark-Highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Facebook-Dark-Highlighted@2x.png"; sourceTree = "<group>"; };
 		A3DBD10017C90DFA004E74B9 /* Facebook-Dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Facebook-Dark@2x.png"; sourceTree = "<group>"; };
 		A3DBD10117C90DFA004E74B9 /* Facebook-Light-Highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Facebook-Light-Highlighted@2x.png"; sourceTree = "<group>"; };
@@ -228,6 +231,8 @@
 				A3DBD12E17CBB8A8004E74B9 /* UIView+Extended.m */,
 				A380CC5B17CFA715004A33B1 /* NSNumber+Equality.h */,
 				A380CC5C17CFA715004A33B1 /* NSNumber+Equality.m */,
+				A3DA42C217D17E8E005EAFEE /* UIBezierPath+Arrow.h */,
+				A3DA42C317D17E8E005EAFEE /* UIBezierPath+Arrow.m */,
 			);
 			path = Checkers;
 			sourceTree = "<group>";
@@ -385,6 +390,7 @@
 				A3EE99FE17CEA07D00D7437F /* TeamView.m in Sources */,
 				A3EE9A0217CED39400D7437F /* Votes.m in Sources */,
 				A380CC5D17CFA715004A33B1 /* NSNumber+Equality.m in Sources */,
+				A3DA42C417D17E8E005EAFEE /* UIBezierPath+Arrow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
