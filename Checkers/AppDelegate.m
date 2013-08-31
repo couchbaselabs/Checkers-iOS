@@ -13,7 +13,6 @@
 {
     GameViewController * gameViewController;
     GameController * gameController;
-    CBLReplication* _pull;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
