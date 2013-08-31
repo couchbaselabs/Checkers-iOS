@@ -399,9 +399,10 @@
 }
 
 - (void)layoutTeamInfo {
+    team1Info.game = [game.number unsignedIntValue];
     team1Info.team = 0;
-    team1Info.userOnTeam = (self.user.team && [NSNumber number:self.user.team isEqualToNumber:[NSNumber numberWithInt:0]]);
-    team1Info.userCanJoinTeam = (!self.vote || !self.vote.game || ![NSNumber number:self.game.number isEqualToNumber:self.vote.game]);
+    team1Info.userGame = [user.game unsignedIntValue];
+    team1Info.userTeam = [user.team unsignedIntValue];
     team1Info.people = ((GameTeam *)[self.game.teams objectAtIndex:0]).participantCount;
     team1Info.votes = votes.count.integerValue;
     team1Info.frame = CGRectMake(0,
@@ -409,9 +410,10 @@
                                  self.view.bounds.size.width,
                                  checkerboard.frame.origin.y - (header.frame.origin.y + header.frame.size.height));
     
+    team2Info.game = [game.number unsignedIntValue];
     team2Info.team = 1;
-    team2Info.userOnTeam = (self.user.team && [NSNumber number:self.user.team isEqualToNumber:[NSNumber numberWithInt:1]]);
-    team2Info.userCanJoinTeam = (!self.vote || !self.vote.game|| ![NSNumber number:self.game.number isEqualToNumber:self.vote.game]);
+    team2Info.userGame = [user.game unsignedIntValue];
+    team2Info.userTeam = [user.team unsignedIntValue];
     team2Info.people = ((GameTeam *)[self.game.teams objectAtIndex:1]).participantCount;
     team2Info.votes = votes.count.integerValue;
     team2Info.frame = CGRectMake(0,
