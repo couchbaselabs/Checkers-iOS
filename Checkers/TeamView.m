@@ -121,16 +121,14 @@
         if (userPicture) {
             userImageView.hidden = NO;
             userImageView.frame = CGRectMake(0, 0, pictureSize + 4, pictureSize + 4);
-            userImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
             userImageView.image = [AppStyle strokeImage:userPicture forTeam:self.team];
             
-            peopleLabel.text = [NSString stringWithFormat:@"+ %@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
+            peopleLabel.text = [NSString stringWithFormat:@" + %@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
             
-            peopleLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
             peopleLabel.textAlignment = NSTextAlignmentLeft;
             peopleLabel.textColor = AppStyle.darkColor;
             [peopleLabel sizeToFit];
-            peopleLabel.frame = CGRectMake(8 + userImageView.frame.origin.x + userImageView.frame.size.width, userImageView.center.y - (peopleLabel.frame.size.height / 2), peopleLabel.frame.size.width, peopleLabel.frame.size.height);
+            peopleLabel.frame = CGRectMake(userImageView.frame.size.width, ceil(userImageView.center.y - (peopleLabel.frame.size.height / 2)), peopleLabel.frame.size.width, peopleLabel.frame.size.height);
         } else {
             userImageView.hidden = YES;
             
@@ -139,10 +137,18 @@
             [text addAttribute: NSForegroundColorAttributeName value:AppStyle.darkColor range: NSMakeRange(3, text.length - 3)];
             peopleLabel.attributedText = text;
             
-            peopleLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
             peopleLabel.textAlignment = NSTextAlignmentLeft;
             [peopleLabel sizeToFit];
             peopleLabel.frame = CGRectMake(0, 0, peopleLabel.frame.size.width, peopleLabel.frame.size.height);
+            
+            // Try to load image from Facebook.
+            if (!Facebook.accessRejected) {
+                [Facebook pictureWithSize:(pictureSize * 2) handler:^(UIImage *image) {
+                    if (image) {
+                        [self setNeedsLayout];
+                    }
+                }];
+            }
         }
     } else {
         // Hide Image
@@ -150,7 +156,6 @@
         
         // Other team
         peopleLabel.textAlignment = NSTextAlignmentCenter;
-        peopleLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
         if (self.userCanJoinTeam) {
             peopleLabel.textColor = [AppStyle colorForTeam:self.team];
             peopleLabel.text = [NSString stringWithFormat:@"Join\n%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
