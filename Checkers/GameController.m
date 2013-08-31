@@ -17,7 +17,6 @@
 //#define kSyncURL @"http://sync.couchbasecloud.com/checkers"
 //#define kSyncURL @"http://localhost:4984/checkers"
 //#define kSyncURL @"http://tyrathect.local:4984/checkers"
-//#define kSyncURL @"http://Waynes-MacBook-Pro-2.local:4984/checkers"
 
 #define kGameDocID @"game-1"
 
@@ -121,18 +120,6 @@
         }
     }
     NSDictionary* userProps = userDoc.properties;
-    
-    // Listen for user changes (e.g. team change).
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(_updateUser:)
-                                                 name:kCBLDocumentChangeNotification
-                                               object:userDoc];
-    
-    // Listen for vote changes (e.g. user voted).
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(_updateVote:)
-                                                 name:kCBLDocumentChangeNotification
-                                               object:voteDoc];
 
     // Load the voting-statistics document:
     votesDoc = database[@"votes"];
@@ -163,28 +150,6 @@
 
     dispatch_async(dispatch_get_main_queue(), ^{
         gameViewController.game = [[Game alloc] initWithDictionary:properties];
-    });
-}
-
-- (void)_updateUser:(NSNotification*)n {
-    // Update gameViewController.game when we receive data changes from server.
-    NSLog(@"** Got user document: %@", userDoc.currentRevision);
-    NSDictionary* properties = userDoc.properties;
-    //NSAssert(properties, @"Missing user document!");
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        gameViewController.user = [[User alloc] initWithDictionary:properties];
-    });
-}
-
-- (void)_updateVote:(NSNotification*)n {
-    // Update gameViewController.game when we receive data changes from server.
-    NSLog(@"** Got vote document: %@", voteDoc.currentRevision);
-    NSDictionary* properties = voteDoc.properties;
-    //NSAssert(properties, @"Missing vote document!");
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        gameViewController.vote = [[Vote alloc] initWithDictionary:properties];
     });
 }
 
@@ -252,6 +217,18 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
     Game* game = (Game *)gameAndValidMove[0];
     GameValidMove* validMove = (GameValidMove *)gameAndValidMove[1];
     
+    // On the 1st vote per game update the user doc w/ the current game number.
+    if (![NSNumber number:userDoc.properties[@"game"] isEqualToNumber:game.number]) {
+        NSError* error = updateDoc(userDoc, ^(NSMutableDictionary *props) {
+            props[@"game"] = game.number;
+            
+            return YES;
+        });
+        if (error) {
+            NSLog(@"WARNING: Couldn't save user doc: %@", error);
+        }
+    }
+    
     NSError* error = updateDoc(voteDoc, ^(NSMutableDictionary *props) {
         props[@"game"] = game.number;
         props[@"turn"] = game.turn;
@@ -264,18 +241,6 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
     if (error) {
         NSLog(@"WARNING: Couldn't save vote doc: %@", error);
     }
-    
-    // On 1st vote per game we update the user doc w/ the current game number.
-    if (![NSNumber number:userDoc.properties[@"game"] isEqualToNumber:game.number]) {
-        NSError* error = updateDoc(userDoc, ^(NSMutableDictionary *props) {
-            props[@"game"] = game.number;
-            
-            return YES;
-        });
-        if (error) {
-            NSLog(@"WARNING: Couldn't save vote doc: %@", error);
-        }
-    }
 }
 
 -(void)gameViewController:(GameViewController *)theGameViewController buttonTapped:(GameViewControllerButton)button {
@@ -283,10 +248,12 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
         if (Facebook.composeServiceAvailable)
         {
             SLComposeViewController * sheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-            [sheet setInitialText:@"Couchbase Checkers\n\n"];
+            if (theGameViewController.game.applicationName) {
+                [sheet setInitialText:[NSString stringWithFormat:@"%@\n\n", theGameViewController.game.applicationName]];
+            }
             
             [sheet addImage:gameViewController.gameAsImage];
-            [sheet addURL:[NSURL URLWithString:@"http://www.couchbase.com/checkers"]];
+            [sheet addURL:[NSURL URLWithString:theGameViewController.game.applicationUrl]];
             
             [gameViewController presentViewController:sheet animated:YES completion:nil];
         }
@@ -297,7 +264,7 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
             //[sheet setInitialText:@"Couchbase Checkers\n\n"];
             
             [sheet addImage:gameViewController.gameAsImage];
-            [sheet addURL:[NSURL URLWithString:@"http://www.couchbase.com/checkers"]];
+            [sheet addURL:[NSURL URLWithString:theGameViewController.game.applicationUrl]];
             
             [gameViewController presentViewController:sheet animated:YES completion:nil];
         }
