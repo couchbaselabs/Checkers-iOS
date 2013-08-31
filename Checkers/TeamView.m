@@ -63,6 +63,15 @@
     handler(self.team);
 }
 
+-(NSUInteger)game {
+    return game;
+}
+
+-(void)setGame:(NSUInteger)theGame {
+    game = theGame;
+    [self setNeedsLayout];
+}
+
 -(NSUInteger)team {
     return team;
 }
@@ -72,21 +81,21 @@
     [self setNeedsLayout];
 }
 
--(BOOL)userOnTeam {
-    return userOnTeam;
+-(NSUInteger)userTeam {
+    return userTeam;
 }
 
--(void)setUserOnTeam:(BOOL)theUserOnTeam {
-    userOnTeam = theUserOnTeam;
+-(void)setUserTeam:(NSUInteger)theUserTeam {
+    userTeam = theUserTeam;
     [self setNeedsLayout];
 }
 
--(BOOL)userCanJoinTeam {
-    return userCanJoinTeam;
+-(NSUInteger)userGame {
+    return userGame;
 }
 
--(void)setUserCanJoinTeam:(BOOL)theUserCanJoinTeam {
-    userCanJoinTeam = theUserCanJoinTeam;
+-(void)setUserGame:(NSUInteger)theUserGame {
+    userGame = theUserGame;
     [self setNeedsLayout];
 }
 
@@ -108,6 +117,18 @@
     [self setNeedsLayout];
 }
 
+-(BOOL)userOnTeam {
+    return (self.team == self.userTeam);
+}
+
+-(BOOL)userCanJoinTeam {
+    return !self.userOnTeam && (userGame != game);
+}
+
+-(BOOL)userIncludedInPeople {
+    return (userGame == game);
+}
+
 -(void)layoutSubviews {
     NSUInteger height = self.bounds.size.height;
     NSUInteger padding = (height > 44 + 32 ? 16 : 8);
@@ -115,6 +136,8 @@
     infoView.frame = CGRectZero;
     
     if (self.userOnTeam) {
+        NSUInteger peopleMinusUser = (self.userIncludedInPeople ? self.people - 1 : self.people);
+        
         // Image or "You"
         NSUInteger pictureSize = MIN(height - (2 * padding), 44);
         UIImage * userPicture = [Facebook pictureWithSize:(pictureSize * 2)];
@@ -123,7 +146,13 @@
             userImageView.frame = CGRectMake(0, 0, pictureSize + 4, pictureSize + 4);
             userImageView.image = [AppStyle strokeImage:userPicture forTeam:self.team];
             
-            peopleLabel.text = [NSString stringWithFormat:@" + %@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
+            if (peopleMinusUser > 0) {
+                peopleLabel.text = [NSString stringWithFormat:@" + %@ %@",
+                                    [numberFormatter stringFromNumber:[NSNumber numberWithInt:peopleMinusUser]],
+                                    [self personStringForCount:self.people]];
+            } else {
+                peopleLabel.text = nil;
+            }
             
             peopleLabel.textAlignment = NSTextAlignmentLeft;
             peopleLabel.textColor = AppStyle.darkColor;
@@ -134,10 +163,17 @@
             userImageView.hidden = YES;
             userImageView.frame = CGRectZero;
             
-            NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"You + %@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]]];
-            [text addAttribute: NSForegroundColorAttributeName value:[AppStyle colorForTeam:self.team] range: NSMakeRange(0, 3)];
-            [text addAttribute: NSForegroundColorAttributeName value:AppStyle.darkColor range: NSMakeRange(3, text.length - 3)];
-            peopleLabel.attributedText = text;
+            if (peopleMinusUser > 0) {
+                NSMutableAttributedString *text = [[NSMutableAttributedString alloc]
+                                                   initWithString:[NSString stringWithFormat:@"You + %@ %@",
+                                                                   [numberFormatter stringFromNumber:[NSNumber numberWithInt:peopleMinusUser]],
+                                                                   [self personStringForCount:self.people]]];
+                [text addAttribute: NSForegroundColorAttributeName value:[AppStyle colorForTeam:self.team] range: NSMakeRange(0, 3)];
+                [text addAttribute: NSForegroundColorAttributeName value:AppStyle.darkColor range: NSMakeRange(3, text.length - 3)];
+                peopleLabel.attributedText = text;
+            } else {
+                peopleLabel.text = @"You";
+            }
             
             peopleLabel.textAlignment = NSTextAlignmentLeft;
             [peopleLabel sizeToFit];
@@ -161,10 +197,19 @@
         peopleLabel.textAlignment = NSTextAlignmentCenter;
         if (self.userCanJoinTeam) {
             peopleLabel.textColor = [AppStyle colorForTeam:self.team];
-            peopleLabel.text = [NSString stringWithFormat:@"Join\n%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
+            
+            if (self.people > 0) {
+                peopleLabel.text = [NSString stringWithFormat:@"Join\n%@ %@",
+                                    [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]],
+                                    [self personStringForCount:self.people]];
+            } else {
+                peopleLabel.text = @"Join";
+            }
         } else {
             peopleLabel.textColor = AppStyle.darkColor;
-            peopleLabel.text = [NSString stringWithFormat:@"%@ people", [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]]];
+            peopleLabel.text = [NSString stringWithFormat:@"%@ %@",
+                                [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]],
+                                [self personStringForCount:self.people]];
         }
         [peopleLabel sizeToFit];
         peopleLabel.frame = CGRectMake(0, 0, peopleLabel.frame.size.width, peopleLabel.frame.size.height);
@@ -185,6 +230,10 @@
                                     infoView.frame.size.width,
                                     infoView.frame.size.height);
     }
+}
+
+-(NSString *)personStringForCount:(int)count {
+    return (count == 1 ? @"person" : @"people");
 }
 
 @end
