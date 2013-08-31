@@ -16,6 +16,7 @@
 - (id)initWithData:(NSData *)data;
 - (id)initWithDictionary:(NSDictionary *)dictionary;
 
-@property (readonly) NSNumber * team;
+@property NSNumber * game;
+@property NSNumber * team;
 
 @end

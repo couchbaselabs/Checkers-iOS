@@ -29,4 +29,16 @@
     return [data objectForKey:@"team"];
 }
 
+-(void)setTeam:(NSNumber *)team {
+    [data setObject:team forKey:@"team"];
+}
+
+-(NSNumber *)game {
+    return [data objectForKey:@"game"];
+}
+
+-(void)setGame:(NSNumber *)game {
+    [data setObject:game forKey:@"game"];
+}
+
 @end
