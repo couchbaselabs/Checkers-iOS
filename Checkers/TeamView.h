@@ -14,10 +14,10 @@ typedef void(^TeamSelectionHandler)(NSUInteger team);
 @private
     TeamSelectionHandler handler;
     
-    NSUInteger game;
-    NSUInteger team;
-    NSUInteger userTeam;
-    NSUInteger userGame;
+    NSNumber * game;
+    NSNumber * team;
+    NSNumber * userTeam;
+    NSNumber * userGame;
     NSUInteger people;
     NSUInteger votes;
     
@@ -31,10 +31,10 @@ typedef void(^TeamSelectionHandler)(NSUInteger team);
 
 -(id)initWithHandler:(TeamSelectionHandler)handler;
 
-@property NSUInteger game;
-@property NSUInteger team;
-@property NSUInteger userTeam;
-@property NSUInteger userGame;
+@property NSNumber * game;
+@property NSNumber * team;
+@property NSNumber * userTeam;
+@property NSNumber * userGame;
 @property NSUInteger people;
 @property NSUInteger votes;
 

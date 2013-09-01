@@ -10,6 +10,7 @@
 #import "Facebook.h"
 #import "AppStyle.h"
 #import "UIView+Extended.h"
+#import "NSNumber+Equality.h"
 
 @implementation TeamView
 
@@ -60,41 +61,41 @@
 -(IBAction)click:(id)sender
 {
     [self touchUp:sender];
-    handler(self.team);
+    handler(self.team.intValue);
 }
 
--(NSUInteger)game {
+-(NSNumber *)game {
     return game;
 }
 
--(void)setGame:(NSUInteger)theGame {
+-(void)setGame:(NSNumber *)theGame {
     game = theGame;
     [self setNeedsLayout];
 }
 
--(NSUInteger)team {
+-(NSNumber *)team {
     return team;
 }
 
--(void)setTeam:(NSUInteger)theTeam {
+-(void)setTeam:(NSNumber *)theTeam {
     team = theTeam;
     [self setNeedsLayout];
 }
 
--(NSUInteger)userTeam {
+-(NSNumber *)userTeam {
     return userTeam;
 }
 
--(void)setUserTeam:(NSUInteger)theUserTeam {
+-(void)setUserTeam:(NSNumber *)theUserTeam {
     userTeam = theUserTeam;
     [self setNeedsLayout];
 }
 
--(NSUInteger)userGame {
+-(NSNumber *)userGame {
     return userGame;
 }
 
--(void)setUserGame:(NSUInteger)theUserGame {
+-(void)setUserGame:(NSNumber *)theUserGame {
     userGame = theUserGame;
     [self setNeedsLayout];
 }
@@ -118,11 +119,11 @@
 }
 
 -(BOOL)userOnTeam {
-    return (self.team == self.userTeam);
+    return [NSNumber number:team isEqualToNumber:userTeam];
 }
 
 -(BOOL)userCanJoinTeam {
-    return !self.userOnTeam && (userGame != game);
+    return !self.userOnTeam && ![NSNumber number:game isEqualToNumber:userGame];
 }
 
 -(BOOL)userIncludedInPeople {
@@ -144,7 +145,7 @@
         if (userPicture) {
             userImageView.hidden = NO;
             userImageView.frame = CGRectMake(0, 0, pictureSize + 4, pictureSize + 4);
-            userImageView.image = [AppStyle strokeImage:userPicture forTeam:self.team];
+            userImageView.image = [AppStyle strokeImage:userPicture forTeam:self.team.intValue];
             
             if (peopleMinusUser > 0) {
                 peopleLabel.text = [NSString stringWithFormat:@" + %@ %@",
@@ -168,7 +169,7 @@
                                                    initWithString:[NSString stringWithFormat:@"You + %@ %@",
                                                                    [numberFormatter stringFromNumber:[NSNumber numberWithInt:peopleMinusUser]],
                                                                    [self personStringForCount:peopleMinusUser]]];
-                [text addAttribute: NSForegroundColorAttributeName value:[AppStyle colorForTeam:self.team] range: NSMakeRange(0, 3)];
+                [text addAttribute: NSForegroundColorAttributeName value:[AppStyle colorForTeam:self.team.intValue] range: NSMakeRange(0, 3)];
                 [text addAttribute: NSForegroundColorAttributeName value:AppStyle.darkColor range: NSMakeRange(3, text.length - 3)];
                 peopleLabel.attributedText = text;
             } else {
@@ -196,7 +197,7 @@
         // Other team
         peopleLabel.textAlignment = NSTextAlignmentCenter;
         if (self.userCanJoinTeam) {
-            peopleLabel.textColor = [AppStyle colorForTeam:self.team];
+            peopleLabel.textColor = [AppStyle colorForTeam:self.team.intValue];
             
             if (self.people > 0) {
                 peopleLabel.text = [NSString stringWithFormat:@"Join\n%@ %@",
@@ -219,7 +220,7 @@
     
     [infoView sizeToFitSubviews];
     int infoViewPadding = (self.frame.size.height > 44 + 32 ? 16 : 8);
-    if (team == 1) {
+    if (team.intValue == 1) {
         infoView.frame = CGRectMake((self.bounds.size.width / 2) - (infoView.frame.size.width / 2),
                                     infoViewPadding,
                                     infoView.frame.size.width,
