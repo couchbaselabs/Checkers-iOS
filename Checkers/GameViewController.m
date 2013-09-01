@@ -223,6 +223,7 @@
 
 -(void)setVote:(Vote *)theVote {
     vote = theVote;
+    checkerboard.vote = vote;
     
     [self layoutTeamInfo];
     [self layoutGameInfo];
@@ -234,7 +235,7 @@
 
 -(void)setVotes:(Votes *)theVotes {
     votes = theVotes;
-    checkerboard.votes = theVotes;
+    checkerboard.votes = votes;
 }
 
 -(IBAction)facebookClick:(id)sender
