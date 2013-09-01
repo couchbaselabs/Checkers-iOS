@@ -62,8 +62,13 @@
     }
 #ifdef kSyncURL
     NSArray* repls = [database replicateWithURL:[NSURL URLWithString:kSyncURL] exclusively:YES];
+    NSDictionary* filterparams = [[NSDictionary alloc] initWithObjectsAndKeys:@"game", @"channels", nil];
     for (CBLReplication* repl in repls) {
         repl.continuous = repl.persistent = YES;
+        if(repl.pull) {
+            repl.filter = @"sync_gateway/bychannel";
+            repl.query_params = filterparams;
+        }
     }
     // Observe the pull replication to detect when it's caught up:
     pull = repls[0];
