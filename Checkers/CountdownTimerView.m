@@ -40,14 +40,9 @@
             secondsString = [@"0" stringByAppendingString: secondsString];
         }
         
-        NSString * millisecondsString = [NSString stringWithFormat:@"%.0f", (secondsRemaining - seconds) * 1000];
-        while (millisecondsString.length < 3) {
-            millisecondsString = [millisecondsString stringByAppendingString: @"0"];
-        }
-        
-        return [NSString stringWithFormat:@"%@:%@", secondsString, millisecondsString];
+        return [NSString stringWithFormat:@"%@", secondsString];
     } else {
-        return @"00:000";
+        return @"00";
     }
 }
 
