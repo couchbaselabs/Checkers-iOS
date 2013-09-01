@@ -127,7 +127,7 @@
 }
 
 -(BOOL)userIncludedInPeople {
-    return (userGame == game);
+    return [NSNumber number:game isEqualToNumber:userGame];
 }
 
 -(void)layoutSubviews {
@@ -137,7 +137,7 @@
     infoView.frame = CGRectZero;
     
     if (self.userOnTeam) {
-        NSUInteger peopleMinusUser = MAX((self.userIncludedInPeople ? self.people - 1 : self.people), 0);
+        NSUInteger peopleMinusUser = (self.userIncludedInPeople && self.people > 0 ? self.people - 1 : self.people);
         
         // Image or "You"
         NSUInteger pictureSize = MIN(height - (2 * padding), 44);
@@ -166,13 +166,14 @@
             
             if (peopleMinusUser > 0) {
                 NSMutableAttributedString *text = [[NSMutableAttributedString alloc]
-                                                   initWithString:[NSString stringWithFormat:@"You + %@ %@",
-                                                                   [numberFormatter stringFromNumber:[NSNumber numberWithInt:peopleMinusUser]],
+                                                   initWithString:[NSString stringWithFormat:@"You + %d %@",
+                                                                   peopleMinusUser,
                                                                    [self personStringForCount:peopleMinusUser]]];
                 [text addAttribute: NSForegroundColorAttributeName value:[AppStyle colorForTeam:self.team.intValue] range: NSMakeRange(0, 3)];
                 [text addAttribute: NSForegroundColorAttributeName value:AppStyle.darkColor range: NSMakeRange(3, text.length - 3)];
                 peopleLabel.attributedText = text;
             } else {
+                peopleLabel.textColor = [AppStyle colorForTeam:self.team.intValue];
                 peopleLabel.text = @"You";
             }
             
