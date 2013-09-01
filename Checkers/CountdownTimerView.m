@@ -64,11 +64,14 @@
         
         if (secondsRemaining < 0) {
             if (!timedOut) {
-                timedOut = YES;
                 [self.delegate countdownTimerViewTimeout:self];
             } else {
                 self.hidden = !self.hidden;
             }
+            
+            timedOut = YES;
+        } else {
+            timedOut = NO;
         }
         
         dispatch_after(delay, queue, ^{
