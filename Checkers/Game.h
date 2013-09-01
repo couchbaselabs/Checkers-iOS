@@ -78,7 +78,7 @@
     NSMutableArray * captures;
 }
 
-- (id)initWithData:(NSDictionary *)data team:(int)team piece:(int)piece;
+- (id)initWithData:(NSDictionary *)data piece:(GamePiece *)piece;
 
 @property (readonly) NSArray * captures;
 @property (readonly) BOOL king;

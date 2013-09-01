@@ -81,7 +81,7 @@
         validMoves = [NSMutableArray array];
         
         for (NSDictionary * validMove in [data objectForKey:@"validMoves"]) {
-            [validMoves addObject:[[GameValidMove alloc] initWithData:validMove team:self.team piece:self.number]];
+            [validMoves addObject:[[GameValidMove alloc] initWithData:validMove piece:self]];
         }
     }
     
@@ -155,8 +155,13 @@
 // Move
 @implementation GameValidMove
 
--(id)initWithData:(NSDictionary *)theData team:(int)team piece:(int)piece {
-    if (self = [super initWithTeam:team piece:piece locations:[theData objectForKey:@"locations"]]) {
+-(id)initWithData:(NSDictionary *)theData piece:(GamePiece *)piece {
+    NSMutableArray * locations = ((NSArray *)[theData objectForKey:@"locations"]).mutableCopy;
+    if (locations.count == 0 || ![[locations objectAtIndex:0] isEqual:piece.location]) {
+        [locations insertObject:piece.location atIndex:0];
+    }
+        
+    if (self = [super initWithTeam:piece.team piece:piece.number locations:locations]) {
         data = [theData mutableCopy];
     }
     
