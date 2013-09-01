@@ -136,7 +136,7 @@
     infoView.frame = CGRectZero;
     
     if (self.userOnTeam) {
-        NSUInteger peopleMinusUser = (self.userIncludedInPeople ? self.people - 1 : self.people);
+        NSUInteger peopleMinusUser = MAX((self.userIncludedInPeople ? self.people - 1 : self.people), 0);
         
         // Image or "You"
         NSUInteger pictureSize = MIN(height - (2 * padding), 44);
