@@ -81,6 +81,9 @@
         
         teamPieces = [NSArray arrayWithObjects:[NSMutableArray array], [NSMutableArray array], nil];
         validMoves = [NSMutableArray array];
+        voteMoves = [NSMutableArray array];
+        voteCaptures = [NSMutableArray array];
+        votesViews = [NSMutableArray array];
     }
     
     return self;
@@ -92,6 +95,18 @@
         
         if (index < squares.count) {
             return [squares objectAtIndex:index];
+        }
+    }
+    
+    return nil;
+}
+
+- (CheckerboardPieceView *)viewForPiece:(int)piece team:(int)team {
+    if (teamPieces.count > team) {
+        NSArray * pieces = [teamPieces objectAtIndex:team];
+        
+        if (pieces.count > piece) {
+            return [pieces objectAtIndex:piece];
         }
     }
     
@@ -180,39 +195,6 @@
 }
 
 - (void)executeValidMove:(GameValidMove *)validMove {
-    GamePiece * piece = [((GameTeam *)[game.teams objectAtIndex:validMove.team]).pieces objectAtIndex:validMove.piece];
-    
-    // Add move to game moves.
-    NSMutableArray * locations = [NSMutableArray arrayWithArray:validMove.locations];
-    [locations insertObject:piece.location atIndex:0];
-    [game.moves addObject:[[GameMove alloc] initWithTeam:validMove.team piece:validMove.piece locations:locations]];
-    
-    // Move piece.
-    piece.location = [validMove.locations lastObject];
-    
-    // Remove valid moves from all pieces (i.e. after a move there are no valid moves).
-    for (GameTeam * team in game.teams) {
-        for (GamePiece * piece in team.pieces) {
-            [piece.validMoves removeAllObjects];
-        }
-    }
-    
-    // Capture pieces.
-    for (GameCapture * capture in validMove.captures) {
-        ((GamePiece *)[((GameTeam *)[game.teams objectAtIndex:capture.team]).pieces objectAtIndex:capture.piece]).captured = YES;
-    }
-    
-    // King the piece.
-    if (validMove.king && !piece.king) {
-        piece.king = YES;
-        
-        CheckerboardPieceView * pieceView = [((NSArray *)[teamPieces objectAtIndex:validMove.team]) objectAtIndex:validMove.piece];
-        pieceView.image = [AppStyle pieceForTeam:validMove.team squareSize:self.squareSize king:YES];
-    }
-    
-    // Set the new game state.
-    [self setGame:game animated:YES animateLastMove:YES];
-    
     [self.delegate checkerboard:self didMakeValidMove:validMove];
 }
 
@@ -239,16 +221,20 @@
 }
 
 - (void)setGame:(Game *)theGame animated:(BOOL)animated {
+    GameMove * animatedMove;
     GameMove * lastMove = theGame.moves.lastObject;
-    BOOL animateLastMove = (animated
-                            && [NSNumber number:game.number isEqualToNumber:theGame.number]
-                            && ![NSNumber number:game.turn isEqualToNumber:theGame.turn]
-                            && lastMove.locations.count > 0 ? YES : NO);
+    if (animated
+        && [NSNumber number:game.number isEqualToNumber:theGame.number]
+        && ![NSNumber number:game.turn isEqualToNumber:theGame.turn]
+        && lastMove.locations.count > 0 ? YES : NO) {
+        
+        animatedMove = lastMove;
+    }
     
-    [self setGame:theGame animated:animated animateLastMove:animateLastMove];
+    [self setGame:theGame animated:animated animatedMove:animatedMove];
 }
 
-- (void)setGame:(Game *)theGame animated:(BOOL)animated animateLastMove:(BOOL)animateLastMove {
+- (void)setGame:(Game *)theGame animated:(BOOL)animated animatedMove:(GameMove *)animatedMove {
     [self clearValidMoves];
     
     // Clear the game on nil data.
@@ -266,8 +252,11 @@
     }
     
     game = theGame;
-    GameMove * lastMove = game.moves.lastObject;
     
+    [self layoutGameAnimated:animated animatedMove:animatedMove];
+}
+
+- (void)layoutGameAnimated:(BOOL)animated animatedMove:(GameMove *)animatedMove {
     float squareSize = self.squareSize;
     
     // Set team pieces.
@@ -279,7 +268,7 @@
             GamePiece * piece = [pieces objectAtIndex:i];
             UIView * square = [self squareAtLocation:piece.location];
             
-            CheckerboardPieceView * pieceView = (pieceViews.count > i ? [pieceViews objectAtIndex:i] : nil);
+            CheckerboardPieceView * pieceView = [self viewForPiece:i team:team];
             if (pieceView == nil) {
                 pieceView = [[CheckerboardPieceView alloc] initWithImage:[AppStyle pieceForTeam:team squareSize:squareSize king:piece.king]];
                 pieceView.center = square.center;
@@ -296,7 +285,15 @@
             pieceView.userInteractionEnabled = (piece.validMoves.count > 0);
             pieceView.piece = piece;
             
-            if (!animateLastMove || lastMove.team != team || lastMove.piece != i) {
+            if (animatedMove && animatedMove.team == team && animatedMove.piece == i) {
+                // Do nothing.  This move will be animated separately.
+            } else if (vote
+                       && [NSNumber number:vote.game isEqualToNumber:game.number]
+                       && [NSNumber number:vote.turn isEqualToNumber:game.turn]
+                       && [NSNumber number:vote.team isEqualToNumber:[NSNumber numberWithInt:team]]
+                       && [NSNumber number:vote.piece isEqualToNumber:[NSNumber numberWithInt:i]]) {
+                // Do nothing.  This move will be animated separately.
+            } else {
                 if (animated) {
                     [UIView animateWithDuration:0.15 animations:^{
                         pieceView.center = square.center;
@@ -311,48 +308,20 @@
     }
     
     // Animate last move.
-    if (animateLastMove) {
-        NSMutableArray * pieceViews = [teamPieces objectAtIndex:lastMove.team];
+    if (animatedMove) {
+        CheckerboardPieceView * pieceView = [self viewForPiece:animatedMove.piece team:animatedMove.team];
         
-        if (pieceViews.count > lastMove.piece) {
-            GamePiece * piece = [((GameTeam *)[game.teams objectAtIndex:lastMove.team]).pieces objectAtIndex:lastMove.piece];
-            UIImageView * pieceView = [pieceViews objectAtIndex:lastMove.piece];
-            UIView * finalSquare = [self squareAtLocation:lastMove.locations.lastObject];
+        if (pieceView) {
+            GamePiece * piece = [((GameTeam *)[game.teams objectAtIndex:animatedMove.team]).pieces objectAtIndex:animatedMove.piece];
             
-            if (!CGPointEqualToPoint(pieceView.center, finalSquare.center)) {
-                // If we are not already at the final location then we animate along
-                // the move's full path.
-                
-                UIBezierPath * path = [UIBezierPath bezierPath];
-                
-                NSArray * locations = lastMove.locations;
-                for (int i=0; i<locations.count; i++) {
-                    NSNumber * location = [locations objectAtIndex:i];
-                    UIView * square = [self squareAtLocation:location];
-                    
-                    if (i == 0) {
-                        [path moveToPoint:square.center];
-                    } else {
-                        [path addLineToPoint:square.center];
-                    }
-                }
-                
-                CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
-                animation.path = path.CGPath;
-                animation.duration = ((locations.count <= 2 ? 0.1 : 0.2) * locations.count);
-                
-                pieceView.layer.position = [path currentPoint];
-                pieceView.alpha = (piece.captured ? 0 : 1);
-                
-                [pieceView.layer addAnimation:animation forKey:nil];
-            } else {
-                // Otherwise we just flash the piece to indicate the move is confirmed.
-                
+            if (![self movePieceView:pieceView toLocations:animatedMove.locations animated:animated]) {
+                // If the piece didn't move then we flash the piece to indicate the move is confirmed.
+                UIView * finalSquare = [self squareAtLocation:animatedMove.locations.lastObject];    
                 pieceView.center = finalSquare.center;
                 pieceView.alpha = (piece.captured ? 0 : 1);
                 
                 if (!piece.captured) {
-                    UIImageView * confirmMoveImageView = [[UIImageView alloc] initWithImage:[AppStyle validMoveForTeam:lastMove.team squareSize:squareSize]];
+                    UIImageView * confirmMoveImageView = [[UIImageView alloc] initWithImage:[AppStyle validMoveForTeam:animatedMove.team squareSize:squareSize]];
                     confirmMoveImageView.center = pieceView.center;
                     [self addSubview:confirmMoveImageView];
                     
@@ -382,7 +351,183 @@
         }
     }
     
+    // Clean up previous vote moves.
+    [self clearViews:voteMoves animated:animated];
+    
+    // Clean up any previous vote captures.
+    [self clearViews:voteCaptures animated:animated];
+    
+    // Honor vote.
+    if (vote
+        && [NSNumber number:vote.game isEqualToNumber:game.number]
+        && [NSNumber number:vote.turn isEqualToNumber:game.turn]) {
+        
+        GameTeam * voteTeam = [game.teams objectAtIndex:vote.team.intValue];
+        GamePiece * votePiece = [voteTeam.pieces objectAtIndex:vote.piece.intValue];
+        
+        // Collect move shadow views.
+        for (NSNumber * location in vote.locations) {
+            UIView * voteMove = [[UIImageView alloc] initWithImage:[AppStyle pieceShadowForTeam:voteTeam.number squareSize:squareSize]];
+            
+            [voteMoves addObject:voteMove];
+        }
+        
+        // Collect capture and capture shadow views.
+        GameValidMove * voteValidMove;
+        for (GameValidMove * validMove in votePiece.validMoves) {
+            if ([vote.locations isEqualToArray:validMove.locations]) {
+                voteValidMove = validMove;
+                break;
+            }
+        }
+        NSMutableArray * captures = [NSMutableArray array];
+        for (GameCapture * capture in voteValidMove.captures) {
+            GameTeam * captureTeam = [game.teams objectAtIndex:capture.team];
+            UIView * voteCapture = [[UIImageView alloc] initWithImage:[AppStyle pieceShadowForTeam:captureTeam.number squareSize:squareSize]];
+            
+            [captures addObject:[self viewForPiece:capture.piece team:capture.team]];
+            [voteCaptures addObject:voteCapture];
+        }
+        
+        // Execute.
+        CheckerboardPieceView * votePieceView = [self viewForPiece:votePiece.number team:voteTeam.number];
+        [self movePieceView:votePieceView
+                toLocations:vote.locations
+                    shadows:voteMoves
+                   captures:captures
+             captureShadows:voteCaptures
+                       king:voteValidMove.king
+                   animated:animated];
+    }
+    
     [self layoutVotes];
+}
+
+-(void)clearViews:(NSMutableArray *)views animated:(BOOL)animated {
+    if (animated) {
+        for (UIView * view in views) {
+            [UIView animateWithDuration:0.15 animations:^{
+                view.alpha = 0;
+            } completion:^(BOOL finished) {
+                [view removeFromSuperview];
+            }];
+        }
+    } else {
+        for (UIView * view in views) {
+            [view removeFromSuperview];
+        }
+    }
+    
+    [views removeAllObjects];
+}
+
+-(BOOL)movePieceView:(CheckerboardPieceView *)pieceView
+         toLocations:(NSArray *)locations
+            animated:(BOOL)animated {
+    
+    return [self movePieceView:pieceView toLocations:locations shadows:nil captures:nil captureShadows:nil king:NO animated:animated];
+}
+
+-(BOOL)movePieceView:(CheckerboardPieceView *)pieceView
+         toLocations:(NSArray *)locations
+             shadows:(NSArray *)shadows
+            captures:(NSArray *)captures
+      captureShadows:(NSArray *)captureShadows
+                king:(BOOL)king
+            animated:(BOOL)animated {
+    
+    // Determine if the piece will actually be moved.
+    UIView * finalSquare = [self squareAtLocation:locations.lastObject];
+    BOOL moved = !CGPointEqualToPoint(pieceView.center, finalSquare.center);
+    
+    // If we are already at the final location then we don't animate.
+    animated = (animated && moved);
+    
+    // Bring view to front.
+    [self bringSubviewToFront:pieceView];
+    
+    // Recursively move to each location, stopping for a moment at each
+    // point, and capturing on the way over a piece.
+    __block int i = 1;
+    void(^animate)(void(^recursive)());
+    animate = ^(void(^recursive)()) {
+        if (i < locations.count) {
+            NSNumber * location = [locations objectAtIndex:i];
+            UIView * square = [self squareAtLocation:location];
+            NSNumber * previousLocation = [locations objectAtIndex:i-1];
+            UIView * previousSquare = [self squareAtLocation:previousLocation];
+            float dx = (previousSquare.center.x - square.center.x);
+            float dy = (previousSquare.center.y - square.center.y);
+            float d = sqrtf(powf(dx, 2) + powf(dy, 2));
+            
+            // Move shadow to previous square location.
+            UIView * shadow = (shadows.count > i - 1 ? [shadows objectAtIndex:i - 1] : nil);
+            shadow.center = previousSquare.center;
+            
+            // Move capture shadow to capture location.
+            UIView * capture = (captures.count > i - 1 ? [captures objectAtIndex:i - 1] : nil);
+            UIView * captureShadow = (captureShadows.count > i - 1 ? [captureShadows objectAtIndex:i - 1] : nil);
+            captureShadow.center = capture.center;
+            
+            if (animated) {
+                [UIView animateWithDuration:(d / 40) * 0.1
+                                      delay:(i > 1 ? 0.1 : 0)
+                                    options:0
+                                 animations:^{
+                                     // Move piece.
+                                     pieceView.center = square.center;
+                                     
+                                     // Leave shadow.
+                                     [self insertSubview:shadow belowSubview:pieceView];
+                                     
+                                     // Capture and leave capture shadow.
+                                     capture.alpha = 0;
+                                     [self insertSubview:captureShadow belowSubview:pieceView];
+                                 }
+                                 completion:^(BOOL finished) {
+                                     // King at end of last move.
+                                     if (king && (i == locations.count - 1)) {
+                                         pieceView.image = [AppStyle pieceForTeam:pieceView.piece.team squareSize:pieceView.frame.size.height king:YES];
+                                     }
+                                     
+                                     i++;
+                                     
+                                     recursive(recursive);
+                                 }];
+            } else {
+                // Move piece.
+                pieceView.center = square.center;
+                
+                // Leave shadow.
+                [self insertSubview:shadow belowSubview:pieceView];
+                
+                // Capture and leave capture shadow.
+                capture.alpha = 0;
+                [self insertSubview:captureShadow belowSubview:pieceView];
+                
+                // King at end of last move.
+                if (king && (i == locations.count - 1)) {
+                    pieceView.image = [AppStyle pieceForTeam:pieceView.piece.team squareSize:pieceView.frame.size.height king:YES];
+                }
+                
+                i++;
+                
+                recursive(recursive);
+            }
+        }
+    };
+    animate(animate);
+    
+    return moved;
+}
+
+-(Vote *)vote {
+    return vote;
+}
+
+-(void)setVote:(Vote *)theVote {
+    vote = theVote;
+    [self layoutGameAnimated:YES animatedMove:nil];
 }
 
 -(Votes *)votes
@@ -399,19 +544,15 @@
 
 -(void)layoutVotes
 {
-    if (voteViews == nil) {
-        voteViews = [NSMutableArray array];
-    }
-    
     // Transition out previous trending votes.
-    for (UIView * voteView in voteViews) {
+    for (UIView * votesView in votesViews) {
         [UIView animateWithDuration:0.5 animations:^{
-            voteView.alpha = 0;
+            votesView.alpha = 0;
         } completion:^(BOOL finished) {
-            [voteView removeFromSuperview];
+            [votesView removeFromSuperview];
         }];
     }
-    [voteViews removeAllObjects];
+    [votesViews removeAllObjects];
     
     if (votes.moves.count > 0
         && [NSNumber number:votes.game isEqualToNumber:game.number]
@@ -437,16 +578,16 @@
         float maxSize = 6.0f;
         for (VotesMove * votesMove in moves) {
             UIImage * voteImage = [AppStyle drawTrendingPathForTeam:votesMove.team size:(((float)votesMove.count.intValue / (float)totalTrendingCount) * maxSize) locations:votesMove.locations squares:squares rect:self.bounds];
-            UIImageView * voteView = [[UIImageView alloc] initWithImage:voteImage];
-            voteView.alpha = 0;
+            UIImageView * votesView = [[UIImageView alloc] initWithImage:voteImage];
+            votesView.alpha = 0;
             
-            [voteViews addObject:voteView];
-            [self addSubview:voteView];
+            [votesViews addObject:votesView];
+            [self addSubview:votesView];
             
             // Transition in trending votes.
-            for (UIView * voteView in voteViews) {
+            for (UIView * votesView in votesViews) {
                 [UIView animateWithDuration:0.5 animations:^{
-                    voteView.alpha = 1;
+                    votesView.alpha = 1;
                 }];
             }
         }

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Game.h"
+#import "Vote.h"
 #import "Votes.h"
 
 @protocol CheckerboardDelegate;
@@ -17,9 +18,12 @@
     NSMutableArray * squares;
     NSArray * teamPieces;
     NSMutableArray * validMoves;
-    NSMutableArray * voteViews;
+    NSMutableArray * voteMoves;
+    NSMutableArray * voteCaptures;
+    NSMutableArray * votesViews;
     
     Game * game;
+    Vote * vote;
     Votes * votes;
 }
 
@@ -27,6 +31,7 @@
 
 @property id<CheckerboardDelegate> delegate;
 @property Game * game;
+@property Vote * vote;
 @property Votes * votes;
 
 @end
