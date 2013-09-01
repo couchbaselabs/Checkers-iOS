@@ -149,7 +149,7 @@
             if (peopleMinusUser > 0) {
                 peopleLabel.text = [NSString stringWithFormat:@" + %@ %@",
                                     [numberFormatter stringFromNumber:[NSNumber numberWithInt:peopleMinusUser]],
-                                    [self personStringForCount:self.people]];
+                                    [self personStringForCount:peopleMinusUser]];
             } else {
                 peopleLabel.text = nil;
             }
@@ -167,7 +167,7 @@
                 NSMutableAttributedString *text = [[NSMutableAttributedString alloc]
                                                    initWithString:[NSString stringWithFormat:@"You + %@ %@",
                                                                    [numberFormatter stringFromNumber:[NSNumber numberWithInt:peopleMinusUser]],
-                                                                   [self personStringForCount:self.people]]];
+                                                                   [self personStringForCount:peopleMinusUser]]];
                 [text addAttribute: NSForegroundColorAttributeName value:[AppStyle colorForTeam:self.team] range: NSMakeRange(0, 3)];
                 [text addAttribute: NSForegroundColorAttributeName value:AppStyle.darkColor range: NSMakeRange(3, text.length - 3)];
                 peopleLabel.attributedText = text;
