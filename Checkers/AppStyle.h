@@ -22,6 +22,7 @@
 + (UIColor *)validMoveColor;
 
 + (UIImage *)pieceForTeam:(int)team squareSize:(float)squareSize king:(BOOL)king;
++ (UIImage *)pieceShadowForTeam:(int)team squareSize:(float)squareSize;
 + (UIImage *)validMoveForTeam:(int)team squareSize:(float)squareSize;
 
 + (UIImage *)strokeImage:(UIImage *)image forTeam:(int)team;

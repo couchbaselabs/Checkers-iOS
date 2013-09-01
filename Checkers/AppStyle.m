@@ -47,35 +47,39 @@
     return RGB(61, 223, 137);
 }
 
-static NSCache * teamPieces;
+static NSCache * pieces;
 + (UIImage *) pieceForTeam:(int)team squareSize:(float)squareSize king:(BOOL)king
 {
-    if (teamPieces == nil) {
-        teamPieces = [[NSCache alloc] init];
+    if (pieces == nil) {
+        pieces = [[NSCache alloc] init];
     }
     
     NSString * key = [NSString stringWithFormat:@"%d-%f-%d", team, squareSize, king];
-    UIImage * piece = [teamPieces objectForKey:key];
+    UIImage * piece = [pieces objectForKey:key];
     if (!piece) {
         CGFloat size = roundf(MIN(squareSize * 0.625, 1024));
         
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(size, size), NO, 0);
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(squareSize, squareSize), NO, 0);
         CGContextRef context = UIGraphicsGetCurrentContext();
         UIGraphicsPushContext(context);
         
         CGContextSetFillColorWithColor(context, [AppStyle colorForTeam:team].CGColor);
         
+        // Create/center drawing rect.
+        CGRect rect = CGRectMake(0, 0, size, size);
+        rect = CGRectOffset(rect, (squareSize - rect.size.width) / 2, (squareSize - rect.size.height) / 2);
+        
         // Draw filled circle.
-        CGContextFillEllipseInRect(context, CGRectMake(0, 0, size, size));
+        CGContextFillEllipseInRect(context, rect);
         
         // Draw king.
         if (king) {
             UIImage * kingImage = [UIImage imageNamed:@"King.png"];
             CGFloat inset = roundf(size * 0.2f);
-            CGRect kingRect = CGRectInset(CGRectMake(0, 0, size, size), inset, inset);
+            CGRect kingRect = CGRectInset(rect, inset, inset);
             
             // Flip the coordinate system so the image will not be drawn upside down.
-            CGContextTranslateCTM(context, 0, size);
+            CGContextTranslateCTM(context, 0, squareSize);
             CGContextScaleCTM(context, 1.0, -1.0);
             
             CGContextDrawImage(context, kingRect, kingImage.CGImage);
@@ -84,12 +88,50 @@ static NSCache * teamPieces;
         UIGraphicsPopContext();
         
         piece = UIGraphicsGetImageFromCurrentImageContext();
-        [teamPieces setObject:piece forKey:key];
+        [pieces setObject:piece forKey:key];
         
         UIGraphicsEndImageContext();
     }
     
     return piece;
+}
+
+static NSCache * pieceShadows;
++ (UIImage *)pieceShadowForTeam:(int)team squareSize:(float)squareSize
+{
+    if (pieceShadows == nil) {
+        pieceShadows = [[NSCache alloc] init];
+    }
+    
+    NSString * key = [NSString stringWithFormat:@"%d-%f", team, squareSize];
+    UIImage * pieceShadow = [pieceShadows objectForKey:key];
+    if (!pieceShadow) {
+        CGFloat size = roundf(squareSize * 0.625);
+        CGFloat strokeWidth = roundf(MAX(size * 0.04f, 1));
+        
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(size + (2 * strokeWidth), size + (2 * strokeWidth)), NO, 0);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        UIGraphicsPushContext(context);
+        
+        CGFloat dash[] = {0, strokeWidth * 3};
+        CGContextSetLineCap(context, kCGLineCapRound);
+        CGContextSetLineDash(context, 0.0, dash, 2);
+        
+        CGContextSetLineWidth(context, strokeWidth);
+        CGContextSetStrokeColorWithColor(context, [AppStyle colorForTeam:team].CGColor);
+        
+        // Draw stroked circle.
+        CGContextStrokeEllipseInRect(context, CGRectMake(strokeWidth, strokeWidth, size, size));
+        
+        UIGraphicsPopContext();
+        
+        pieceShadow = UIGraphicsGetImageFromCurrentImageContext();
+        [pieceShadows setObject:pieceShadow forKey:key];
+        
+        UIGraphicsEndImageContext();
+    }
+    
+    return pieceShadow;
 }
 
 static NSCache * validMoves;
@@ -106,15 +148,21 @@ static NSCache * validMoves;
         CGFloat strokeWidth = roundf(MAX(size * 0.04f, 1));
         size = MIN(size + (strokeWidth * 6.0f), 1024);
         
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(size + (2 * strokeWidth), size + (2 * strokeWidth)), NO, 0);
+        //CGSize drawingSize = CGSizeMake(size + (2 * strokeWidth), size + (2 * strokeWidth));
+        
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(squareSize, squareSize), NO, 0);
         CGContextRef context = UIGraphicsGetCurrentContext();
         UIGraphicsPushContext(context);
         
         CGContextSetLineWidth(context, strokeWidth);
         CGContextSetStrokeColorWithColor(context, [AppStyle colorForTeam:team].CGColor);
         
+        // Create/center drawing rect.
+        CGRect rect = CGRectMake(0, 0, size, size);
+        rect = CGRectOffset(rect, (squareSize - rect.size.width) / 2, (squareSize - rect.size.height) / 2);
+        
         // Draw stroked circle.
-        CGContextStrokeEllipseInRect(context, CGRectMake(strokeWidth, strokeWidth, size, size));
+        CGContextStrokeEllipseInRect(context, rect);
         
         UIGraphicsPopContext();
         
@@ -194,18 +242,20 @@ static NSCache * validMoves;
             pathPointCount++;
         } else if (i == locations.count - 1) {
             NSNumber * previousLocation = [locations objectAtIndex:i - 1];
-            NSUInteger previousSquareIndex = previousLocation.unsignedIntValue - 1;
-            UIView * previousSquare = (squares.count > previousSquareIndex ? [squares objectAtIndex:previousSquareIndex] : nil);
+            UIView * previousSquare = (squares.count > previousLocation.unsignedIntValue - 1 ? [squares objectAtIndex:previousLocation.unsignedIntValue - 1] : nil);
             CGPoint previousPoint = previousSquare.center;
             float dx = (point.x - previousPoint.x);
             float dy = (point.y - previousPoint.y);
             
+            float arrowSize = (size * 1.75);
             CGPoint head = CGPointMake(point.x, point.y);
-            CGPoint tail = CGPointMake((dx >= 0 ? point.x - size : point.x + size),
-                                       (dy >= 0 ? point.y - size : point.y + size));
+            CGPoint tail = CGPointMake((dx >= 0 ? point.x - arrowSize : point.x + arrowSize),
+                                       (dy >= 0 ? point.y - arrowSize : point.y + arrowSize));
+            CGPoint lineHead = CGPointMake((dx >= 0 ? point.x - (arrowSize / 2) : point.x + (arrowSize / 2)),
+                                           (dy >= 0 ? point.y - (arrowSize / 2) : point.y + (arrowSize / 2)));
             
-            [path addLineToPoint:tail];
-            arrowPath = [UIBezierPath bezierArrowFromPoint:tail toPoint:head width:size * 0.75];
+            [path addLineToPoint:lineHead];
+            arrowPath = [UIBezierPath bezierArrowFromPoint:tail toPoint:head width:arrowSize];
         } else {
             [path addLineToPoint:point];
             pathPointCount++;
@@ -220,7 +270,6 @@ static NSCache * validMoves;
     }
     
     CGContextAddPath(context, path.CGPath);
-    CGContextAddPath(context, arrowPath.CGPath);
     CGContextStrokePath(context);
     CGContextAddPath(context, arrowPath.CGPath);
     CGContextFillPath(context);
