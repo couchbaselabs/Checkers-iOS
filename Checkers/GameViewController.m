@@ -384,7 +384,7 @@
             checkerboard.userInteractionEnabled = NO;
         } else if (![NSNumber number:game.activeTeam isEqualToNumber:user.team]) {
             checkerboard.userInteractionEnabled = NO;
-        } else if (vote && [NSNumber number:game.number isEqualToNumber:vote.game] && [NSNumber number:game.turn isEqualToNumber:vote.turn]) {
+        } else if (!game.revotingAllowed && vote && [NSNumber number:game.number isEqualToNumber:vote.game] && [NSNumber number:game.turn isEqualToNumber:vote.turn]) {
             checkerboard.userInteractionEnabled = NO;
         } else {
             checkerboard.userInteractionEnabled = YES;
