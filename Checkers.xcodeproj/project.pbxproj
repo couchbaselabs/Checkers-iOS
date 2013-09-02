@@ -15,6 +15,8 @@
 		27278E4A17CE85C3004ABC21 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 27278E4917CE85C3004ABC21 /* libsqlite3.dylib */; };
 		A307BDFC17D1D91000E4FFDD /* CountdownTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A307BDFB17D1D91000E4FFDD /* CountdownTimerView.m */; };
 		A307BDFE17D289D900E4FFDD /* Couch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A307BDFD17D289D900E4FFDD /* Couch@2x.png */; };
+		A307BE0117D4579900E4FFDD /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = A307BDFF17D4579900E4FFDD /* Icon-72.png */; };
+		A307BE0217D4579900E4FFDD /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A307BE0017D4579900E4FFDD /* Icon-72@2x.png */; };
 		A380CC4A17CF9F63004A33B1 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4917CF9F63004A33B1 /* Icon.png */; };
 		A380CC4C17CF9F6B004A33B1 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4B17CF9F6B004A33B1 /* Icon@2x.png */; };
 		A380CC4E17CF9F71004A33B1 /* Icon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A380CC4D17CF9F71004A33B1 /* Icon~ipad.png */; };
@@ -74,6 +76,8 @@
 		A307BDFA17D1D91000E4FFDD /* CountdownTimerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountdownTimerView.h; sourceTree = "<group>"; };
 		A307BDFB17D1D91000E4FFDD /* CountdownTimerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CountdownTimerView.m; sourceTree = "<group>"; };
 		A307BDFD17D289D900E4FFDD /* Couch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Couch@2x.png"; sourceTree = "<group>"; };
+		A307BDFF17D4579900E4FFDD /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
+		A307BE0017D4579900E4FFDD /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
 		A380CC4917CF9F63004A33B1 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
 		A380CC4B17CF9F6B004A33B1 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
 		A380CC4D17CF9F71004A33B1 /* Icon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon~ipad.png"; path = "../Icon~ipad.png"; sourceTree = "<group>"; };
@@ -258,6 +262,8 @@
 				A380CC4B17CF9F6B004A33B1 /* Icon@2x.png */,
 				A380CC4D17CF9F71004A33B1 /* Icon~ipad.png */,
 				A380CC4F17CF9F74004A33B1 /* Icon@2x~ipad.png */,
+				A307BDFF17D4579900E4FFDD /* Icon-72.png */,
+				A307BE0017D4579900E4FFDD /* Icon-72@2x.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -370,6 +376,8 @@
 				A380CC5817CFA026004A33B1 /* Default@2x.png in Resources */,
 				A380CC5A17CFA02A004A33B1 /* Default-568h@2x.png in Resources */,
 				A307BDFE17D289D900E4FFDD /* Couch@2x.png in Resources */,
+				A307BE0117D4579900E4FFDD /* Icon-72.png in Resources */,
+				A307BE0217D4579900E4FFDD /* Icon-72@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,6 +496,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Checkers/Checkers-Prefix.pch";
 				INFOPLIST_FILE = "Checkers/Checkers-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Checkers;
 				WRAPPER_EXTENSION = app;
@@ -504,6 +513,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Checkers/Checkers-Prefix.pch";
 				INFOPLIST_FILE = "Checkers/Checkers-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Checkers;
 				WRAPPER_EXTENSION = app;
