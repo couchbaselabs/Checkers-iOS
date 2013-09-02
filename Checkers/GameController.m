@@ -272,7 +272,6 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
         if (Twitter.composeServiceAvailable)
         {
             SLComposeViewController * sheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-            //[sheet setInitialText:@"Couchbase Checkers\n\n"];
             
             [sheet addImage:gameViewController.gameAsImage];
             [sheet addURL:[NSURL URLWithString:theGameViewController.game.applicationUrl]];
