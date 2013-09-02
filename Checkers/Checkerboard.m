@@ -308,40 +308,22 @@
         CheckerboardPieceView * pieceView = [self viewForPiece:animatedMove.piece team:animatedMove.team];
         
         if (pieceView) {
-            GamePiece * piece = [((GameTeam *)[game.teams objectAtIndex:animatedMove.team]).pieces objectAtIndex:animatedMove.piece];
-            
-            if (![self movePieceView:pieceView toLocations:animatedMove.locations animated:animated]) {
-                // If the piece didn't move then we flash the piece to indicate the move is confirmed.
-                UIView * finalSquare = [self squareAtLocation:animatedMove.locations.lastObject];    
-                pieceView.center = finalSquare.center;
-                pieceView.alpha = (piece.captured ? 0 : 1);
-                
-                if (!piece.captured) {
-                    UIImageView * confirmMoveImageView = [[UIImageView alloc] initWithImage:[AppStyle validMoveForTeam:animatedMove.team squareSize:squareSize]];
-                    confirmMoveImageView.center = pieceView.center;
-                    [self addSubview:confirmMoveImageView];
+            if (![self movePieceView:pieceView toLocations:animatedMove.locations animated:animated completion:^{}]) {
+                // If the piece didn't move and the move matches the vote then we animate the
+                // vote's shadow to indicate the move is confirmed.
+                if ([animatedMove.locations isEqualToArray:vote.locations]) {
+                    CheckerboardPieceView * voteMove = (voteMoves.count > 0 ? [voteMoves objectAtIndex:0] : nil);
                     
-                    // Show, hide, show, hide...remove.
-                    confirmMoveImageView.alpha = 1.0f;
-                    [UIView animateWithDuration:0 delay:0.25f options:0
-                                     animations:^{
-                                         confirmMoveImageView.alpha = 0.0f;
-                                     }
-                                     completion:^(BOOL finished){
-                                         [UIView animateWithDuration:0 delay:0.25f options:0
-                                                          animations:^{
-                                                              confirmMoveImageView.alpha = 1.0f;
-                                                          }
-                                                          completion:^(BOOL finished){
-                                                              [UIView animateWithDuration:0 delay:0.15f options:0
-                                                                               animations:^{
-                                                                                   confirmMoveImageView.alpha = 0.0f;
-                                                                               }
-                                                                               completion:^(BOOL finished){
-                                                                                   [confirmMoveImageView removeFromSuperview];
-                                                                               }];
-                                                          }];
-                                     }];
+                    if (voteMove) {
+                        [voteMoves removeObject:voteMove];
+                        
+                        [self movePieceView:voteMove
+                                toLocations:animatedMove.locations
+                                   animated:animated
+                                 completion:^{
+                                     [voteMove removeFromSuperview];
+                                }];
+                    }
                 }
             }
         }
@@ -363,7 +345,8 @@
         
         // Collect move shadow views.
         for (NSNumber * location in vote.locations) {
-            UIView * voteMove = [[UIImageView alloc] initWithImage:[AppStyle pieceShadowForTeam:voteTeam.number squareSize:squareSize]];
+            CheckerboardPieceView * voteMove = [[CheckerboardPieceView alloc] initWithImage:[AppStyle pieceShadowForTeam:voteTeam.number squareSize:squareSize]];
+            voteMove.piece = [((GameTeam *)[game.teams objectAtIndex:voteTeam.number]).pieces objectAtIndex:votePiece.number];
             
             [voteMoves addObject:voteMove];
         }
@@ -379,7 +362,8 @@
         NSMutableArray * captures = [NSMutableArray array];
         for (GameCapture * capture in voteValidMove.captures) {
             GameTeam * captureTeam = [game.teams objectAtIndex:capture.team];
-            UIView * voteCapture = [[UIImageView alloc] initWithImage:[AppStyle pieceShadowForTeam:captureTeam.number squareSize:squareSize]];
+            CheckerboardPieceView * voteCapture = [[CheckerboardPieceView alloc] initWithImage:[AppStyle pieceShadowForTeam:captureTeam.number squareSize:squareSize]];
+            voteCapture.piece = [((GameTeam *)[game.teams objectAtIndex:capture.team]).pieces objectAtIndex:capture.piece];
             
             [captures addObject:[self viewForPiece:capture.piece team:capture.team]];
             [voteCaptures addObject:voteCapture];
@@ -393,7 +377,8 @@
                    captures:captures
              captureShadows:voteCaptures
                        king:voteValidMove.king
-                   animated:animated];
+                   animated:animated
+                 completion:^{}];
     }
     
     [self layoutVotes];
@@ -419,9 +404,10 @@
 
 -(BOOL)movePieceView:(CheckerboardPieceView *)pieceView
          toLocations:(NSArray *)locations
-            animated:(BOOL)animated {
+            animated:(BOOL)animated
+          completion:(void (^)())completion {
     
-    return [self movePieceView:pieceView toLocations:locations shadows:nil captures:nil captureShadows:nil king:NO animated:animated];
+    return [self movePieceView:pieceView toLocations:locations shadows:nil captures:nil captureShadows:nil king:NO animated:animated completion:completion];
 }
 
 -(BOOL)movePieceView:(CheckerboardPieceView *)pieceView
@@ -430,7 +416,8 @@
             captures:(NSArray *)captures
       captureShadows:(NSArray *)captureShadows
                 king:(BOOL)king
-            animated:(BOOL)animated {
+            animated:(BOOL)animated
+          completion:(void (^)())completion {
     
     // Determine if the piece will actually be moved.
     UIView * finalSquare = [self squareAtLocation:locations.lastObject];
@@ -510,6 +497,8 @@
                 
                 recursive(recursive);
             }
+        } else {
+            completion();
         }
     };
     animate(animate);
