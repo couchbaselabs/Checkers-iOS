@@ -46,20 +46,6 @@
     return self;
 }
 
-// HACK: Continuous replications stop when a connection cannot be made w/ the
-// sync_gateway.  To help w/ the UX kick the replicators on re-activation.
--(void)activate {
-    [self performSelector:@selector(_activate)
-                 onThread:couchbaseThread
-               withObject:nil
-            waitUntilDone:NO];
-}
--(void)_activate {
-    for (CBLReplication* replication in replications) {
-        [replication restart];
-    }
-}
-
 - (void) _initCouchbase {
     // Initialize Couchbase Lite:
     NSLog(@"Initializing Couchbase Lite");

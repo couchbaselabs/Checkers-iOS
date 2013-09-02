@@ -14,6 +14,4 @@
 
 -(id)initWithGameViewController:(GameViewController *)gameViewController;
 
--(void)activate;
-
 @end

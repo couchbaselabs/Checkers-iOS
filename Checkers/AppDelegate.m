@@ -30,10 +30,6 @@
     return YES;
 }
 
--(void)applicationDidBecomeActive:(UIApplication *)application {
-    [gameController activate];
-}
-
 void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"CRASH: %@", exception);
     NSLog(@"Stack Trace: %@", [exception callStackSymbols]);
