@@ -20,38 +20,47 @@
 //#define kSyncURL @"http://192.168.1.110:4984/checkers"
 //#define kSyncURL @"http://192.168.1.102:8888/checkers"
 
-// TODO: Delete
-//
-//#define kGameDocID @"game-1"
-
 @implementation GameController
 {
     GameViewController * gameViewController;
-    NSThread* bgThread;
-    CBLDatabase* database;
-    CBLReplication* pull;
-    CBLDocument* userDoc, *gameDoc, *voteDoc, *votesDoc;
-    NSString* userID;
+    NSThread* couchbaseThread;
     
+    CBLDatabase* database;
+    NSArray* replications;
     CBLLiveQuery* gamesLiveQuery;
-    NSString* gameRevision;
+    
+    CBLDocument* userDoc, *gameDoc, *voteDoc, *votesDoc;
 }
 
 -(id)initWithGameViewController:(GameViewController *)theGameViewController {
     if (self = [super init]) {
         gameViewController = theGameViewController;
         gameViewController.delegate = self;
+        
         // GameController runs Couchbase Lite on a background thread.
         // Methods prefixed with "_" run on that thread.
-        bgThread = [[NSThread alloc] initWithTarget:self
-                                           selector:@selector(_couchbaseThread)
-                                             object:nil];
-        [bgThread start];
+        couchbaseThread = [[NSThread alloc] initWithTarget:self selector:@selector(_initCouchbase) object:nil];
+        [couchbaseThread start];
     }
+    
     return self;
 }
 
-- (void) _couchbaseThread {
+// HACK: Continuous replications stop when a connection cannot be made w/ the
+// sync_gateway.  To help w/ the UX kick the replicators on re-activation.
+-(void)activate {
+    [self performSelector:@selector(_activate)
+                 onThread:couchbaseThread
+               withObject:nil
+            waitUntilDone:NO];
+}
+-(void)_activate {
+    for (CBLReplication* replication in replications) {
+        [replication restart];
+    }
+}
+
+- (void) _initCouchbase {
     // Initialize Couchbase Lite:
     NSLog(@"Initializing Couchbase Lite");
     NSError* error;
@@ -60,57 +69,20 @@
         NSLog(@"FATAL: Couldn't open database: %@", error);
         abort();
     }
-#ifdef kSyncURL
-    NSArray* repls = [database replicateWithURL:[NSURL URLWithString:kSyncURL] exclusively:YES];
+    
+    // Configure the replications.
+    replications = [database replicateWithURL:[NSURL URLWithString:kSyncURL] exclusively:YES];
     NSDictionary* filterparams = [[NSDictionary alloc] initWithObjectsAndKeys:@"game", @"channels", nil];
-    for (CBLReplication* repl in repls) {
-        repl.continuous = repl.persistent = YES;
-        if(repl.pull) {
-            repl.filter = @"sync_gateway/bychannel";
-            repl.query_params = filterparams;
+    for (CBLReplication* replication in replications) {
+        replication.continuous = replication.persistent = YES;
+        if(replication.pull) {
+            replication.filter = @"sync_gateway/bychannel";
+            replication.query_params = filterparams;
         }
     }
-    // Observe the pull replication to detect when it's caught up:
-    pull = repls[0];
-    [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector(_pullReplicationChanged:)
-                                                 name: kCBLReplicationChangeNotification
-                                               object: pull];
-    NSLog(@"Initialized CouchbaseLite; waiting for replication to catch up...");
-#endif
-
-    [[NSRunLoop currentRunLoop] run];
-}
-
-// Called when a replication's state changes
-- (void) _pullReplicationChanged: (NSNotification*)n {
-    CBLReplication* repl = n.object;
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = (repl.mode == kCBLReplicationActive);
-    if (repl.mode == kCBLReplicationIdle) {
-        [self _gameReady];
-    }
-}
-
--(void) _gameReady {
-    // Get/create view for accessing games by their start time.
-    CBLView * gamesByStartTime = [database viewNamed: @"gamesByStartTime"];
-    if (!gamesByStartTime.mapBlock) {
-        [gamesByStartTime setMapBlock: MAPBLOCK({
-            if ([doc[@"_id"] hasPrefix:@"game:"] && doc[@"startTime"]) {
-                emit(doc[@"startTime"], nil);
-            }
-        }) reduceBlock: nil version: @"1.0"];
-        // NOTE: Make sure to bump version any time you change the MAPBLOCK body!
-    }
-    
-    // Create/observe live query for the latest game.
-    gamesLiveQuery = gamesByStartTime.query.asLiveQuery;
-    gamesLiveQuery.limit = 1;
-    gamesLiveQuery.descending = YES;
-    [gamesLiveQuery addObserver:self forKeyPath:@"rows" options:0 context:NULL];
     
     // Get/create unique player ID.
-    userID = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserID"];
+    NSString* userID = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserID"];
     if (!userID) {
         userID = [[NSUUID UUID] UUIDString];
         [[NSUserDefaults standardUserDefaults] setObject:userID forKey:@"UserID"];
@@ -132,89 +104,31 @@
     voteDoc = database[[NSString stringWithFormat:@"vote:%@", userID]];
     NSDictionary* voteProps = voteDoc.properties ?: @{};
     
+    // Create view for games by start time.
+    CBLView * gamesByStartTime = [database viewNamed: @"gamesByStartTime"];
+    if (!gamesByStartTime.mapBlock) {
+        [gamesByStartTime setMapBlock: MAPBLOCK({
+            if ([doc[@"_id"] hasPrefix:@"game:"] && doc[@"startTime"]) {
+                emit(doc[@"startTime"], doc);
+            }
+        }) reduceBlock: nil version: @"1.0"];
+        // NOTE: Make sure to bump version any time you change the MAPBLOCK body!
+    }
+    // Create/observe live query for the latest game.
+    gamesLiveQuery = gamesByStartTime.query.asLiveQuery;
+    gamesLiveQuery.limit = 1;
+    gamesLiveQuery.descending = YES;
+    [gamesLiveQuery addObserver:self forKeyPath:@"rows" options:0 context:NULL];
+    
     // Set up the UI.
     [self _updateGame];
     dispatch_async(dispatch_get_main_queue(), ^{
         gameViewController.user = [[User alloc] initWithDictionary:userProps];
         gameViewController.vote = [[Vote alloc] initWithDictionary:voteProps];
     });
+
+    [[NSRunLoop currentRunLoop] run];
 }
-
-// TODO: Delete
-//
-//- (void) __gameReady {
-//    // Load the current game state:
-//    gameDoc = database[kGameDocID];
-//    NSDictionary* gameProps = gameDoc.properties;
-//    if (gameProps) {
-//        // OK, we're ready to start; stop listening for replication notifications:
-//        [[NSNotificationCenter defaultCenter] removeObserver:self
-//                                                        name: kCBLReplicationChangeNotification
-//                                                      object: pull];
-//        pull = nil;
-//    } else {
-//        // Game document isn't available; initial replication must've failed, or the server
-//        // somehow doesn't have a game set up yet. Either way, give up for now.
-//        NSLog(@"Game doc '%@' isn't available yet; waiting for replicator...", kGameDocID);
-//        return;
-//    }
-//
-//    NSLog(@"GameController: Initial game data ready, updating UI...");
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(_updateGame:)
-//                                                 name:kCBLDocumentChangeNotification
-//                                               object:gameDoc];
-//
-//    // Get or create my unique player ID:
-//    userID = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserID"];
-//    if (!userID) {
-//        userID = [[NSUUID UUID] UUIDString];
-//        [[NSUserDefaults standardUserDefaults] setObject:userID forKey:@"UserID"];
-//        NSLog(@"Generated user ID '%@'", userID);
-//    }
-//
-//    // Load or create my user document:
-//    userDoc = database[[NSString stringWithFormat:@"user:%@", userID]];
-//    if (userDoc.currentRevision == nil) {
-//        // Create an initial blank user document
-//        NSError* error;
-//        if (![userDoc putProperties:@{} error:&error]) {
-//            NSLog(@"WARNING: Couldn't save user doc '%@': %@", userDoc, error);
-//        }
-//    }
-//    NSDictionary* userProps = userDoc.properties;
-//
-//    // Load the voting-statistics document:
-//    votesDoc = database[@"votes"];
-//    NSDictionary* votesProps = votesDoc.properties ?: @{};
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(_updateVotes:)
-//                                                 name:kCBLDocumentChangeNotification
-//                                               object:votesDoc];
-//
-//    // Load my current vote (if any):
-//    voteDoc = database[[NSString stringWithFormat:@"vote:%@", userID]];
-//    NSDictionary* voteProps = voteDoc.properties ?: @{};
-//
-//    // Set up the UI code:
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        gameViewController.game = [[Game alloc] initWithDictionary:gameProps];
-//        gameViewController.user = [[User alloc] initWithDictionary:userProps];
-//        gameViewController.vote = [[Vote alloc] initWithDictionary:voteProps];
-//        gameViewController.votes = [[Votes alloc] initWithDictionary:votesProps];
-//    });
-//}
-
-//- (void)_updateGame:(NSNotification*)n {
-//    // Update gameViewController.game when we receive data changes from server.
-//    NSLog(@"** Got game document: %@", gameDoc.currentRevision);
-//    NSDictionary* properties = gameDoc.properties;
-//    //NSAssert(properties, @"Missing game document!");
-//
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        gameViewController.game = [[Game alloc] initWithDictionary:properties];
-//    });
-//}
 
 - (void) observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
@@ -226,12 +140,6 @@
 - (void) _updateGame
 {
     for (CBLQueryRow* row in [gamesLiveQuery rows]) {
-        // Only load a game once per revision (i.e. don't reload just because
-        // something else in the DB changed e.g. votes)
-        if ([gameRevision isEqualToString:row.document.currentRevisionID]) {
-            return;
-        }
-        
         // Update gameViewController.game when we receive data changes from server.
         gameDoc = row.document;
         NSLog(@"** Got game document: %@", gameDoc.currentRevision);
@@ -248,8 +156,6 @@
                                                      name:kCBLDocumentChangeNotification
                                                    object:votesDoc];
         NSDictionary* votesProperties = votesDoc.properties;
-        
-        gameRevision = gameDoc.currentRevisionID;
         
         // Update UI.
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -292,11 +198,19 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
 }
 
 
--(void)gameViewController:(GameViewController *)theGameViewController
-            didSelectTeam:(GameTeam *)team {
-    [self performSelector: @selector(_submitTeam:)
-                 onThread: bgThread
-               withObject: @(team.number)
+-(void)gameViewController:(GameViewController *)theGameViewController didSelectTeam:(GameTeam *)team {
+    // Submit on Couchbase thread.
+    [self performSelector:@selector(_submitTeam:)
+                 onThread:couchbaseThread
+               withObject:@(team.number)
+            waitUntilDone:NO];
+}
+
+-(void)gameViewController:(GameViewController *)theGameViewController didMakeValidMove:(GameValidMove *)validMove {
+    // Submit on Couchbase thread.
+    [self performSelector:@selector(_submitMove:)
+                 onThread:couchbaseThread
+               withObject:[NSArray arrayWithObjects:theGameViewController.game, validMove, nil]
             waitUntilDone:NO];
 }
 
@@ -308,14 +222,6 @@ static NSError* updateDoc(CBLDocument* doc, BOOL (^block)(NSMutableDictionary*))
     if (error) {
         NSLog(@"WARNING: Couldn't save user doc: %@", error);
     }
-}
-
--(void)gameViewController:(GameViewController *)theGameViewController
-         didMakeValidMove:(GameValidMove *)validMove {
-    [self performSelector: @selector(_submitMove:)
-                 onThread: bgThread
-               withObject: [NSArray arrayWithObjects:theGameViewController.game, validMove, nil]
-            waitUntilDone:NO];
 }
 
 - (void)_submitMove:(NSArray*)gameAndValidMove {
