@@ -106,21 +106,24 @@ static NSCache * pieceShadows;
     NSString * key = [NSString stringWithFormat:@"%d-%f", team, squareSize];
     UIImage * pieceShadow = [pieceShadows objectForKey:key];
     if (!pieceShadow) {
-        CGFloat size = roundf(squareSize * 0.625);
-        CGFloat strokeWidth = roundf(MAX(size * 0.04f, 1));
+        CGFloat size = roundf(squareSize * 0.625f);
+        CGFloat strokeWidth = roundf(MAX(size * 0.08f, 2.0f));
         
         UIGraphicsBeginImageContextWithOptions(CGSizeMake(size + (2 * strokeWidth), size + (2 * strokeWidth)), NO, 0);
         CGContextRef context = UIGraphicsGetCurrentContext();
         UIGraphicsPushContext(context);
         
-        CGFloat dash[] = {0, strokeWidth * 3};
+        CGFloat r = (size / 2);
+        CGFloat c = (2 * M_PI * r);
+        // Perfect dash distribution.
+        CGFloat dash[] = {c / 24, c / 24};
         CGContextSetLineCap(context, kCGLineCapRound);
         CGContextSetLineDash(context, 0.0, dash, 2);
         
         CGContextSetLineWidth(context, strokeWidth);
         CGContextSetStrokeColorWithColor(context, [AppStyle colorForTeam:team].CGColor);
         
-        // Draw stroked circle.
+        // Draw dotted circle.
         CGContextStrokeEllipseInRect(context, CGRectMake(strokeWidth, strokeWidth, size, size));
         
         UIGraphicsPopContext();
