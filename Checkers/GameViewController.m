@@ -152,8 +152,10 @@
 -(void)setUser:(User *)theUser {
     user = theUser;
     
-    [self layoutTeamInfo];
-    [self layoutGameInfo];
+    if (game) {
+        [self layoutTeamInfo];
+        [self layoutGameInfo];
+    }
 }
 
 -(Game *)game {
@@ -225,8 +227,10 @@
     vote = theVote;
     checkerboard.vote = vote;
     
-    [self layoutTeamInfo];
-    [self layoutGameInfo];
+    if (game) {
+        [self layoutTeamInfo];
+        [self layoutGameInfo];
+    }
 }
 
 -(Votes *)votes {
