@@ -149,6 +149,9 @@
 
 - (void)showValidMovesForPiece:(GamePiece *)piece
 {
+    // Don't continue if there are no valid moves for the piece.
+    if (piece.validMoves.count == 0) return;
+    
     [self clearValidMoves];
     
     float squareSize = self.squareSize;
@@ -189,19 +192,12 @@
 }
 
 - (void)handlePieceTap:(UITapGestureRecognizer *)recognizer {
-    if (!self.userInteractionEnabled) return;
-    
     [self showValidMovesForPiece:((CheckerboardPieceView *)recognizer.view).piece];
 }
 
-- (void)executeValidMove:(GameValidMove *)validMove {
-    [self.delegate checkerboard:self didMakeValidMove:validMove];
-}
-
 - (void)handleValidMoveTap:(UITapGestureRecognizer *)recognizer {
-    if (!self.userInteractionEnabled) return;
-    
-    [self executeValidMove:((CheckerboardValidMoveView *)recognizer.view).move];
+    [self clearValidMoves];
+    [self.delegate checkerboard:self didMakeValidMove:((CheckerboardValidMoveView *)recognizer.view).move];
 }
 
 -(void)setUserInteractionEnabled:(BOOL)userInteractionEnabled {
@@ -276,13 +272,13 @@
                 
                 UITapGestureRecognizer * tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handlePieceTap:)];
                 [pieceView addGestureRecognizer:tapRecognizer];
+                pieceView.userInteractionEnabled = YES;
                 
                 [pieceViews addObject:pieceView];
                 [self addSubview:pieceView];
             }
             
             pieceView.image = [AppStyle pieceForTeam:team squareSize:squareSize king:piece.king];
-            pieceView.userInteractionEnabled = (piece.validMoves.count > 0);
             pieceView.piece = piece;
             
             if (animatedMove && animatedMove.team == team && animatedMove.piece == i) {
@@ -470,7 +466,7 @@
             captureShadow.center = capture.center;
             
             if (animated) {
-                [UIView animateWithDuration:(d / 40) * 0.1
+                [UIView animateWithDuration:(d / self.squareSize) * 0.1
                                       delay:(i > 1 ? 0.1 : 0)
                                     options:0
                                  animations:^{
@@ -575,7 +571,7 @@
             totalTrendingCount += votesMove.count.intValue;
         }
         
-        float maxSize = 6.0f;
+        float maxSize = 0.15f * self.squareSize;
         for (VotesMove * votesMove in moves) {
             UIImage * voteImage = [AppStyle drawTrendingPathForTeam:votesMove.team size:(((float)votesMove.count.intValue / (float)totalTrendingCount) * maxSize) locations:votesMove.locations squares:squares rect:self.bounds];
             UIImageView * votesView = [[UIImageView alloc] initWithImage:voteImage];
