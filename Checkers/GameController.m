@@ -26,7 +26,6 @@
     NSThread* couchbaseThread;
     
     CBLDatabase* database;
-    NSArray* replications;
     CBLLiveQuery* gamesLiveQuery;
     
     CBLDocument* userDoc, *gameDoc, *voteDoc, *votesDoc;
@@ -57,7 +56,7 @@
     }
     
     // Configure the replications.
-    replications = [database replicateWithURL:[NSURL URLWithString:kSyncURL] exclusively:YES];
+    NSArray* replications = [database replicateWithURL:[NSURL URLWithString:kSyncURL] exclusively:YES];
     NSDictionary* filterparams = [[NSDictionary alloc] initWithObjectsAndKeys:@"game", @"channels", nil];
     for (CBLReplication* replication in replications) {
         replication.continuous = replication.persistent = YES;
