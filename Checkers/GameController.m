@@ -57,12 +57,19 @@
     
     // Configure the replications.
     NSArray* replications = [database replicateWithURL:[NSURL URLWithString:kSyncURL] exclusively:YES];
-    NSDictionary* filterparams = [[NSDictionary alloc] initWithObjectsAndKeys:@"game", @"channels", nil];
     for (CBLReplication* replication in replications) {
-        replication.continuous = replication.persistent = YES;
+        replication.continuous = YES;
+        replication.persistent = YES;
+        
         if(replication.pull) {
             replication.filter = @"sync_gateway/bychannel";
-            replication.query_params = filterparams;
+            replication.query_params = [[NSDictionary alloc] initWithObjectsAndKeys:@"game", @"channels", nil];
+        } else {
+            [database defineFilter: @"pushItems" asBlock: FILTERBLOCK({
+                return (revision.document == userDoc || revision.document == voteDoc);
+            })];
+            
+            replication.filter = @"pushItems";
         }
     }
     
