@@ -107,6 +107,7 @@
 @property (readonly) NSNumber * winningTeam;
 @property (readonly) NSMutableArray * moves;
 @property (readonly) NSArray * teams;
+@property (readonly) BOOL highlightPiecesWithMoves;
 @property (readonly) BOOL revotingAllowed;
 
 @property (readonly) NSString * applicationName;

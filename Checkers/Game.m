@@ -283,6 +283,12 @@ static NSString * kCBCGameDateFormate = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
     return ((NSNumber *)[data objectForKey:@"revotingAllowed"]).boolValue;
 }
 
+-(BOOL)highlightPiecesWithMoves {
+    NSNumber * highlightPiecesWithMoves = [data objectForKey:@"highlightPiecesWithMoves"];
+    
+    return (highlightPiecesWithMoves ? highlightPiecesWithMoves.boolValue : YES);
+}
+
 -(NSString *)applicationName {
     return [data objectForKey:@"applicationName"];
 }

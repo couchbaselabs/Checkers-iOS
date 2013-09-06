@@ -1,8 +1,10 @@
 {
-    "number":1,
-    "startTime":"2013-08-26T16:05:30Z",
     "applicationUrl":"http://www.couchbase.com/checkers",
     "applicationName":"Couchbase Checkers",
+    "revotingAllowed":false,
+    "highlightPiecesWithMoves":true,
+    "number":1,
+    "startTime":"2013-08-26T16:05:30Z",
     "moveDeadline":"2013-08-26T16:05:45Z",
     "turn":1,
     "activeTeam":0,

@@ -131,6 +131,8 @@
 
 - (void)showHighlightsForPiecesWithValidMoves
 {
+    if (!game.highlightPiecesWithMoves) return;
+    
     [self clearHighlightsForPiecesWithValidMoves];
     [self clearValidMoves];
     
