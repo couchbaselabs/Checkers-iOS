@@ -253,11 +253,17 @@
 }
 
 -(void)checkerboard:(Checkerboard *)checkerboard didMakeValidMove:(GameValidMove *)validMove {
+    // Auto-select team if needed.
+    if (![NSNumber number:user.team isEqualToNumber:[NSNumber numberWithInt:validMove.team]]) {
+        [self.delegate gameViewController:self didSelectTeam:[self.game.teams objectAtIndex:validMove.team]];
+    }
+    
     // Dispatch move.
     [self.delegate gameViewController:self didMakeValidMove:validMove];
     
     // Update user.
     user.game = game.number;
+    user.team = [NSNumber numberWithInt:validMove.team];
     self.user = user;
     
     // Update vote.
@@ -386,7 +392,7 @@
         
         if (secondsUntilMoveDeadline <= 0) {
             checkerboard.userInteractionEnabled = NO;
-        } else if (![NSNumber number:game.activeTeam isEqualToNumber:user.team]) {
+        } else if ([NSNumber number:game.number isEqualToNumber:vote.game] && ![NSNumber number:game.activeTeam isEqualToNumber:user.team]) {
             checkerboard.userInteractionEnabled = NO;
         } else if (!game.revotingAllowed && vote && [NSNumber number:game.number isEqualToNumber:vote.game] && [NSNumber number:game.turn isEqualToNumber:vote.turn]) {
             checkerboard.userInteractionEnabled = NO;
