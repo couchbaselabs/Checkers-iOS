@@ -17,6 +17,7 @@
 @private
     NSMutableArray * squares;
     NSArray * teamPieces;
+    NSMutableArray * highlightsForPiecesWithValidMoves;
     NSMutableArray * validMoves;
     NSMutableArray * voteMoves;
     NSMutableArray * voteCaptures;

@@ -80,6 +80,7 @@
         }
         
         teamPieces = [NSArray arrayWithObjects:[NSMutableArray array], [NSMutableArray array], nil];
+        highlightsForPiecesWithValidMoves = [NSMutableArray array];
         validMoves = [NSMutableArray array];
         voteMoves = [NSMutableArray array];
         voteCaptures = [NSMutableArray array];
@@ -113,6 +114,57 @@
     return nil;
 }
 
+- (void)clearHighlightsForPiecesWithValidMoves
+{
+    for (UIView * validMove in highlightsForPiecesWithValidMoves) {
+        [validMove removeFromSuperview];
+    }
+    
+    [highlightsForPiecesWithValidMoves removeAllObjects];
+}
+
+- (void)addHighlightForPieceWithValidMoves:(UIView *)highlightForPieceWithValidMoves
+{
+    [highlightsForPiecesWithValidMoves addObject:highlightForPieceWithValidMoves];
+    [self addSubview:highlightForPieceWithValidMoves];
+}
+
+- (void)showHighlightsForPiecesWithValidMoves
+{
+    [self clearHighlightsForPiecesWithValidMoves];
+    
+    float squareSize = self.squareSize;
+    
+    for (GameTeam * team in game.teams) {
+        for (GamePiece * piece in team.pieces) {
+            BOOL hasValidMoves = NO;
+            
+            for (GameValidMove * move in piece.validMoves) {
+                if (move.locations.count > 0) {
+                    for (NSNumber * location in move.locations) {
+                        // Only move locations that are not at the piece's current location are actionable.
+                        if (![NSNumber number:location isEqualToNumber:piece.location]) {
+                            hasValidMoves = YES;
+                            break;
+                        }
+                    }
+                    
+                    if (hasValidMoves) break;
+                }
+            }
+            
+            if (hasValidMoves) {
+                UIView * square = [self squareAtLocation:piece.location];
+                UIImage * pieceHighlightImage = [AppStyle pieceHighlightForTeam:piece.team squareSize:squareSize];
+                UIView * pieceHighlight = [[CheckerboardValidMoveView alloc] initWithImage:pieceHighlightImage];
+                pieceHighlight.center = square.center;
+                
+                [self addHighlightForPieceWithValidMoves:pieceHighlight];
+            }
+        }
+    }
+}
+
 - (void)clearValidMoves
 {
     for (UIView * validMove in validMoves) {
@@ -122,7 +174,8 @@
     [validMoves removeAllObjects];
 }
 
-- (void)addValidMove:(CheckerboardValidMoveView *)validMove {
+- (void)addValidMove:(CheckerboardValidMoveView *)validMove
+{
     // Check to see if there is already a valid move in the same location.
     int existingIndex = NSNotFound;
     for (int i=0; i<validMoves.count; i++) {
@@ -152,6 +205,7 @@
     // Don't continue if there are no valid moves for the piece.
     if (piece.validMoves.count == 0) return;
     
+    [self clearHighlightsForPiecesWithValidMoves];
     [self clearValidMoves];
     
     float squareSize = self.squareSize;
@@ -169,21 +223,19 @@
     
     for (GameValidMove * move in moves) {
         if (move.locations.count > 0) {
-            UIView * square = [self squareAtLocation:piece.location];
-            
-            CheckerboardValidMoveView * validMove = [[CheckerboardValidMoveView alloc] initWithImage:[AppStyle validMoveForTeam:piece.team squareSize:squareSize] move:nil location:piece.location];
-            validMove.center = square.center;
-            [self addValidMove:validMove];
-            
             for (NSNumber * location in move.locations) {
                 UIView * square = [self squareAtLocation:location];
-                UIImage * validMoveImage = [AppStyle validMoveForTeam:piece.team squareSize:squareSize];
-                validMove = [[CheckerboardValidMoveView alloc] initWithImage:validMoveImage move:move location:location];
-                validMove.userInteractionEnabled = YES;
+                UIImage * validMoveImage = [AppStyle pieceHighlightForTeam:piece.team squareSize:squareSize];
+                CheckerboardValidMoveView * validMove = [[CheckerboardValidMoveView alloc] initWithImage:validMoveImage move:move location:location];
                 validMove.center = square.center;
                 
-                UITapGestureRecognizer * tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleValidMoveTap:)];
-                [validMove addGestureRecognizer:tapRecognizer];
+                // Only move locations that are not at the piece's current location are actionable.
+                if (![NSNumber number:location isEqualToNumber:piece.location]) {
+                    validMove.userInteractionEnabled = YES;
+                    
+                    UITapGestureRecognizer * tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleValidMoveTap:)];
+                    [validMove addGestureRecognizer:tapRecognizer];
+                }
                 
                 [self addValidMove:validMove];
             }
@@ -204,7 +256,10 @@
     super.userInteractionEnabled = userInteractionEnabled;
     
     if (!userInteractionEnabled) {
+        [self clearHighlightsForPiecesWithValidMoves];
         [self clearValidMoves];
+    } else {
+        [self showHighlightsForPiecesWithValidMoves];
     }
 }
 
@@ -231,6 +286,7 @@
 }
 
 - (void)setGame:(Game *)theGame animated:(BOOL)animated animatedMove:(GameMove *)animatedMove {
+    [self clearHighlightsForPiecesWithValidMoves];
     [self clearValidMoves];
     
     // Clear the game on nil data.
@@ -382,6 +438,8 @@
     }
     
     [self layoutVotes];
+    
+    [self showHighlightsForPiecesWithValidMoves];
 }
 
 -(void)clearViews:(NSMutableArray *)views animated:(BOOL)animated {
