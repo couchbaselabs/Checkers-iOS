@@ -137,16 +137,16 @@ static NSCache * pieceShadows;
     return pieceShadow;
 }
 
-static NSCache * validMoves;
-+ (UIImage *)validMoveForTeam:(int)team squareSize:(float)squareSize
+static NSCache * pieceHighlights;
++ (UIImage *)pieceHighlightForTeam:(int)team squareSize:(float)squareSize
 {
-    if (validMoves == nil) {
-        validMoves = [[NSCache alloc] init];
+    if (pieceHighlights == nil) {
+        pieceHighlights = [[NSCache alloc] init];
     }
     
     NSString * key = [NSString stringWithFormat:@"%d-%f", team, squareSize];
-    UIImage * validMove = [validMoves objectForKey:key];
-    if (!validMove) {
+    UIImage * pieceHighlight = [pieceHighlights objectForKey:key];
+    if (!pieceHighlight) {
         CGFloat size = roundf(squareSize * 0.625);
         CGFloat strokeWidth = roundf(MAX(size * 0.04f, 1));
         size = MIN(size + (strokeWidth * 6.0f), 1024);
@@ -169,13 +169,13 @@ static NSCache * validMoves;
         
         UIGraphicsPopContext();
         
-        validMove = UIGraphicsGetImageFromCurrentImageContext();
-        [validMoves setObject:validMove forKey:key];
+        pieceHighlight = UIGraphicsGetImageFromCurrentImageContext();
+        [pieceHighlights setObject:pieceHighlight forKey:key];
         
         UIGraphicsEndImageContext();
     }
     
-    return validMove;
+    return pieceHighlight;
 }
 
 + (UIImage *)strokeImage:(UIImage *)image forTeam:(int)team
