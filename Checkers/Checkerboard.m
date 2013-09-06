@@ -132,6 +132,7 @@
 - (void)showHighlightsForPiecesWithValidMoves
 {
     [self clearHighlightsForPiecesWithValidMoves];
+    [self clearValidMoves];
     
     float squareSize = self.squareSize;
     
@@ -205,8 +206,8 @@
     // Don't continue if there are no valid moves for the piece.
     if (piece.validMoves.count == 0) return;
     
-    [self clearHighlightsForPiecesWithValidMoves];
     [self clearValidMoves];
+    [self clearHighlightsForPiecesWithValidMoves];
     
     float squareSize = self.squareSize;
     
@@ -229,13 +230,15 @@
                 CheckerboardValidMoveView * validMove = [[CheckerboardValidMoveView alloc] initWithImage:validMoveImage move:move location:location];
                 validMove.center = square.center;
                 
-                // Only move locations that are not at the piece's current location are actionable.
-                if (![NSNumber number:location isEqualToNumber:piece.location]) {
-                    validMove.userInteractionEnabled = YES;
+                validMove.userInteractionEnabled = YES;
+                UITapGestureRecognizer * tapRecognizer;
+                if ([NSNumber number:location isEqualToNumber:piece.location]) {
+                    tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handlePieceHighlightTap:)];
                     
-                    UITapGestureRecognizer * tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleValidMoveTap:)];
-                    [validMove addGestureRecognizer:tapRecognizer];
+                } else {
+                    tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleValidMoveTap:)];
                 }
+                [validMove addGestureRecognizer:tapRecognizer];
                 
                 [self addValidMove:validMove];
             }
@@ -245,6 +248,10 @@
 
 - (void)handlePieceTap:(UITapGestureRecognizer *)recognizer {
     [self showValidMovesForPiece:((CheckerboardPieceView *)recognizer.view).piece];
+}
+
+- (void)handlePieceHighlightTap:(UITapGestureRecognizer *)recognizer {
+    [self showHighlightsForPiecesWithValidMoves];
 }
 
 - (void)handleValidMoveTap:(UITapGestureRecognizer *)recognizer {
