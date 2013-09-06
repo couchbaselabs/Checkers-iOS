@@ -13,6 +13,7 @@
     "teams": [
               {
               "participantCount":117983,
+              "score":11,
               "pieces":[
                         {
                         "location":1,
@@ -108,6 +109,7 @@
               },
               {
               "participantCount":109217,
+              "score":12,
               "pieces":[
                         {
                         "location":21

@@ -43,9 +43,14 @@
 {
     int score = 0;
     
-    for (GamePiece * piece in self.pieces) {
-        if (!piece.captured) {
-            score++;
+    if ([data objectForKey:@"score"]) {
+        score = ((NSNumber *)[data objectForKey:@"score"]).intValue;
+    } else {
+        // If no score is specified we will use the total of uncaptured pieces.
+        for (GamePiece * piece in self.pieces) {
+            if (!piece.captured) {
+                score++;
+            }
         }
     }
     
