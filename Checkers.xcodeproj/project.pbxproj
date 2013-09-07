@@ -86,7 +86,7 @@
 		A380CC5B17CFA715004A33B1 /* NSNumber+Equality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+Equality.h"; sourceTree = "<group>"; };
 		A380CC5C17CFA715004A33B1 /* NSNumber+Equality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+Equality.m"; sourceTree = "<group>"; };
 		A380CC5F17D0FBD5004A33B1 /* Votes-2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Votes-2.json"; sourceTree = "<group>"; };
-		A3949DB817C2EECB00559283 /* checkers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = checkers.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3949DB817C2EECB00559283 /* Checkers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Checkers.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3949DBB17C2EECB00559283 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A3949DBD17C2EECB00559283 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A3949DBF17C2EECB00559283 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -176,7 +176,7 @@
 		A3949DB917C2EECB00559283 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A3949DB817C2EECB00559283 /* checkers.app */,
+				A3949DB817C2EECB00559283 /* Checkers.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -309,7 +309,7 @@
 			);
 			name = Checkers;
 			productName = Checkers;
-			productReference = A3949DB817C2EECB00559283 /* checkers.app */;
+			productReference = A3949DB817C2EECB00559283 /* Checkers.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -490,7 +490,7 @@
 				INFOPLIST_FILE = "Checkers/Checkers-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = checkers;
+				PRODUCT_NAME = Checkers;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -507,7 +507,7 @@
 				INFOPLIST_FILE = "Checkers/Checkers-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = checkers;
+				PRODUCT_NAME = Checkers;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
