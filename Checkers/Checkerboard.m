@@ -123,10 +123,11 @@
     [highlightsForPiecesWithValidMoves removeAllObjects];
 }
 
-- (void)addHighlightForPieceWithValidMoves:(UIView *)highlightForPieceWithValidMoves
+- (void)addHighlightForPieceWithValidMoves:(CheckerboardPieceView *)highlightForPieceWithValidMoves
 {
+    UIView * square = [self squareAtLocation:highlightForPieceWithValidMoves.piece.location];
     [highlightsForPiecesWithValidMoves addObject:highlightForPieceWithValidMoves];
-    [self addSubview:highlightForPieceWithValidMoves];
+    [self insertSubview:highlightForPieceWithValidMoves aboveSubview:square];
 }
 
 - (void)showHighlightsForPiecesWithValidMoves
@@ -159,7 +160,8 @@
             if (hasValidMoves) {
                 UIView * square = [self squareAtLocation:piece.location];
                 UIImage * pieceHighlightImage = [AppStyle pieceHighlightForTeam:piece.team squareSize:squareSize];
-                UIView * pieceHighlight = [[CheckerboardValidMoveView alloc] initWithImage:pieceHighlightImage];
+                CheckerboardPieceView * pieceHighlight = [[CheckerboardPieceView alloc] initWithImage:pieceHighlightImage];
+                pieceHighlight.piece = piece;
                 pieceHighlight.center = square.center;
                 
                 [self addHighlightForPieceWithValidMoves:pieceHighlight];
@@ -199,8 +201,9 @@
     }
     
     // Add the valid move.
+    UIView * square = [self squareAtLocation:validMove.location];
     [validMoves addObject:validMove];
-    [self addSubview:validMove];
+    [self insertSubview:validMove aboveSubview:square];
 }
 
 - (void)showValidMovesForPiece:(GamePiece *)piece
