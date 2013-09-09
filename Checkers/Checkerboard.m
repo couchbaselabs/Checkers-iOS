@@ -125,9 +125,9 @@
 
 - (void)addHighlightForPieceWithValidMoves:(CheckerboardPieceView *)highlightForPieceWithValidMoves
 {
-    UIView * square = [self squareAtLocation:highlightForPieceWithValidMoves.piece.location];
     [highlightsForPiecesWithValidMoves addObject:highlightForPieceWithValidMoves];
-    [self insertSubview:highlightForPieceWithValidMoves aboveSubview:square];
+    [self addSubview:highlightForPieceWithValidMoves];
+    [self ensureVotesAtFront];
 }
 
 - (void)showHighlightsForPiecesWithValidMoves
@@ -201,9 +201,9 @@
     }
     
     // Add the valid move.
-    UIView * square = [self squareAtLocation:validMove.location];
     [validMoves addObject:validMove];
-    [self insertSubview:validMove aboveSubview:square];
+    [self addSubview:validMove];
+    [self ensureVotesAtFront];
 }
 
 - (void)showValidMovesForPiece:(GamePiece *)piece
@@ -646,6 +646,13 @@
                 }];
             }
         }
+    }
+}
+
+- (void)ensureVotesAtFront
+{
+    for (UIView * votesView in votesViews) {
+        [votesView.superview bringSubviewToFront:votesView];
     }
 }
 
