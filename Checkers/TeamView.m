@@ -50,7 +50,7 @@
 
 -(IBAction)touchDown:(id)sender
 {
-    self.backgroundColor = RGBA(0, 0, 0, 0.025);
+    self.backgroundColor = AppStyle.mediumColor;
 }
 
 -(IBAction)touchUp:(id)sender
@@ -201,7 +201,7 @@
             peopleLabel.textColor = [AppStyle colorForTeam:self.team.intValue];
             
             if (self.people > 0) {
-                peopleLabel.text = [NSString stringWithFormat:@"Join\n%@ %@",
+                peopleLabel.text = [NSString stringWithFormat:@"Join %@ %@",
                                     [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]],
                                     [self personStringForCount:self.people]];
             } else {
