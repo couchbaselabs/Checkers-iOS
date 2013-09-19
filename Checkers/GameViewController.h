@@ -31,6 +31,7 @@ typedef NS_ENUM(NSInteger, GameViewControllerButton) {
     
     // Header
     UIView * header;
+    UIView * headerContent;
     UILabel * timeLabel;
     CountdownTimerView * timeValue;
     UIButton * twitterButton;

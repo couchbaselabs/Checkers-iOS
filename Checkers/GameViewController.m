@@ -18,6 +18,25 @@
 
 @implementation GameViewController
 
+-(UIStatusBarStyle)preferredStatusBarStyle{
+    return UIStatusBarStyleLightContent;
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    // We only show the status bar on iOS7 and above.
+    if ([UIViewController instancesRespondToSelector:@selector(preferredStatusBarStyle)]) {
+        return (self.view.frame.size.height < 568 ? YES : NO);
+    } else {
+        return YES;
+    }
+}
+
+-(float)statusBarHeight
+{
+    return (self.prefersStatusBarHidden ? 0 : 20);
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -31,10 +50,18 @@
     
     // Background
     float headerSize = 44;
-    header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, headerSize)];
+    float headerContentsYOffset = self.statusBarHeight;
+    header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, headerSize + headerContentsYOffset)];
     header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     header.backgroundColor = AppStyle.mediumColor;
     [self.view addSubview:header];
+    
+    // Content
+    //float headerContentsYOffset = self.statusBarHeight;
+    //float headerSize = 44;
+    headerContent = [[UIView alloc] initWithFrame:CGRectMake(0, headerContentsYOffset, width, headerSize)];
+    headerContent.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    [header addSubview:headerContent];
     
     // Time Label/Value
     //   Label
@@ -43,14 +70,14 @@
     timeLabel.font = [UIFont systemFontOfSize:18];
     timeLabel.textColor = AppStyle.darkColor;
     self.timeLabel = @"waiting for game...";
-    [header addSubview:timeLabel];
+    [headerContent addSubview:timeLabel];
     //   Value
     timeValue = [[CountdownTimerView alloc] init];
     timeValue.backgroundColor = UIColor.clearColor;
     timeValue.font = [UIFont systemFontOfSize:24];
     timeValue.textColor = AppStyle.darkColor;
     timeValue.delegate = self;
-    [header addSubview:timeValue];
+    [headerContent addSubview:timeValue];
     
     // Twitter Button
     twitterButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -61,7 +88,7 @@
     twitterButton.contentMode = UIViewContentModeCenter;
     twitterButton.hidden = YES;
     [twitterButton addTarget:self action:@selector(twitterClick:) forControlEvents:UIControlEventTouchUpInside];
-    [header addSubview:twitterButton];
+    [headerContent addSubview:twitterButton];
     
     // Facebook Button
     facebookButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -72,16 +99,7 @@
     facebookButton.contentMode = UIViewContentModeCenter;
     facebookButton.hidden = YES;
     [facebookButton addTarget:self action:@selector(facebookClick:) forControlEvents:UIControlEventTouchUpInside];
-    [header addSubview:facebookButton];
-    
-    // ---------------------------
-    
-    // - Checkerboard ------------
-    
-    checkerboard = [[Checkerboard alloc] initWithFrame:CGRectMake(0, 0, width, width)];
-    checkerboard.center = self.view.center;
-    checkerboard.delegate = self;
-    [self.view addSubview: checkerboard];
+    [headerContent addSubview:facebookButton];
     
     // ---------------------------
     
@@ -141,6 +159,16 @@
         self.user = user;
     }];
     [self.view addSubview:team2Info];
+    
+    // ---------------------------
+    
+    // - Checkerboard ------------
+    
+    checkerboard = [[Checkerboard alloc] initWithFrame:CGRectMake(0, 0, width, width)];
+    checkerboard.center = CGPointMake(self.view.center.x,
+                                      (headerContent.frame.origin.y + headerContent.frame.size.height) + (footer.frame.origin.y - (headerContent.frame.origin.y + headerContent.frame.size.height)) / 2);
+    checkerboard.delegate = self;
+    [self.view addSubview: checkerboard];
     
     // ---------------------------
 }
@@ -284,9 +312,9 @@
     timeLabel.text = label;
     [timeLabel sizeToFit];
     timeLabel.frame = CGRectMake(10,
-                                 (header.bounds.size.height / 2) - (timeLabel.frame.size.height / 2),
+                                 0,
                                  timeLabel.frame.size.width,
-                                 timeLabel.frame.size.height);
+                                 headerContent.frame.size.height);
     
     // Kick the value so that it repositions itself.
     self.timeValue = timeValue.time;
@@ -295,10 +323,11 @@
 - (void)setTimeValue:(NSDate *)time
 {
     timeValue.time = time;
+    [timeValue sizeToFit];
     timeValue.frame = CGRectMake(timeLabel.frame.origin.x + timeLabel.frame.size.width + 4,
                                  0,
-                                 150,
-                                 header.bounds.size.height);
+                                 timeValue.frame.size.width,
+                                 headerContent.bounds.size.height);
 }
 
 - (void)setTeam1Score:(NSString *)score
@@ -417,9 +446,9 @@
     team1Info.people = ((GameTeam *)[self.game.teams objectAtIndex:0]).participantCount;
     team1Info.votes = votes.count.integerValue;
     team1Info.frame = CGRectMake(0,
-                                 header.frame.origin.y + header.frame.size.height,
+                                 headerContent.frame.origin.y + headerContent.frame.size.height,
                                  self.view.bounds.size.width,
-                                 checkerboard.frame.origin.y - (header.frame.origin.y + header.frame.size.height));
+                                 checkerboard.frame.origin.y - (headerContent.frame.origin.y + headerContent.frame.size.height));
     
     team2Info.game = game.number;
     team2Info.team = [NSNumber numberWithInt:1];
@@ -437,7 +466,7 @@
     UIView * view = self.view;
     
     // Title Bar
-    UIView * titleBar = [[UIView alloc] initWithFrame:header.frame];
+    UIView * titleBar = [[UIView alloc] initWithFrame:headerContent.frame];
     titleBar.backgroundColor = header.backgroundColor;
     
     // Icon
