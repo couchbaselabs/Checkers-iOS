@@ -8,14 +8,12 @@
 
 #import "UIBezierPath+Arrow.h"
 
-#define kArrowPointCount 3
-
 @implementation UIBezierPath (Arrow)
 
 + (UIBezierPath *)bezierArrowFromPoint:(CGPoint)startPoint toPoint:(CGPoint)endPoint width:(CGFloat)width {
     CGFloat length = hypotf(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
     
-    CGPoint points[kArrowPointCount];
+    CGPoint points[3];
     [self getAxisAlignedArrowPoints:points width:width length:length];
     
     CGAffineTransform transform = [self transformForStartPoint:startPoint endPoint:endPoint length:length];
@@ -30,7 +28,7 @@
     return bezierPath;
 }
 
-+ (void)getAxisAlignedArrowPoints:(CGPoint[kArrowPointCount])points width:(CGFloat)width length:(CGFloat)length {
++ (void)getAxisAlignedArrowPoints:(CGPoint[3])points width:(CGFloat)width length:(CGFloat)length {
     points[0] = CGPointMake(0, width);
     points[1] = CGPointMake(length, 0);
     points[2] = CGPointMake(0, -width);
