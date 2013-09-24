@@ -19,7 +19,11 @@
 @implementation GameViewController
 
 -(UIStatusBarStyle)preferredStatusBarStyle{
-    return UIStatusBarStyleLightContent;
+    if ([header.backgroundColor isEqual:AppStyle.mediumColor]) {
+        return UIStatusBarStyleDefault;
+    } else {
+        return UIStatusBarStyleLightContent;
+    }
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -391,6 +395,11 @@
         
         [facebookButton setImage:[UIImage imageNamed:@"Facebook-Dark.png"] forState:UIControlStateNormal];
         [facebookButton setImage:[UIImage imageNamed:@"Facebook-Dark-Highlighted.png"] forState:UIControlStateHighlighted];
+    }
+    
+    // Update status bar for color changes.  This is required for iOS7+ w/ colored status bar.
+    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+        [self setNeedsStatusBarAppearanceUpdate];
     }
     
     self.team1Score = [NSNumber numberWithInteger:((GameTeam *)game.teams[0]).score].stringValue;
