@@ -5,4 +5,4 @@ This can be installed from the [iTunes Store](https://itunes.apple.com/us/app/id
 
 ## Source
 1. Clone this repo.
-2. Download the Couchbase Lite framework and copy the contained 'CouchbaseLite.framework' to the 'Frameworks' directory at the root of the clone directory.
+2. Download the [Couchbase Lite framework](http://www.couchbase.com/communities/couchbase-lite) and copy the contained 'CouchbaseLite.framework' to the 'Frameworks' directory at the root of the clone directory.
