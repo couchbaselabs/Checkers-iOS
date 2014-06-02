@@ -49,34 +49,30 @@
     // Initialize Couchbase Lite:
     NSLog(@"Initializing Couchbase Lite");
     NSError* error;
-    database = [[CBLManager sharedInstance] databaseNamed:@"checkers" error:&error];
+    database = [[CBLManager sharedInstance] createDatabaseNamed:@"checkers" error:&error];
     if (!database) {
         NSLog(@"FATAL: Couldn't open database: %@", error);
         abort();
     }
     
     // Configure the replications.
-    CBLReplication *pull = [database createPullReplication:[NSURL URLWithString:kSyncURL]];
-    [pull setContinuous:YES];
-    pull.filter = @"sync_gateway/bychannel";
-    [pull setFilterParams:[[NSDictionary alloc] initWithObjectsAndKeys:@"game", @"channels", nil]];
+    NSArray* replications = [database replicateWithURL:[NSURL URLWithString:kSyncURL] exclusively:YES];
+    for (CBLReplication* replication in replications) {
+        replication.continuous = YES;
+        replication.persistent = YES;
+        
+        if(replication.pull) {
+            replication.filter = @"sync_gateway/bychannel";
+            replication.query_params = [[NSDictionary alloc] initWithObjectsAndKeys:@"game", @"channels", nil];
+        } else {
+            [database defineFilter: @"pushItems" asBlock: FILTERBLOCK({
+                return (revision.document == userDoc || revision.document == voteDoc);
+            })];
+            
+            replication.filter = @"pushItems";
+        }
+    }
     
-    // was getting 400 not websocket protocol errors
-    pull.customProperties = @{@"websocket": @NO};
-
-    [pull start];
-    
-    CBLReplication *push = [database createPushReplication:[NSURL URLWithString:kSyncURL]];
-    [push setContinuous:YES];
-    __block CBLDocument *userDocBlock = userDoc;
-    __block CBLDocument *voteDocBlock = voteDoc;
-    [database setFilterNamed: @"pushItems" asBlock: FILTERBLOCK({
-        return (revision.document == userDocBlock || revision.document == voteDocBlock);
-    })];
-    
-    push.filter = @"pushItems";
-    [push start];
-
     // Get/create unique player ID.
     NSString* userID = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserID"];
     if (!userID) {
@@ -111,7 +107,7 @@
         // NOTE: Make sure to bump version any time you change the MAPBLOCK body!
     }
     // Create/observe live query for the latest game.
-    gamesLiveQuery = [[gamesByStartTime createQuery] asLiveQuery];
+    gamesLiveQuery = gamesByStartTime.query.asLiveQuery;
     gamesLiveQuery.limit = 1;
     gamesLiveQuery.descending = YES;
     [gamesLiveQuery addObserver:self forKeyPath:@"rows" options:0 context:NULL];
