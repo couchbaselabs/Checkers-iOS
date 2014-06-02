@@ -182,7 +182,7 @@
 - (void)addValidMove:(CheckerboardValidMoveView *)validMove
 {
     // Check to see if there is already a valid move in the same location.
-    int existingIndex = NSNotFound;
+    int existingIndex = (int)NSNotFound;
     for (int i=0; i<validMoves.count; i++) {
         CheckerboardValidMoveView * existingValidMove = [validMoves objectAtIndex:i];
         
@@ -193,7 +193,7 @@
     }
     
     // Last in wins so if we found another move in the same location then remove it.
-    if (existingIndex != NSNotFound) {
+    if (existingIndex != (int)NSNotFound) {
         UIView * previousValidMove = [validMoves objectAtIndex:existingIndex];
         
         [validMoves removeObjectAtIndex:existingIndex];
@@ -417,6 +417,7 @@
             voteMove.piece = [((GameTeam *)[game.teams objectAtIndex:voteTeam.number]).pieces objectAtIndex:votePiece.number];
             
             [voteMoves addObject:voteMove];
+            NSLog(@"location: %@", location);
         }
         
         // Collect capture and capture shadow views.

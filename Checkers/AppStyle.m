@@ -28,12 +28,14 @@
 
 + (UIColor *)highlightColorForTeam:(int)team
 {
-    float h, s, b, a;
-    UIColor * color = [AppStyle colorForTeam:team];
-    [color getHue:&h saturation:&s brightness:&b alpha:&a];
+    //float h, s, b, a;
+    //UIColor * color = [AppStyle colorForTeam:team];
+    // [color getHue:&h saturation:&s brightness:&b alpha:&a];
     
-    if (team == 1) return [UIColor colorWithHue:h saturation:s brightness:1.0 alpha:a];
-    else return [UIColor colorWithHue:h saturation:s brightness:1.0 alpha:a];
+    // if (team == 1) return [UIColor colorWithHue:h saturation:s brightness:1.0 alpha:a];
+    //else return [UIColor colorWithHue:h saturation:s brightness:1.0 alpha:a];
+    return [UIColor blueColor];
+    
 }
 
 + (UIColor *)colorForTeam:(int)team

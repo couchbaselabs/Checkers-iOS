@@ -141,16 +141,18 @@
         
         // Image or "You"
         NSUInteger pictureSize = MIN(height - (2 * padding), 44);
-        UIImage * userPicture = [Facebook pictureWithSize:(pictureSize * 2)];
+        UIImage * userPicture = [Facebook pictureWithSize:(int)(pictureSize * 2)];
         if (userPicture) {
             userImageView.hidden = NO;
             userImageView.frame = CGRectMake(0, 0, pictureSize + 4, pictureSize + 4);
             userImageView.image = [AppStyle strokeImage:userPicture forTeam:self.team.intValue];
             
             if (peopleMinusUser > 0) {
-                peopleLabel.text = [NSString stringWithFormat:@" + %@ %@",
+                // TODO: fixme
+                /*peopleLabel.text = [NSString stringWithFormat:@" + %@ %@",
                                     [numberFormatter stringFromNumber:[NSNumber numberWithInt:peopleMinusUser]],
-                                    [self personStringForCount:peopleMinusUser]];
+                                    [self personStringForCount:peopleMinusUser]];*/
+                
             } else {
                 peopleLabel.text = nil;
             }
@@ -165,10 +167,12 @@
             userImageView.frame = CGRectZero;
             
             if (peopleMinusUser > 0) {
-                NSMutableAttributedString *text = [[NSMutableAttributedString alloc]
+                // TODO: fixme
+                /*NSMutableAttributedString *text = [[NSMutableAttributedString alloc]
                                                    initWithString:[NSString stringWithFormat:@"You + %d %@",
                                                                    peopleMinusUser,
-                                                                   [self personStringForCount:peopleMinusUser]]];
+                                                                   [self personStringForCount:peopleMinusUser]]]; */
+                NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@"You"];
                 [text addAttribute: NSForegroundColorAttributeName value:[AppStyle colorForTeam:self.team.intValue] range: NSMakeRange(0, 3)];
                 [text addAttribute: NSForegroundColorAttributeName value:AppStyle.darkColor range: NSMakeRange(3, text.length - 3)];
                 peopleLabel.attributedText = text;
@@ -183,7 +187,7 @@
             
             // Try to load image from Facebook.
             if (!Facebook.accessRejected) {
-                [Facebook pictureWithSize:(pictureSize * 2) handler:^(UIImage *image) {
+                [Facebook pictureWithSize:(int)(pictureSize * 2) handler:^(UIImage *image) {
                     if (image) {
                         [self setNeedsLayout];
                     }
@@ -201,17 +205,20 @@
             peopleLabel.textColor = [AppStyle colorForTeam:self.team.intValue];
             
             if (self.people > 0) {
-                peopleLabel.text = [NSString stringWithFormat:@"Join %@ %@",
+                // TODO: fixme
+                /*peopleLabel.text = [NSString stringWithFormat:@"Join %@ %@",
                                     [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]],
-                                    [self personStringForCount:self.people]];
+                                    [self personStringForCount:self.people]];*/
+                peopleLabel.text = @"Join";
             } else {
                 peopleLabel.text = @"Join";
             }
         } else {
             peopleLabel.textColor = AppStyle.darkColor;
-            peopleLabel.text = [NSString stringWithFormat:@"%@ %@",
+            // TODO: fixme
+            /*peopleLabel.text = [NSString stringWithFormat:@"%@ %@",
                                 [numberFormatter stringFromNumber:[NSNumber numberWithInt:self.people]],
-                                [self personStringForCount:self.people]];
+                                [self personStringForCount:self.people]]; */
         }
         [peopleLabel sizeToFit];
         peopleLabel.frame = CGRectMake(0, 0, peopleLabel.frame.size.width, peopleLabel.frame.size.height);

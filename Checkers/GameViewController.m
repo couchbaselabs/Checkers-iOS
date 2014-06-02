@@ -149,7 +149,7 @@
         [self.delegate gameViewController:self didSelectTeam:[self.game.teams objectAtIndex:team]];
         
         // Update team.
-        user.team = [NSNumber numberWithUnsignedInt:team];
+        user.team = [NSNumber numberWithUnsignedInt:(int)team];
         self.user = user;
     }];
     [self.view addSubview:team1Info];
@@ -159,7 +159,7 @@
         [self.delegate gameViewController:self didSelectTeam:[self.game.teams objectAtIndex:team]];
         
         // Update team.
-        user.team = [NSNumber numberWithUnsignedInt:team];
+        user.team = [NSNumber numberWithUnsignedInt:(int)team];
         self.user = user;
     }];
     [self.view addSubview:team2Info];
