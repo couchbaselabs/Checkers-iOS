@@ -1,3 +1,5 @@
+⚠️ This repo is no longer maintained, and the app is no longer available.  It was created using a version of Couchbase Lite that has been end of life for years.
+
 # Install
 
 ## iTunes Store
